@@ -142,7 +142,7 @@ class DteGeneratorService(models.AbstractModel):
             'TpoDocRef': 'SET',  # Texto exacto según instrucciones SII
             'FolioRef': folio,  # Folio del PROPIO documento (auto-referencia)
             'FchRef': fecha_emision,  # Fecha del propio documento
-            'RazonRef': case.name,  # "CASO 4609305-1", "CASO 4609305-2", etc.
+            'RazonRef': case.name.upper(),  # "CASO 4609305-1" en MAYÚSCULAS
         })
 
         # Línea 2+: Referencias adicionales (para NC/ND)
@@ -167,7 +167,7 @@ class DteGeneratorService(models.AbstractModel):
                 'FolioRef': ref_doc.folio,
                 'FchRef': ref_doc.issue_date.strftime('%Y-%m-%d'),
                 'CodRef': cod_ref,
-                'RazonRef': case.reference_reason or 'Referencia a documento original',
+                'RazonRef': (case.reference_reason or 'REFERENCIA A DOCUMENTO ORIGINAL').upper(),
             })
 
         # Preparar detalle (líneas)
@@ -248,20 +248,37 @@ class DteGeneratorService(models.AbstractModel):
         # Preparar descuentos/recargos globales
         desc_rcg_global = []
         if case.global_discount > 0:
-            desc_rcg_global.append({
+            print(f'\n📊 DESCUENTO GLOBAL DETECTADO:')
+            print(f'  Porcentaje: {case.global_discount}%')
+            print(f'  Se enviará como PORCENTAJE (TpoValor=%)')
+
+            # IMPORTANTE: Enviar como PORCENTAJE (como en ejemplos oficiales del SII)
+            # Esto es más simple y el SII calcula automáticamente
+            dr_data = {
                 'NroLinDR': 1,
                 'TpoMov': 'D',  # D=Descuento, R=Recargo
-                'TpoValor': '%',  # %=Porcentaje, $=Monto
-                'ValorDR': case.global_discount,
-            })
+                'GlosaDR': f'Descuento Global {case.global_discount}%',
+                'TpoValor': '%',  # Porcentaje
+                'ValorDR': case.global_discount,  # El porcentaje directamente
+            }
+
+
+            desc_rcg_global.append(dr_data)
 
         # Preparar totales
         # IMPORTANTE: TasaIVA debe incluirse para documentos afectos a IVA (tipos 33, 34, 56, 61, etc.)
         # incluso cuando el monto de IVA es 0 (como en NC/ND administrativas)
+
+        # CRÍTICO: Cuando hay descuento global con TpoValor='%':
+        # Según ejemplo oficial del SII (CASO 132104-4):
+        # - MntNeto = DESPUÉS de aplicar el descuento
+        # - IVA = MntNeto × 0.19 (sobre el monto neto ya con descuento)
+        # - El modelo ya tiene estos valores calculados en _compute_amounts()
+        # NOTA: MontoNF NO es válido en Facturas (33), solo en Boletas (39)
         totales = {
             'MntNeto': int(subtotal_taxable) if subtotal_taxable else 0,
             'MntExe': int(subtotal_exempt) if subtotal_exempt else 0,
-            'TasaIVA': 19,  # Siempre incluir TasaIVA para documentos tributables
+            'TasaIVA': 19,
             'IVA': int(tax_amount) if tax_amount else 0,
             'MntTotal': int(total),
         }

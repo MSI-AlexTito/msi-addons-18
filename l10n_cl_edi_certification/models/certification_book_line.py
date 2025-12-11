@@ -192,20 +192,21 @@ class CertificationBookLine(models.Model):
             self.mnt_iva = doc.tax_amount
             self.mnt_total = doc.total_amount
 
-    @api.model
-    def create(self, vals):
+    @api.model_create_multi
+    def create(self, vals_list):
         """Al crear, si tiene generated_document_id, auto-rellenar campos"""
-        if vals.get('generated_document_id') and not vals.get('document_type_code'):
-            doc = self.env['l10n_cl_edi.certification.generated.document'].browse(vals['generated_document_id'])
-            vals.update({
-                'document_type_code': doc.document_type_code,
-                'folio': doc.folio,
-                'issue_date': doc.issue_date,
-                'partner_rut': doc.receiver_rut,
-                'partner_name': doc.receiver_name,
-                'mnt_exento': doc.subtotal_exempt,
-                'mnt_neto': doc.subtotal_taxable,
-                'mnt_iva': doc.tax_amount,
-                'mnt_total': doc.total_amount,
-            })
-        return super().create(vals)
+        for vals in vals_list:
+            if vals.get('generated_document_id') and not vals.get('document_type_code'):
+                doc = self.env['l10n_cl_edi.certification.generated.document'].browse(vals['generated_document_id'])
+                vals.update({
+                    'document_type_code': doc.document_type_code,
+                    'folio': doc.folio,
+                    'issue_date': doc.issue_date,
+                    'partner_rut': doc.receiver_rut,
+                    'partner_name': doc.receiver_name,
+                    'mnt_exento': doc.subtotal_exempt,
+                    'mnt_neto': doc.subtotal_taxable,
+                    'mnt_iva': doc.tax_amount,
+                    'mnt_total': doc.total_amount,
+                })
+        return super().create(vals_list)

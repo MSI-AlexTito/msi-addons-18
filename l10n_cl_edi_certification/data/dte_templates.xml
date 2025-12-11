@@ -65,7 +65,7 @@
                 <TpoMov t-out="dr['TpoMov']"/>
                 <GlosaDR t-if="dr.get('GlosaDR')" t-out="dr['GlosaDR']"/>
                 <TpoValor t-out="dr['TpoValor']"/>
-                <ValorDR t-out="dr['ValorDR']"/>
+                <ValorDR t-out="'%.2f' % dr['ValorDR'] if dr['TpoValor'] == '%' else int(dr['ValorDR'])"/>
                 <ValorDROtrMnda t-if="dr.get('ValorDROtrMnda')" t-out="dr['ValorDROtrMnda']"/>
             </DscRcgGlobal>
         </t>
