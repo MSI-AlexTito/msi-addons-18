@@ -1,0 +1,237 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="1">
+
+        <!--
+            SET BÁSICO - NÚMERO DE ATENCIÓN: 3660207
+            Casos de prueba oficiales del SII para certificación
+        -->
+
+        <!-- CASO 3660207-1: Factura Simple con 2 Items Afectos -->
+        <record id="test_case_3660207_1" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-1</field>
+            <field name="name">Factura Simple - 2 Items Afectos</field>
+            <field name="document_type_id" ref="l10n_cl.dc_a_f_dte"/>
+            <field name="description">Factura electrónica con 2 items afectos a IVA</field>
+            <field name="category">standard</field>
+            <field name="global_discount">0</field>
+        </record>
+        <record id="test_case_3660207_1_line_1" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_1"/>
+            <field name="sequence">10</field>
+            <field name="description">Cajón AFECTO</field>
+            <field name="qty">152</field>
+            <field name="price_unit">2548</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_1_line_2" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_1"/>
+            <field name="sequence">20</field>
+            <field name="description">Relleno AFECTO</field>
+            <field name="qty">64</field>
+            <field name="price_unit">4221</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+
+        <!-- CASO 3660207-2: Factura con Descuentos por Item -->
+        <record id="test_case_3660207_2" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-2</field>
+            <field name="name">Factura con Descuentos por Item</field>
+            <field name="document_type_id" ref="l10n_cl.dc_a_f_dte"/>
+            <field name="description">Factura electrónica con descuentos por línea (7% y 16%)</field>
+            <field name="category">standard</field>
+            <field name="global_discount">0</field>
+        </record>
+        <record id="test_case_3660207_2_line_1" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_2"/>
+            <field name="sequence">10</field>
+            <field name="description">Pañuelo AFECTO</field>
+            <field name="qty">567</field>
+            <field name="price_unit">4426</field>
+            <field name="discount">7</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_2_line_2" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_2"/>
+            <field name="sequence">20</field>
+            <field name="description">ITEM 2 AFECTO</field>
+            <field name="qty">504</field>
+            <field name="price_unit">3482</field>
+            <field name="discount">16</field>
+            <field name="exempt" eval="False"/>
+        </record>
+
+        <!-- CASO 3660207-3: Factura con Items Afectos y Exentos -->
+        <record id="test_case_3660207_3" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-3</field>
+            <field name="name">Factura con Items Afectos y Exentos</field>
+            <field name="document_type_id" ref="l10n_cl.dc_a_f_dte"/>
+            <field name="description">Factura electrónica con items afectos y un servicio exento</field>
+            <field name="category">standard</field>
+            <field name="global_discount">0</field>
+        </record>
+        <record id="test_case_3660207_3_line_1" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_3"/>
+            <field name="sequence">10</field>
+            <field name="description">Pintura B&amp;W AFECTO</field>
+            <field name="qty">43</field>
+            <field name="price_unit">5181</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_3_line_2" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_3"/>
+            <field name="sequence">20</field>
+            <field name="description">ITEM 2 AFECTO</field>
+            <field name="qty">204</field>
+            <field name="price_unit">3559</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_3_line_3" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_3"/>
+            <field name="sequence">30</field>
+            <field name="description">ITEM 3 SERVICIO EXENTO</field>
+            <field name="qty">1</field>
+            <field name="price_unit">35077</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="True"/>
+        </record>
+
+        <!-- CASO 3660207-4: Factura con Items Mixtos y Descuento Global -->
+        <record id="test_case_3660207_4" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-4</field>
+            <field name="name">Factura con Descuento Global 16%</field>
+            <field name="document_type_id" ref="l10n_cl.dc_a_f_dte"/>
+            <field name="description">Factura con items afectos, exentos y descuento global del 16% sobre afectos</field>
+            <field name="category">standard</field>
+            <field name="global_discount">16</field>
+        </record>
+        <record id="test_case_3660207_4_line_1" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_4"/>
+            <field name="sequence">10</field>
+            <field name="description">ITEM 1 AFECTO</field>
+            <field name="qty">292</field>
+            <field name="price_unit">4361</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_4_line_2" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_4"/>
+            <field name="sequence">20</field>
+            <field name="description">ITEM 2 AFECTO</field>
+            <field name="qty">124</field>
+            <field name="price_unit">5077</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_4_line_3" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_4"/>
+            <field name="sequence">30</field>
+            <field name="description">ITEM 3 SERVICIO EXENTO</field>
+            <field name="qty">2</field>
+            <field name="price_unit">6809</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="True"/>
+        </record>
+
+        <!-- CASO 3660207-5: Nota de Crédito - Corrige Giro del Receptor -->
+        <record id="test_case_3660207_5" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-5</field>
+            <field name="name">NC - Corrige Giro del Receptor</field>
+            <field name="document_type_id" ref="l10n_cl.dc_nc_f_dte"/>
+            <field name="description">Nota de Crédito que corrige el giro del receptor de la factura del caso 1</field>
+            <field name="category">standard</field>
+            <field name="reference">CASO 3660207-1</field>
+            <field name="reference_reason">CORRIGE GIRO DEL RECEPTOR</field>
+            <field name="global_discount">0</field>
+        </record>
+        <!-- Esta NC no tiene líneas porque solo corrige datos del receptor -->
+
+        <!-- CASO 3660207-6: Nota de Crédito - Devolución Parcial -->
+        <record id="test_case_3660207_6" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-6</field>
+            <field name="name">NC - Devolución de Mercaderías</field>
+            <field name="document_type_id" ref="l10n_cl.dc_nc_f_dte"/>
+            <field name="description">Nota de Crédito por devolución parcial de mercaderías del caso 2</field>
+            <field name="category">standard</field>
+            <field name="reference">CASO 3660207-2</field>
+            <field name="reference_reason">DEVOLUCION DE MERCADERIAS</field>
+            <field name="global_discount">0</field>
+        </record>
+        <record id="test_case_3660207_6_line_1" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_6"/>
+            <field name="sequence">10</field>
+            <field name="description">Pañuelo AFECTO</field>
+            <field name="qty">208</field>
+            <field name="price_unit">4426</field>
+            <field name="discount">7</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_6_line_2" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_6"/>
+            <field name="sequence">20</field>
+            <field name="description">ITEM 2 AFECTO</field>
+            <field name="qty">342</field>
+            <field name="price_unit">3482</field>
+            <field name="discount">16</field>
+            <field name="exempt" eval="False"/>
+        </record>
+
+        <!-- CASO 3660207-7: Nota de Crédito - Anula Factura -->
+        <record id="test_case_3660207_7" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-7</field>
+            <field name="name">NC - Anula Factura Completa</field>
+            <field name="document_type_id" ref="l10n_cl.dc_nc_f_dte"/>
+            <field name="description">Nota de Crédito que anula completamente la factura del caso 3</field>
+            <field name="category">standard</field>
+            <field name="reference">CASO 3660207-3</field>
+            <field name="reference_reason">ANULA FACTURA</field>
+            <field name="global_discount">0</field>
+        </record>
+        <!-- Esta NC anula la factura completa, debe copiar las mismas líneas -->
+        <record id="test_case_3660207_7_line_1" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_7"/>
+            <field name="sequence">10</field>
+            <field name="description">Pintura B&amp;W AFECTO</field>
+            <field name="qty">43</field>
+            <field name="price_unit">5181</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_7_line_2" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_7"/>
+            <field name="sequence">20</field>
+            <field name="description">ITEM 2 AFECTO</field>
+            <field name="qty">204</field>
+            <field name="price_unit">3559</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="False"/>
+        </record>
+        <record id="test_case_3660207_7_line_3" model="l10n_cl_edi.test.case.template.line">
+            <field name="template_id" ref="test_case_3660207_7"/>
+            <field name="sequence">30</field>
+            <field name="description">ITEM 3 SERVICIO EXENTO</field>
+            <field name="qty">1</field>
+            <field name="price_unit">35077</field>
+            <field name="discount">0</field>
+            <field name="exempt" eval="True"/>
+        </record>
+
+        <!-- CASO 3660207-8: Nota de Débito - Anula NC -->
+        <record id="test_case_3660207_8" model="l10n_cl_edi.test.case.template">
+            <field name="code">3660207-8</field>
+            <field name="name">ND - Anula Nota de Crédito</field>
+            <field name="document_type_id" ref="l10n_cl.dc_nd_f_dte"/>
+            <field name="description">Nota de Débito que anula la NC del caso 5</field>
+            <field name="category">standard</field>
+            <field name="reference">CASO 3660207-5</field>
+            <field name="reference_reason">ANULA NOTA DE CREDITO ELECTRONICA</field>
+            <field name="global_discount">0</field>
+        </record>
+        <!-- Esta ND no tiene líneas porque anula una NC sin líneas -->
+
+    </data>
+</odoo>

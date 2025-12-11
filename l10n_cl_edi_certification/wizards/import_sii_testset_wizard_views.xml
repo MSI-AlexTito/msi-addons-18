@@ -1,0 +1,89 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Wizard: Importar Set de Pruebas SII -->
+        <record id="view_import_sii_testset_wizard_form" model="ir.ui.view">
+            <field name="name">import.sii.testset.wizard.form</field>
+            <field name="model">l10n_cl_edi.import.sii.testset.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Importar Set de Pruebas SII">
+                    <sheet>
+                        <div class="oe_title">
+                            <h1>
+                                <field name="state" invisible="1"/>
+                                <span invisible="state != 'upload'">Importar Set de Pruebas SII</span>
+                                <span invisible="state != 'done'">Importación Completada</span>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <field name="project_id" readonly="1"/>
+                        </group>
+
+                        <!-- Paso 1: Subir archivo -->
+                        <group invisible="state != 'upload'">
+                            <group colspan="2">
+                                <field name="file" filename="filename" widget="binary"/>
+                                <field name="filename" invisible="1"/>
+                            </group>
+                            <!-- Preview automático después de cargar archivo -->
+                            <group colspan="2" invisible="not file or not cases_count">
+                                <div class="alert alert-success" role="alert">
+                                    <p><i class="fa fa-check-circle"/> <strong>Archivo procesado exitosamente</strong></p>
+                                    <p>Se detectaron <strong><field name="cases_count" readonly="1" class="oe_inline"/></strong> casos en el set de pruebas del SII.</p>
+                                    <p>Número de atención: <strong><field name="attention_number" readonly="1" class="oe_inline"/></strong></p>
+                                </div>
+                                <separator string="Detalles de los Casos Detectados"/>
+                                <field name="preview_text" widget="text" readonly="1" nolabel="1"/>
+                            </group>
+                            <!-- Errores -->
+                            <group colspan="2" invisible="not file or not error_messages">
+                                <div class="alert alert-danger" role="alert">
+                                    <strong><i class="fa fa-exclamation-triangle"/> Error al procesar archivo:</strong>
+                                    <field name="error_messages" widget="text" readonly="1" nolabel="1"/>
+                                    <p class="mt-2"><em>Revise los logs del servidor Odoo para más detalles técnicos.</em></p>
+                                </div>
+                            </group>
+                        </group>
+
+                        <!-- Completado -->
+                        <group invisible="state != 'done'">
+                            <div class="alert alert-success" role="alert">
+                                <p><i class="fa fa-check-circle"/> <strong>Importación completada exitosamente</strong></p>
+                                <p>Los casos han sido importados al proyecto.</p>
+                            </div>
+                        </group>
+
+                    </sheet>
+                    <footer>
+                        <!-- Botones: Upload -->
+                        <button string="Importar Casos"
+                                name="action_import"
+                                type="object"
+                                class="btn-primary"
+                                invisible="state != 'upload' or not file or cases_count == 0"/>
+                        <button string="Cancelar"
+                                special="cancel"
+                                invisible="state != 'upload'"/>
+
+                        <!-- Botones: Done -->
+                        <button string="Cerrar"
+                                special="cancel"
+                                class="btn-primary"
+                                invisible="state != 'done'"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Acción del Wizard -->
+        <record id="action_import_sii_testset_wizard" model="ir.actions.act_window">
+            <field name="name">Importar Set de Pruebas SII</field>
+            <field name="res_model">l10n_cl_edi.import.sii.testset.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+        </record>
+
+    </data>
+</odoo>

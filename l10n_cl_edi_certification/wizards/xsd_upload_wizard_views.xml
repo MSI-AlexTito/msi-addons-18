@@ -1,0 +1,91 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista Form: Wizard de Carga de XSD -->
+        <record id="view_xsd_upload_wizard_form" model="ir.ui.view">
+            <field name="name">xsd.upload.wizard.form</field>
+            <field name="model">l10n_cl_edi.xsd.upload.wizard</field>
+            <field name="arch" type="xml">
+                <form string="Cargar Esquemas XSD del SII">
+                    <sheet>
+                        <group>
+                            <group>
+                                <div class="alert alert-info" role="alert">
+                                    <p><strong>¿Qué son los esquemas XSD?</strong></p>
+                                    <p>Los esquemas XSD permiten validar que los documentos electrónicos cumplan con el formato oficial del SII antes de enviarlos.</p>
+                                    <p><strong>Nota:</strong> La validación XSD es opcional. El sistema funciona sin ellos, pero se recomienda instalarlos para detectar errores tempranamente.</p>
+                                </div>
+                            </group>
+                        </group>
+
+                        <group string="Estado Actual">
+                            <field name="existing_schemas" widget="text" nolabel="1" readonly="1"/>
+                        </group>
+
+                        <separator string="Subir Esquemas XSD"/>
+
+                        <group>
+                            <group string="Esquemas Principales">
+                                <field name="dte_xsd_file" filename="dte_xsd_filename"/>
+                                <field name="dte_xsd_filename" invisible="1"/>
+
+                                <field name="envio_dte_xsd_file" filename="envio_dte_xsd_filename"/>
+                                <field name="envio_dte_xsd_filename" invisible="1"/>
+                            </group>
+
+                            <group string="Esquemas Adicionales">
+                                <field name="respuesta_dte_xsd_file" filename="respuesta_dte_xsd_filename"/>
+                                <field name="respuesta_dte_xsd_filename" invisible="1"/>
+
+                                <field name="sii_types_xsd_file" filename="sii_types_xsd_filename"/>
+                                <field name="sii_types_xsd_filename" invisible="1"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group>
+                                <div class="alert alert-warning" role="alert">
+                                    <p><strong>Importante:</strong></p>
+                                    <ul>
+                                        <li>Descarga los esquemas desde: <a href="https://www.sii.cl/factura_electronica/" target="_blank">www.sii.cl/factura_electronica</a></li>
+                                        <li>Los archivos deben tener extensión .xsd</li>
+                                        <li>Si un esquema ya existe, será actualizado</li>
+                                        <li>SiiTypes_v10.xsd es requerido por los otros esquemas</li>
+                                    </ul>
+                                </div>
+                            </group>
+                        </group>
+                    </sheet>
+                    <footer>
+                        <button name="action_upload_schemas" string="Subir Esquemas" type="object" class="btn-primary"/>
+                        <button name="action_delete_schemas" string="Eliminar Todos" type="object" class="btn-danger"
+                                confirm="¿Está seguro de eliminar todos los esquemas XSD? Esto deshabilitará la validación XSD local."/>
+                        <button string="Cancelar" class="btn-secondary" special="cancel"/>
+                    </footer>
+                </form>
+            </field>
+        </record>
+
+        <!-- Action: Wizard -->
+        <record id="action_xsd_upload_wizard" model="ir.actions.act_window">
+            <field name="name">Cargar Esquemas XSD</field>
+            <field name="res_model">l10n_cl_edi.xsd.upload.wizard</field>
+            <field name="view_mode">form</field>
+            <field name="target">new</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Sube los esquemas XSD del SII para validación local
+                </p>
+            </field>
+        </record>
+
+        <!-- Menuitem -->
+        <menuitem id="menu_xsd_upload_wizard"
+                  name="Cargar Esquemas XSD"
+                  parent="menu_certification_configuration"
+                  action="action_xsd_upload_wizard"
+                  sequence="100"/>
+
+    </data>
+</odoo>

@@ -1,0 +1,157 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Template QWeb para generar XML de DTE según formato SII Chile -->
+        <template id="dte_certification_template" name="DTE Certification XML Template">
+
+        <DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento t-attf-ID="F{{dte_data['Encabezado']['IdDoc']['Folio']}}T{{dte_data['Encabezado']['IdDoc']['TipoDTE']}}">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE t-out="dte_data['Encabezado']['IdDoc']['TipoDTE']"/>
+                    <Folio t-out="dte_data['Encabezado']['IdDoc']['Folio']"/>
+                    <FchEmis t-out="dte_data['Encabezado']['IdDoc']['FchEmis']"/>
+                    <IndServicio t-if="dte_data['Encabezado']['IdDoc'].get('IndServicio')" t-out="dte_data['Encabezado']['IdDoc']['IndServicio']"/>
+                    <FmaPago t-if="dte_data['Encabezado']['IdDoc'].get('FmaPago')" t-out="dte_data['Encabezado']['IdDoc']['FmaPago']"/>
+                    <FchVenc t-if="dte_data['Encabezado']['IdDoc'].get('FchVenc')" t-out="dte_data['Encabezado']['IdDoc']['FchVenc']"/>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor t-out="dte_data['Encabezado']['Emisor']['RUTEmisor']"/>
+                    <RznSoc t-out="dte_data['Encabezado']['Emisor']['RznSoc']"/>
+                    <GiroEmis t-out="dte_data['Encabezado']['Emisor']['GiroEmis']"/>
+                    <CorreoEmisor t-if="dte_data['Encabezado']['Emisor'].get('CorreoEmisor')" t-out="dte_data['Encabezado']['Emisor']['CorreoEmisor']"/>
+                    <Acteco t-out="dte_data['Encabezado']['Emisor']['Acteco']"/>
+                    <DirOrigen t-out="dte_data['Encabezado']['Emisor']['DirOrigen']"/>
+                    <CmnaOrigen t-out="dte_data['Encabezado']['Emisor']['CmnaOrigen']"/>
+                    <CiudadOrigen t-if="dte_data['Encabezado']['Emisor'].get('CiudadOrigen')" t-out="dte_data['Encabezado']['Emisor']['CiudadOrigen']"/>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep t-out="dte_data['Encabezado']['Receptor']['RUTRecep']"/>
+                    <RznSocRecep t-out="dte_data['Encabezado']['Receptor']['RznSocRecep']"/>
+                    <GiroRecep t-out="dte_data['Encabezado']['Receptor']['GiroRecep']"/>
+                    <CorreoRecep t-if="dte_data['Encabezado']['Receptor'].get('CorreoRecep')" t-out="dte_data['Encabezado']['Receptor']['CorreoRecep']"/>
+                    <DirRecep t-out="dte_data['Encabezado']['Receptor']['DirRecep']"/>
+                    <CmnaRecep t-out="dte_data['Encabezado']['Receptor']['CmnaRecep']"/>
+                    <CiudadRecep t-if="dte_data['Encabezado']['Receptor'].get('CiudadRecep')" t-out="dte_data['Encabezado']['Receptor']['CiudadRecep']"/>
+                </Receptor>
+                <Totales>
+                    <MntNeto t-if="dte_data['Encabezado']['Totales'].get('MntNeto')" t-out="dte_data['Encabezado']['Totales']['MntNeto']"/>
+                    <MntExe t-if="dte_data['Encabezado']['Totales'].get('MntExe')" t-out="dte_data['Encabezado']['Totales']['MntExe']"/>
+                    <TasaIVA t-if="dte_data['Encabezado']['Totales'].get('TasaIVA')">19.00</TasaIVA>
+                    <IVA t-if="dte_data['Encabezado']['Totales'].get('IVA')" t-out="dte_data['Encabezado']['Totales']['IVA']"/>
+                    <MntTotal t-out="dte_data['Encabezado']['Totales']['MntTotal']"/>
+                </Totales>
+            </Encabezado>
+        <t t-foreach="dte_data['Detalle']" t-as="item">
+            <Detalle>
+                <NroLinDet t-out="item['NroLinDet']"/>
+                <IndExe t-if="item.get('IndExe')" t-out="item['IndExe']"/>
+                <NmbItem t-out="item['NmbItem']"/>
+                <DscItem t-out="item.get('DscItem', '')"/>
+                <QtyItem t-if="item.get('QtyItem') is not None" t-out="'%.6f' % item['QtyItem']"/>
+                <UnmdItem t-if="item.get('UnmdItem') is not None" t-out="item.get('UnmdItem', '')"/>
+                <PrcItem t-if="item.get('PrcItem') is not None" t-out="'%.6f' % item['PrcItem']"/>
+                <DescuentoPct t-if="item.get('DescuentoPct')" t-out="item['DescuentoPct']"/>
+                <DescuentoMonto t-if="item.get('DescuentoMonto')" t-out="item['DescuentoMonto']"/>
+                <RecargoPct t-if="item.get('RecargoPct')" t-out="item['RecargoPct']"/>
+                <RecargoMonto t-if="item.get('RecargoMonto')" t-out="item['RecargoMonto']"/>
+                <MontoItem t-out="item['MontoItem']"/>
+            </Detalle>
+        </t>
+        <t t-if="dte_data.get('DscRcgGlobal')" t-foreach="dte_data['DscRcgGlobal']" t-as="dr">
+            <DscRcgGlobal>
+                <NroLinDR t-out="dr['NroLinDR']"/>
+                <TpoMov t-out="dr['TpoMov']"/>
+                <GlosaDR t-if="dr.get('GlosaDR')" t-out="dr['GlosaDR']"/>
+                <TpoValor t-out="dr['TpoValor']"/>
+                <ValorDR t-out="dr['ValorDR']"/>
+                <ValorDROtrMnda t-if="dr.get('ValorDROtrMnda')" t-out="dr['ValorDROtrMnda']"/>
+            </DscRcgGlobal>
+        </t>
+        <t t-if="dte_data.get('Referencia')" t-foreach="dte_data['Referencia']" t-as="ref">
+            <Referencia>
+                <NroLinRef t-out="ref['NroLinRef']"/>
+                <TpoDocRef t-out="ref['TpoDocRef']"/>
+                <IndGlobal t-if="ref.get('IndGlobal')" t-out="ref['IndGlobal']"/>
+                <FolioRef t-out="ref['FolioRef']"/>
+                <RUTOtr t-if="ref.get('RUTOtr')" t-out="ref['RUTOtr']"/>
+                <FchRef t-if="ref.get('FchRef')" t-out="ref['FchRef']"/>
+                <CodRef t-if="ref.get('CodRef')" t-out="ref['CodRef']"/>
+                <RazonRef t-if="ref.get('RazonRef')" t-out="ref['RazonRef']"/>
+            </Referencia>
+        </t>
+        <t t-if="dte_data.get('TED')" t-out="dte_data['TED']"/>
+        <TmstFirma t-if="dte_data.get('TmstFirma')" t-out="dte_data['TmstFirma']"/>
+            </Documento>
+        </DTE>
+        </template>
+
+        <!-- Template QWeb para generar XML de EnvioDTE (sobre con múltiples DTEs) -->
+        <template id="envelope_certification_template" name="EnvioDTE Certification XML Template">
+
+<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">
+    <SetDTE ID="SetDoc">
+        <Caratula version="1.0">
+            <RutEmisor t-out="envelope_data['Caratula']['RutEmisor']"/>
+            <RutEnvia t-out="envelope_data['Caratula']['RutEnvia']"/>
+            <RutReceptor t-out="envelope_data['Caratula']['RutReceptor']"/>
+            <FchResol t-out="envelope_data['Caratula']['FchResol']"/>
+            <NroResol t-out="envelope_data['Caratula']['NroResol']"/>
+            <TmstFirmaEnv t-out="envelope_data['Caratula']['TmstFirmaEnv']"/>
+            <t t-foreach="envelope_data['Caratula']['SubTotDTE']" t-as="subtot">
+            <SubTotDTE>
+                <TpoDTE t-out="subtot['TpoDTE']"/>
+                <NroDTE t-out="subtot['NroDTE']"/>
+            </SubTotDTE>
+            </t>
+        </Caratula>
+        <t t-foreach="envelope_data['DTEs']" t-as="dte_item"><t t-out="dte_item['xml']"/>
+        </t>
+    </SetDTE>
+</EnvioDTE>
+        </template>
+
+        <!-- Template QWeb para generar el DD (Document Data) del TED -->
+        <template id="dd_certification_template" name="DD for TED Template">
+            <DD>
+                <RE t-out="dd_data['RutEmisor']"/>
+                <TD t-out="dd_data['TipoDTE']"/>
+                <F t-out="dd_data['Folio']"/>
+                <FE t-out="dd_data['FchEmis']"/>
+                <RR t-out="dd_data['RutRecep']"/>
+                <RSR t-out="dd_data['RznSocRecep']"/>
+                <MNT t-out="dd_data['MntTotal']"/>
+                <IT1 t-out="dd_data['IT1']"/>
+                <CAF version="1.0">
+                    <DA>
+                        <RE t-out="dd_data['CAF']['RutEmisor']"/>
+                        <RS t-out="dd_data['CAF']['RznSoc']"/>
+                        <TD t-out="dd_data['CAF']['TipoDTE']"/>
+                        <RNG>
+                            <D t-out="dd_data['CAF']['RNG_D']"/>
+                            <H t-out="dd_data['CAF']['RNG_H']"/>
+                        </RNG>
+                        <FA t-out="dd_data['CAF']['FA']"/>
+                        <RSAPK>
+                            <M t-out="dd_data['CAF']['RSAPK_M']"/>
+                            <E t-out="dd_data['CAF']['RSAPK_E']"/>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA" t-out="dd_data['CAF']['FRMA']"/>
+                </CAF>
+                <TSTED t-out="dd_data['TSTED']"/>
+            </DD>
+        </template>
+
+        <!-- Template QWeb para generar el TED (Timbre Electrónico Digital) completo -->
+        <template id="ted_certification_template" name="TED Template">
+            <TED version="1.0">
+                <t t-out="ted_data['DD']"/>
+                <FRMT algoritmo="SHA1withRSA" t-out="ted_data['FRMT']"/>
+            </TED>
+        </template>
+
+    </data>
+</odoo>

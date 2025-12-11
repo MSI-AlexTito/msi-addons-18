@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista Form: Cliente -->
+        <record id="view_certification_client_form" model="ir.ui.view">
+            <field name="name">certification.client.form</field>
+            <field name="model">l10n_cl_edi.certification.client</field>
+            <field name="arch" type="xml">
+                <form string="Información del Cliente">
+                    <sheet>
+                        <div class="oe_title">
+                            <label for="partner_id" string="Empresa Cliente"/>
+                            <h1>
+                                <field name="partner_id" options="{'no_create': True}"/>
+                            </h1>
+                        </div>
+
+                        <group>
+                            <group string="Datos Tributarios">
+                                <field name="project_id" invisible="1"/>
+                                <field name="rut" required="1"/>
+                                <field name="social_reason" required="1"/>
+                                <field name="activity_description" required="1"/>
+                            </group>
+                            <group string="Dirección">
+                                <field name="address" required="1"/>
+                                <field name="city" required="1"/>
+                                <field name="state_id"/>
+                                <field name="country_id"/>
+                            </group>
+                        </group>
+
+                        <group>
+                            <group string="Contacto">
+                                <field name="email"/>
+                                <field name="phone"/>
+                            </group>
+                            <group string="Ambiente">
+                                <field name="environment" widget="radio"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="Información Tributaria SII" name="sii_info">
+                                <group>
+                                    <group string="Configuración SII (Requerido para Certificación)">
+                                        <field name="sii_regional_office" required="1"/>
+                                        <field name="company_activity_ids" widget="many2many_tags" required="1"/>
+                                    </group>
+                                    <group string="Resolución Exenta">
+                                        <field name="dte_resolution_number" required="1"/>
+                                        <field name="dte_resolution_date" required="1"/>
+                                        <field name="sii_certification_notes" placeholder="Ej: Fecha asignada por SII: 2024-01-15&#10;Contacto SII: Juan Pérez - jperez@sii.cl&#10;Observaciones: ..."/>
+                                        <div class="alert alert-warning" role="alert">
+                                            <p><strong>⚠️ IMPORTANTE - Datos de Certificación:</strong></p>
+                                            <ul>
+                                                <li><strong>N° Resolución:</strong> Use "0" (cero)</li>
+                                                <li><strong>Fecha Resolución:</strong> Use la fecha específica que el SII le entregó al iniciar el proceso de certificación</li>
+                                            </ul>
+                                            <p class="mb-0">
+                                                <em>Nota: Esta fecha NO es la fecha actual, es una fecha proporcionada por el SII para el ambiente de certificación.</em>
+                                            </p>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Certificado Digital" name="certificate">
+                                <group>
+                                    <group>
+                                        <field name="certificate_file" filename="certificate_filename"/>
+                                        <field name="certificate_filename" invisible="1"/>
+                                        <field name="certificate_password" password="True"/>
+                                        <field name="subject_serial_number" placeholder="12345678-9"/>
+                                    </group>
+                                    <group>
+                                        <button name="action_test_certificate" string="🔍 Probar Certificado"
+                                                type="object" class="btn-primary"
+                                                invisible="not certificate_file or not certificate_password"/>
+                                        <div class="alert alert-info" role="alert">
+                                            <p><strong>📌 Certificado del Cliente:</strong></p>
+                                            <ul>
+                                                <li>Suba el archivo .pfx o .p12 del cliente que será certificado</li>
+                                                <li>Ingrese la contraseña del certificado</li>
+                                                <li><strong>RUT Emisor del Certificado:</strong> RUT de quien firma el certificado (se usará como "RutEnvia")</li>
+                                                <li>Haga clic en "Probar Certificado" para verificar</li>
+                                            </ul>
+                                            <p class="text-warning mb-0"><small>⚠️ La contraseña se guarda en texto plano en la base de datos</small></p>
+                                        </div>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="Notas" name="notes">
+                                <field name="notes" placeholder="Notas adicionales sobre la configuración..."/>
+                            </page>
+                        </notebook>
+
+                        <group>
+                            <field name="snapshot_date" readonly="1"/>
+                            <field name="project_id" invisible="1"/>
+                        </group>
+                    </sheet>
+                </form>
+            </field>
+        </record>
+
+    </data>
+</odoo>

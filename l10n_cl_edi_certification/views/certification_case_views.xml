@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista Form: Caso de Prueba -->
+        <record id="view_certification_case_form" model="ir.ui.view">
+            <field name="name">certification.case.form</field>
+            <field name="model">l10n_cl_edi.certification.case</field>
+            <field name="arch" type="xml">
+                <form string="Caso de Prueba">
+                    <header>
+                        <button name="action_prepare" string="Marcar como Listo" type="object"
+                                invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_generate" string="Generar DTE" type="object"
+                                invisible="state not in ['ready', 'generated']" class="oe_highlight"/>
+                        <button name="action_validate" string="Validar" type="object"
+                                invisible="state != 'generated'" class="oe_highlight"/>
+                        <button name="action_back_to_draft" string="Regresar a Borrador" type="object"
+                                invisible="state == 'draft'"/>
+                        <button name="action_normalize_item_names" string="Normalizar Nombres (Quitar Acentos)" type="object"
+                                invisible="state != 'draft'"
+                                class="btn-warning" icon="fa-eraser"
+                                help="Convierte caracteres especiales (á, ó, ñ) a ASCII (a, o, n) en los nombres de items para evitar problemas de encoding"/>
+                        <button name="action_view_generated_document" string="Ver Documento" type="object"
+                                invisible="not generated_document_id"
+                                class="btn-primary" icon="fa-file-text-o"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,ready,generated,validated,sent,accepted"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Aceptado" bg_color="text-bg-success" invisible="state != 'accepted'"/>
+                        <widget name="web_ribbon" title="Rechazado" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                        <div class="oe_title">
+                            <label for="name" string="Nombre del Caso"/>
+                            <h1>
+                                <field name="code" placeholder="Código" class="oe_inline" style="width: 150px;"/>
+                                <span class="mx-2">-</span>
+                                <field name="name" placeholder="ej. Factura Electrónica Afecta" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Información General">
+                                <field name="project_id" readonly="1"/>
+                                <field name="template_id" readonly="1"/>
+                                <field name="document_type_id"/>
+                                <field name="document_type_code" invisible="1"/>
+                            </group>
+                            <group string="Documento Generado">
+                                <field name="folio_assigned" readonly="1"/>
+                                <field name="generated_document_id" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Referencias" invisible="document_type_code not in ['56', '61']">
+                            <field name="reference_case_id"/>
+                            <field name="reference"/>
+                            <field name="reference_reason"/>
+                        </group>
+                        <group string="Descuento Global">
+                            <field name="global_discount"/>
+                        </group>
+                        <notebook>
+                            <page string="Líneas de Detalle" name="lines">
+                                <field name="line_ids">
+                                    <list editable="bottom" create="1" delete="1">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="description"/>
+                                        <field name="qty"/>
+                                        <field name="price_unit" widget="monetary"/>
+                                        <field name="discount"/>
+                                        <field name="exempt" widget="boolean_toggle"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="subtotal" widget="monetary" sum="Subtotal"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Montos Calculados" name="amounts">
+                                <group>
+                                    <group string="Subtotales">
+                                        <field name="currency_id" invisible="1"/>
+                                        <field name="subtotal_taxable" widget="monetary"/>
+                                        <field name="subtotal_exempt" widget="monetary"/>
+                                        <field name="discount_amount" widget="monetary"/>
+                                    </group>
+                                    <group string="Totales">
+                                        <field name="tax_amount" widget="monetary"/>
+                                        <field name="total_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Descripción" name="description">
+                                <field name="description" placeholder="Descripción del caso de prueba..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista Tree: Caso de Prueba -->
+        <record id="view_certification_case_tree" model="ir.ui.view">
+            <field name="name">certification.case.tree</field>
+            <field name="model">l10n_cl_edi.certification.case</field>
+            <field name="arch" type="xml">
+                <list string="Casos de Prueba"
+                      decoration-muted="state == 'draft'"
+                      decoration-info="state == 'ready'"
+                      decoration-warning="state in ['generated', 'validated']"
+                      decoration-primary="state == 'sent'"
+                      decoration-success="state == 'accepted'"
+                      decoration-danger="state == 'rejected'">
+                    <field name="sequence" widget="handle"/>
+                    <field name="code"/>
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="document_type_id"/>
+                    <field name="folio_assigned"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="total_amount" widget="monetary" sum="Total"/>
+                    <field name="state" widget="badge"
+                           decoration-muted="state == 'draft'"
+                           decoration-info="state == 'ready'"
+                           decoration-warning="state in ['generated', 'validated']"
+                           decoration-success="state == 'accepted'"
+                           decoration-danger="state == 'rejected'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Search -->
+        <record id="view_certification_case_search" model="ir.ui.view">
+            <field name="name">certification.case.search</field>
+            <field name="model">l10n_cl_edi.certification.case</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Casos">
+                    <field name="name"/>
+                    <field name="code"/>
+                    <field name="project_id"/>
+                    <field name="document_type_id"/>
+                    <separator/>
+                    <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Listo" name="ready" domain="[('state', '=', 'ready')]"/>
+                    <filter string="Generado" name="generated" domain="[('state', '=', 'generated')]"/>
+                    <filter string="Aceptado" name="accepted" domain="[('state', '=', 'accepted')]"/>
+                    <filter string="Rechazado" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Proyecto" name="group_project" context="{'group_by': 'project_id'}"/>
+                        <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Tipo de Documento" name="group_document_type" context="{'group_by': 'document_type_id'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_certification_case" model="ir.actions.act_window">
+            <field name="name">Casos de Prueba</field>
+            <field name="res_model">l10n_cl_edi.certification.case</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear un nuevo Caso de Prueba
+                </p>
+                <p>
+                    Los casos de prueba representan los documentos que deben ser generados
+                    y validados para completar la certificación ante el SII.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

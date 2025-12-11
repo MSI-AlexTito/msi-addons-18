@@ -1,0 +1,92 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Menú Principal -->
+        <menuitem id="menu_certification_root"
+                  name="Certificación SII"
+                  sequence="60"
+                  web_icon="l10n_cl_edi_certification,static/description/icon.png"
+                  groups="group_certification_viewer"/>
+
+        <!-- Menú: Proyectos -->
+        <menuitem id="menu_certification_projects"
+                  name="Proyectos"
+                  parent="menu_certification_root"
+                  sequence="10"
+                  groups="group_certification_user"/>
+
+        <menuitem id="menu_certification_project_list"
+                  name="Todos los Proyectos"
+                  parent="menu_certification_projects"
+                  action="action_certification_project"
+                  sequence="10"/>
+
+        <!-- TODO: Uncomment when action_certification_case is created -->
+        <!--
+        <menuitem id="menu_certification_cases"
+                  name="Casos de Prueba"
+                  parent="menu_certification_root"
+                  sequence="20"
+                  groups="group_certification_user"/>
+
+        <menuitem id="menu_certification_case_list"
+                  name="Mis Casos"
+                  parent="menu_certification_cases"
+                  action="action_certification_case"
+                  sequence="10"/>
+        -->
+
+        <!-- Menú: Documentos -->
+        <menuitem id="menu_certification_documents"
+                  name="Documentos"
+                  parent="menu_certification_root"
+                  sequence="30"
+                  groups="group_certification_user"/>
+
+        <menuitem id="menu_certification_document_list"
+                  name="Documentos Generados"
+                  parent="menu_certification_documents"
+                  action="action_certification_generated_document"
+                  sequence="10"/>
+
+        <menuitem id="menu_certification_envelope_list"
+                  name="Sobres de Envío"
+                  parent="menu_certification_documents"
+                  action="action_certification_envelope"
+                  sequence="20"/>
+
+        <menuitem id="menu_certification_book_list"
+                  name="Libros de Compra/Venta"
+                  parent="menu_certification_documents"
+                  action="action_certification_book"
+                  sequence="30"/>
+
+        <!-- TODO: Uncomment when action_certification_sii_response is created -->
+        <!--
+        <menuitem id="menu_certification_sii_responses"
+                  name="Respuestas SII"
+                  parent="menu_certification_root"
+                  action="action_certification_sii_response"
+                  sequence="40"
+                  groups="group_certification_user"/>
+        -->
+
+        <!-- Configuración -->
+        <menuitem id="menu_certification_configuration"
+                  name="Configuración"
+                  parent="menu_certification_root"
+                  sequence="90"
+                  groups="group_certification_manager"/>
+
+        <!-- TODO: Uncomment when action_test_case_template is created -->
+        <!--
+        <menuitem id="menu_test_case_template_list"
+                  name="Plantillas de Casos"
+                  parent="menu_certification_configuration"
+                  action="action_test_case_template"
+                  sequence="10"/>
+        -->
+
+    </data>
+</odoo>

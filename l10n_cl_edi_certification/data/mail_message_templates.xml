@@ -1,0 +1,230 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data noupdate="0">
+
+        <!-- ============================================ -->
+        <!-- Templates para Proyecto de Certificación    -->
+        <!-- ============================================ -->
+
+        <record id="message_project_started" model="mail.template">
+            <field name="name">Certificación: Proyecto Iniciado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> Proyecto iniciado
+                        <br/><br/>
+                        <strong>Información del proyecto:</strong>
+                        <ul>
+                            <li>Cliente: <t t-out="object.partner_id.name or ''"/></li>
+                            <li>Casos de prueba: <t t-out="object.cases_total_count or 0"/></li>
+                            <li>Tipos de documento: <t t-out="len(object.folio_assignment_ids) or 0"/></li>
+                        </ul>
+                        El proyecto está listo para generar documentos.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_project_validating" model="mail.template">
+            <field name="name">Certificación: Proyecto En Validación</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #ffc107;">⚠</span> Proyecto en proceso de validación ante SII
+                        <br/><br/>
+                        <strong>Estadísticas:</strong>
+                        <ul>
+                            <li>Documentos generados: <t t-out="object.documents_total_count or 0"/></li>
+                            <li>Casos validados: <t t-out="object.cases_validated_count or 0"/> / <t t-out="object.cases_total_count or 0"/></li>
+                        </ul>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_project_completed" model="mail.template">
+            <field name="name">Certificación: Proyecto Completado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745; font-size: 20px;">🎉</span> <strong>Proyecto completado exitosamente</strong>
+                        <br/><br/>
+                        <strong>Resumen final:</strong>
+                        <ul>
+                            <li>Total casos: <t t-out="object.cases_total_count or 0"/></li>
+                            <li>Casos aceptados: <t t-out="object.cases_accepted_count or 0"/></li>
+                            <li>Progreso: <t t-out="object.progress_percentage or 0"/>%</li>
+                            <li>Fecha completado: <t t-out="object.completion_date or ''"/></li>
+                        </ul>
+                        ¡Felicidades! El cliente está certificado para facturación electrónica ante el SII.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_project_back_to_progress" model="mail.template">
+            <field name="name">Certificación: Regresado a En Progreso</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #007bff;">↶</span> Proyecto regresado a En Progreso
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_project_cancelled" model="mail.template">
+            <field name="name">Certificación: Proyecto Cancelado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #dc3545;">✗</span> Proyecto cancelado
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_project_back_to_draft" model="mail.template">
+            <field name="name">Certificación: Regresado a Borrador</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #6c757d;">↶</span> Proyecto regresado a Borrador
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_project_testset_imported" model="mail.template">
+            <field name="name">Certificación: SET BÁSICO Importado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">⚡</span> <strong>SET BÁSICO importado exitosamente</strong>
+                        <br/><br/>
+                        Se crearon <strong><t t-out="ctx.get('cases_count', 0)"/></strong> casos de prueba:
+                        <ul t-if="ctx.get('cases_names')">
+                            <t t-foreach="ctx.get('cases_names', [])" t-as="case_name">
+                                <li><t t-out="case_name or ''"/></li>
+                            </t>
+                        </ul>
+                        Los casos están listos para ser configurados y generados.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- Templates para Caso de Prueba               -->
+        <!-- ============================================ -->
+
+        <record id="message_case_prepared" model="mail.template">
+            <field name="name">Certificación: Caso Preparado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_case"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> Caso preparado para generación
+                        <br/><br/>
+                        <strong>Información del caso:</strong>
+                        <ul>
+                            <li>Código: <t t-out="object.code or ''"/></li>
+                            <li>Tipo: <t t-out="object.document_type_id.name or ''"/></li>
+                            <li>Líneas: <t t-out="len(object.line_ids) or 0"/></li>
+                            <li>Total: <t t-out="format_amount(object.total_amount, object.currency_id) or ''"/></li>
+                        </ul>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_case_generated" model="mail.template">
+            <field name="name">Certificación: DTE Generado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_case"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> <strong>Documento DTE generado</strong>
+                        <br/><br/>
+                        <ul>
+                            <li>Folio asignado: <strong><t t-out="ctx.get('folio', 'N/A')"/></strong></li>
+                            <li>Tipo: <t t-out="object.document_type_id.name or ''"/></li>
+                            <li>Monto: <t t-out="format_amount(object.total_amount, object.currency_id) or ''"/></li>
+                        </ul>
+                        El documento está listo para ser validado.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_case_validated" model="mail.template">
+            <field name="name">Certificación: Caso Validado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_case"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> <strong>Documento validado correctamente</strong>
+                        <br/><br/>
+                        El DTE cumple con los requisitos del SII:
+                        <ul>
+                            <li>Estructura XML válida</li>
+                            <li>Firma digital verificada</li>
+                            <li>Montos calculados correctamente</li>
+                        </ul>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_case_validation_errors" model="mail.template">
+            <field name="name">Certificación: Errores de Validación</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_case"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #dc3545;">✗</span> <strong>Errores de validación encontrados</strong>
+                        <br/><br/>
+                        <strong>Errores:</strong>
+                        <ul t-if="ctx.get('validation_messages')">
+                            <t t-foreach="ctx.get('validation_messages', [])" t-as="message">
+                                <li style="color: #dc3545;"><t t-out="message or ''"/></li>
+                            </t>
+                        </ul>
+                        Por favor, corrija los errores antes de continuar.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- Templates para Cliente                      -->
+        <!-- ============================================ -->
+
+        <record id="message_certificate_validated" model="mail.template">
+            <field name="name">Certificación: Certificado Validado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_client"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> <strong>Certificado digital validado correctamente</strong>
+                        <br/><br/>
+                        <ul>
+                            <li>Archivo: <t t-out="object.certificate_filename or ''"/></li>
+                            <li>Cliente: <t t-out="object.partner_id.name or ''"/></li>
+                            <li>RUT: <t t-out="object.rut or ''"/></li>
+                        </ul>
+                        El certificado y la contraseña son válidos y pueden ser utilizados para firmar documentos.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+    </data>
+</odoo>

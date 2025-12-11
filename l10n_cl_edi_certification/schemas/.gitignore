@@ -1,0 +1,7 @@
+# Ignorar archivos XSD (deben ser descargados del SII)
+*.xsd
+
+# Mantener el README y .gitkeep
+!README.md
+!.gitkeep
+!.gitignore

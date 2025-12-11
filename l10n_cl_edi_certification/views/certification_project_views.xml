@@ -1,0 +1,312 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista Form: Proyecto de Certificación -->
+        <record id="view_certification_project_form" model="ir.ui.view">
+            <field name="name">certification.project.form</field>
+            <field name="model">l10n_cl_edi.certification.project</field>
+            <field name="arch" type="xml">
+                <form string="Proyecto de Certificación">
+                    <header>
+                        <button name="action_start" string="Iniciar" type="object"
+                                invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_validate" string="En Validación" type="object"
+                                invisible="state != 'in_progress'" class="oe_highlight"/>
+                        <button name="action_complete" string="Completar" type="object"
+                                invisible="state != 'validating'" class="oe_highlight"/>
+                        <button name="action_back_to_progress" string="Regresar a En Progreso" type="object"
+                                invisible="state != 'validating'"/>
+                        <button name="action_cancel" string="Cancelar" type="object"
+                                invisible="state in ['completed', 'cancelled']"
+                                confirm="¿Está seguro de cancelar este proyecto?"/>
+                        <button name="action_back_to_draft" string="Regresar a Borrador" type="object"
+                                invisible="state != 'cancelled'"/>
+                        <button name="action_open_wizard_generate" string="Generar Documentos" type="object"
+                                invisible="state not in ['in_progress', 'validating']"
+                                class="btn-primary"/>
+                        <button name="action_import_basic_testset" string="⚡ Importar SET BÁSICO" type="object"
+                                invisible="state != 'draft'"
+                                class="btn-secondary"
+                                help="Importa automáticamente los 8 casos de prueba del SET BÁSICO del SII"/>
+                        <button name="%(action_import_sii_testset_wizard)d" string="📁 Importar desde Archivo SII" type="action"
+                                invisible="state != 'draft'"
+                                class="btn-secondary"
+                                help="Importa casos desde archivo .txt descargado del sitio del SII"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,in_progress,validating,completed"/>
+                    </header>
+                    <sheet>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_cases" type="object" class="oe_stat_button" icon="fa-list">
+                                <field name="cases_total_count" widget="statinfo" string="Casos"/>
+                            </button>
+                            <button name="action_view_documents" type="object" class="oe_stat_button" icon="fa-file-text">
+                                <field name="documents_total_count" widget="statinfo" string="Documentos"/>
+                            </button>
+                            <button name="action_view_envelopes" type="object" class="oe_stat_button" icon="fa-envelope">
+                                <field name="envelopes_count" widget="statinfo" string="Sobres"/>
+                            </button>
+                            <button name="action_view_books" type="object" class="oe_stat_button" icon="fa-book">
+                                <field name="books_count" widget="statinfo" string="Libros"/>
+                            </button>
+                            <button name="action_view_sii_responses" type="object" class="oe_stat_button" icon="fa-comment">
+                                <div class="o_field_widget o_stat_info">
+                                    <span class="o_stat_text">Respuestas SII</span>
+                                </div>
+                            </button>
+                        </div>
+                        <widget name="web_ribbon" title="Completado" bg_color="text-bg-success" invisible="state != 'completed'"/>
+                        <widget name="web_ribbon" title="Cancelado" bg_color="text-bg-danger" invisible="state != 'cancelled'"/>
+                        <div class="oe_title">
+                            <label for="name" string="Nombre del Proyecto"/>
+                            <h1>
+                                <field name="name" placeholder="ej. Certificación Empresa XYZ 2024"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group>
+                                <field name="partner_id" options="{'no_create': True}"/>
+                                <field name="company_id" groups="base.group_multi_company"/>
+                                <field name="user_id"/>
+                            </group>
+                            <group>
+                                <field name="start_date"/>
+                                <field name="due_date"/>
+                                <field name="completion_date" invisible="state != 'completed'"/>
+                            </group>
+                        </group>
+                        <group>
+                            <field name="description" placeholder="Descripción del proyecto..."/>
+                        </group>
+                        <notebook>
+                            <page string="Estadísticas" name="stats">
+                                <group>
+                                    <group string="Progreso">
+                                        <field name="progress_percentage" widget="progressbar"/>
+                                        <field name="cases_accepted_count" string="Casos Aceptados"/>
+                                        <field name="cases_rejected_count" string="Casos Rechazados"/>
+                                    </group>
+                                    <group string="Estados de Casos">
+                                        <field name="cases_draft_count"/>
+                                        <field name="cases_ready_count"/>
+                                        <field name="cases_generated_count"/>
+                                        <field name="cases_validated_count"/>
+                                        <field name="cases_sent_count"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Información del Cliente" name="client_info">
+                                <group>
+                                    <field name="client_info_id" context="{
+                                            'default_partner_id': partner_id,
+                                            'default_project_id': id
+                                        }">
+                                        <form string="Información del Cliente">
+                                            <sheet>
+                                                <group>
+                                                    <group string="Datos Tributarios">
+                                                        <field name="partner_id" invisible="1"/>
+                                                        <field name="project_id" invisible="1"/>
+                                                        <field name="rut"/>
+                                                        <field name="social_reason"/>
+                                                        <field name="activity_description"/>
+                                                    </group>
+                                                    <group string="Ubicación">
+                                                        <field name="address"/>
+                                                        <field name="city"/>
+                                                        <field name="state_id"/>
+                                                        <field name="country_id"/>
+                                                    </group>
+                                                </group>
+                                                <group>
+                                                    <group string="Contacto">
+                                                        <field name="email"/>
+                                                        <field name="phone"/>
+                                                    </group>
+                                                    <group string="Ambiente">
+                                                        <field name="environment"/>
+                                                        <field name="snapshot_date"/>
+                                                    </group>
+                                                </group>
+                                                <group string="Certificado Digital del Cliente">
+                                                    <field name="certificate_file" filename="certificate_filename"/>
+                                                    <field name="certificate_filename" invisible="1"/>
+                                                    <field name="certificate_password" password="True"/>
+                                                    <button name="action_test_certificate" string="🔍 Probar Certificado"
+                                                            type="object" class="btn-primary"
+                                                            icon="fa-check-circle"
+                                                            invisible="not certificate_file or not certificate_password"/>
+                                                </group>
+                                                <group>
+                                                    <field name="notes" placeholder="Notas adicionales..."/>
+                                                </group>
+                                            </sheet>
+                                        </form>
+                                    </field>
+                                </group>
+                            </page>
+                            <page string="Casos de Prueba" name="cases">
+                                <field name="certification_case_ids">
+                                    <list decoration-muted="state == 'draft'"
+                                          decoration-info="state == 'ready'"
+                                          decoration-warning="state in ['generated', 'validated']"
+                                          decoration-primary="state == 'sent'"
+                                          decoration-success="state == 'accepted'"
+                                          decoration-danger="state == 'rejected'">
+                                        <field name="sequence" widget="handle"/>
+                                        <field name="code"/>
+                                        <field name="name"/>
+                                        <field name="document_type_id"/>
+                                        <field name="folio_assigned"/>
+                                        <field name="currency_id" column_invisible="1"/>
+                                        <field name="total_amount" sum="Total"/>
+                                        <field name="state" widget="badge"
+                                               decoration-muted="state == 'draft'"
+                                               decoration-info="state == 'ready'"
+                                               decoration-warning="state in ['generated', 'validated']"
+                                               decoration-success="state == 'accepted'"
+                                               decoration-danger="state == 'rejected'"/>
+                                    </list>
+                                </field>
+                            </page>
+                            <page string="Folios Asignados" name="folios">
+                                <field name="folio_assignment_ids">
+                                    <list editable="bottom" create="1" delete="1">
+                                        <field name="document_type_id"/>
+                                        <field name="caf_id" domain="[('l10n_latam_document_type_id', '=', document_type_id)]" optional="show"/>
+                                        <field name="caf_file" filename="caf_filename"/>
+                                        <field name="caf_filename" invisible="1"/>
+                                        <field name="caf_rut_emisor" optional="show"/>
+                                        <field name="caf_type_code" optional="hide"/>
+                                        <field name="folio_start"/>
+                                        <field name="folio_end"/>
+                                        <field name="folio_next"/>
+                                        <field name="folios_used"/>
+                                        <field name="folios_available"/>
+                                        <field name="usage_percentage" widget="progressbar"/>
+                                    </list>
+                                </field>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista Tree: Proyecto de Certificación -->
+        <record id="view_certification_project_tree" model="ir.ui.view">
+            <field name="name">certification.project.tree</field>
+            <field name="model">l10n_cl_edi.certification.project</field>
+            <field name="arch" type="xml">
+                <list string="Proyectos de Certificación"
+                      decoration-muted="state == 'draft'"
+                      decoration-info="state == 'in_progress'"
+                      decoration-warning="state == 'validating'"
+                      decoration-success="state == 'completed'"
+                      decoration-danger="state == 'cancelled'">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="start_date"/>
+                    <field name="due_date"/>
+                    <field name="cases_total_count"/>
+                    <field name="cases_accepted_count"/>
+                    <field name="progress_percentage" widget="progressbar"/>
+                    <field name="user_id" widget="many2one_avatar_user"/>
+                    <field name="state" widget="badge"
+                           decoration-muted="state == 'draft'"
+                           decoration-info="state == 'in_progress'"
+                           decoration-warning="state == 'validating'"
+                           decoration-success="state == 'completed'"
+                           decoration-danger="state == 'cancelled'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Kanban: Proyecto de Certificación -->
+        <record id="view_certification_project_kanban" model="ir.ui.view">
+            <field name="name">certification.project.kanban</field>
+            <field name="model">l10n_cl_edi.certification.project</field>
+            <field name="arch" type="xml">
+                <kanban class="o_kanban_mobile">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="state"/>
+                    <field name="progress_percentage"/>
+                    <field name="cases_total_count"/>
+                    <field name="cases_accepted_count"/>
+                    <field name="color"/>
+                    <templates>
+                        <t t-name="kanban-box">
+                            <div t-attf-class="oe_kanban_color_{{kanban_getcolor(record.color.raw_value)}} oe_kanban_card oe_kanban_global_click">
+                                <div class="o_kanban_record_top">
+                                    <div class="o_kanban_record_headings">
+                                        <strong class="o_kanban_record_title"><field name="name"/></strong>
+                                        <div class="o_kanban_record_subtitle">
+                                            <field name="partner_id"/>
+                                        </div>
+                                    </div>
+                                    <span class="badge" t-att-class="record.state.raw_value == 'completed' ? 'badge-success' : record.state.raw_value == 'cancelled' ? 'badge-danger' : 'badge-info'">
+                                        <field name="state"/>
+                                    </span>
+                                </div>
+                                <div class="o_kanban_record_body">
+                                    <field name="progress_percentage" widget="progressbar"/>
+                                    <div>
+                                        <i class="fa fa-list"/> <t t-esc="record.cases_accepted_count.value"/>/<t t-esc="record.cases_total_count.value"/> casos
+                                    </div>
+                                </div>
+                            </div>
+                        </t>
+                    </templates>
+                </kanban>
+            </field>
+        </record>
+
+        <!-- Vista Search -->
+        <record id="view_certification_project_search" model="ir.ui.view">
+            <field name="name">certification.project.search</field>
+            <field name="model">l10n_cl_edi.certification.project</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Proyectos">
+                    <field name="name"/>
+                    <field name="partner_id"/>
+                    <field name="user_id"/>
+                    <filter string="Mis Proyectos" name="my_projects" domain="[('user_id', '=', uid)]"/>
+                    <separator/>
+                    <filter string="En Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="En Progreso" name="in_progress" domain="[('state', '=', 'in_progress')]"/>
+                    <filter string="En Validación" name="validating" domain="[('state', '=', 'validating')]"/>
+                    <filter string="Completados" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <separator/>
+                    <filter string="Vencidos" name="overdue" domain="[('due_date', '&lt;', context_today().strftime('%Y-%m-%d')), ('state', 'not in', ['completed', 'cancelled'])]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Cliente" name="group_partner" context="{'group_by': 'partner_id'}"/>
+                        <filter string="Responsable" name="group_user" context="{'group_by': 'user_id'}"/>
+                        <filter string="Fecha Inicio" name="group_start_date" context="{'group_by': 'start_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_certification_project" model="ir.actions.act_window">
+            <field name="name">Proyectos de Certificación</field>
+            <field name="res_model">l10n_cl_edi.certification.project</field>
+            <field name="view_mode">kanban,list,form</field>
+            <field name="context">{'search_default_my_projects': 1, 'search_default_in_progress': 1}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear un nuevo Proyecto de Certificación
+                </p>
+                <p>
+                    Los proyectos de certificación le permiten gestionar el proceso completo
+                    de certificación de facturación electrónica para sus clientes ante el SII.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>

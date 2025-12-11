@@ -1,0 +1,193 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista Form: Documento Generado -->
+        <record id="view_certification_generated_document_form" model="ir.ui.view">
+            <field name="name">certification.generated.document.form</field>
+            <field name="model">l10n_cl_edi.certification.generated.document</field>
+            <field name="arch" type="xml">
+                <form string="Documento DTE Generado">
+                    <header>
+                        <button name="action_sign" string="Firmar" type="object"
+                                invisible="state != 'generated'" class="oe_highlight"/>
+                        <button name="action_validate" string="Validar" type="object"
+                                invisible="state not in ['signed', 'validated']" class="oe_highlight"/>
+                        <button name="action_download_xml" string="Descargar XML" type="object"
+                                invisible="not xml_dte_signed"
+                                class="btn-primary" icon="fa-download"/>
+                        <button name="action_view_case" string="Ver Caso" type="object"
+                                invisible="not case_id"
+                                class="btn-secondary" icon="fa-list"/>
+                        <button name="action_view_envelope" string="Ver Sobre" type="object"
+                                invisible="not envelope_id"
+                                class="btn-secondary" icon="fa-envelope"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,generated,validated,signed,sent,accepted"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Aceptado" bg_color="text-bg-success" invisible="state != 'accepted'"/>
+                        <widget name="web_ribbon" title="Rechazado" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                        <div class="oe_button_box" name="button_box">
+                            <button name="action_view_case" type="object" class="oe_stat_button" icon="fa-list"
+                                    invisible="not case_id">
+                                <span class="o_stat_text">Ver Caso</span>
+                            </button>
+                            <button name="action_view_envelope" type="object" class="oe_stat_button" icon="fa-envelope"
+                                    invisible="not envelope_id">
+                                <span class="o_stat_text">Ver Sobre</span>
+                            </button>
+                        </div>
+                        <div class="oe_title">
+                            <label for="document_type_id" string="Tipo de Documento"/>
+                            <h1>
+                                <field name="document_type_id" placeholder="Tipo de documento" options="{'no_create': True}"/>
+                                <span class="mx-2">#</span>
+                                <field name="folio" placeholder="Folio" class="oe_inline"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Información General">
+                                <field name="project_id" readonly="1"/>
+                                <field name="case_id" readonly="1"/>
+                                <field name="document_type_code" invisible="1"/>
+                                <field name="issue_date"/>
+                                <field name="emission_date"/>
+                            </group>
+                            <group string="Receptor">
+                                <field name="receiver_rut"/>
+                                <field name="receiver_name"/>
+                            </group>
+                        </group>
+                        <group string="Montos">
+                            <group>
+                                <field name="currency_id" invisible="1"/>
+                                <field name="subtotal_taxable" widget="monetary"/>
+                                <field name="subtotal_exempt" widget="monetary"/>
+                            </group>
+                            <group>
+                                <field name="tax_amount" widget="monetary"/>
+                                <field name="total_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                            </group>
+                        </group>
+                        <notebook>
+                            <page string="Archivos XML" name="xml_files">
+                                <group>
+                                    <group string="DTE Original">
+                                        <field name="xml_dte_file" filename="xml_dte_filename"/>
+                                        <field name="xml_dte_filename" invisible="1"/>
+                                    </group>
+                                    <group string="DTE Firmado">
+                                        <field name="xml_dte_signed" filename="xml_dte_signed_filename"/>
+                                        <field name="xml_dte_signed_filename" invisible="1"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Timbre Electrónico (TED)" name="ted">
+                                <group>
+                                    <field name="ted_xml" widget="text"/>
+                                    <field name="barcode_image" widget="image" class="oe_avatar"/>
+                                </group>
+                            </page>
+                            <page string="Validación" name="validation">
+                                <group>
+                                    <field name="validation_date"/>
+                                    <field name="validation_messages" widget="text"/>
+                                </group>
+                            </page>
+                            <page string="Estado SII" name="sii">
+                                <group>
+                                    <field name="envelope_id"/>
+                                    <field name="sii_track_id"/>
+                                    <field name="sii_status"/>
+                                    <field name="sii_response_date"/>
+                                </group>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista Tree: Documento Generado -->
+        <record id="view_certification_generated_document_tree" model="ir.ui.view">
+            <field name="name">certification.generated.document.tree</field>
+            <field name="model">l10n_cl_edi.certification.generated.document</field>
+            <field name="arch" type="xml">
+                <list string="Documentos Generados"
+                      decoration-muted="state == 'draft'"
+                      decoration-info="state == 'generated'"
+                      decoration-warning="state in ['validated', 'signed']"
+                      decoration-primary="state == 'sent'"
+                      decoration-success="state == 'accepted'"
+                      decoration-danger="state == 'rejected'">
+                    <field name="project_id"/>
+                    <field name="case_id"/>
+                    <field name="document_type_id"/>
+                    <field name="folio"/>
+                    <field name="issue_date"/>
+                    <field name="receiver_name"/>
+                    <field name="currency_id" column_invisible="1"/>
+                    <field name="total_amount" widget="monetary" sum="Total"/>
+                    <field name="state" widget="badge"
+                           decoration-muted="state == 'draft'"
+                           decoration-info="state == 'generated'"
+                           decoration-warning="state in ['validated', 'signed']"
+                           decoration-success="state == 'accepted'"
+                           decoration-danger="state == 'rejected'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Search -->
+        <record id="view_certification_generated_document_search" model="ir.ui.view">
+            <field name="name">certification.generated.document.search</field>
+            <field name="model">l10n_cl_edi.certification.generated.document</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Documentos">
+                    <field name="project_id"/>
+                    <field name="case_id"/>
+                    <field name="document_type_id"/>
+                    <field name="folio"/>
+                    <field name="receiver_name"/>
+                    <separator/>
+                    <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Generado" name="generated" domain="[('state', '=', 'generated')]"/>
+                    <filter string="Validado" name="validated" domain="[('state', '=', 'validated')]"/>
+                    <filter string="Firmado" name="signed" domain="[('state', '=', 'signed')]"/>
+                    <filter string="Enviado" name="sent" domain="[('state', '=', 'sent')]"/>
+                    <filter string="Aceptado" name="accepted" domain="[('state', '=', 'accepted')]"/>
+                    <filter string="Rechazado" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                    <separator/>
+                    <filter string="Con XML Firmado" name="has_signed" domain="[('xml_dte_signed', '!=', False)]"/>
+                    <filter string="Sin Sobre" name="no_envelope" domain="[('envelope_id', '=', False)]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Proyecto" name="group_project" context="{'group_by': 'project_id'}"/>
+                        <filter string="Caso" name="group_case" context="{'group_by': 'case_id'}"/>
+                        <filter string="Tipo de Documento" name="group_document_type" context="{'group_by': 'document_type_id'}"/>
+                        <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                        <filter string="Fecha Emisión" name="group_issue_date" context="{'group_by': 'issue_date'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_certification_generated_document" model="ir.actions.act_window">
+            <field name="name">Documentos Generados</field>
+            <field name="res_model">l10n_cl_edi.certification.generated.document</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    No hay documentos generados todavía
+                </p>
+                <p>
+                    Los documentos DTE se generan automáticamente desde los casos de prueba.
+                </p>
+            </field>
+        </record>
+
+    </data>
+</odoo>
