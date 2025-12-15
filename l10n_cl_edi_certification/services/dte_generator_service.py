@@ -250,19 +250,20 @@ class DteGeneratorService(models.AbstractModel):
         if case.global_discount > 0:
             print(f'\n📊 DESCUENTO GLOBAL DETECTADO:')
             print(f'  Porcentaje: {case.global_discount}%')
+            print(f'  Monto calculado: {case.discount_amount:,}')
             print(f'  Se enviará como PORCENTAJE (TpoValor=%)')
 
-            # IMPORTANTE: Enviar como PORCENTAJE (como en ejemplos oficiales del SII)
-            # Esto es más simple y el SII calcula automáticamente
+            # IMPORTANTE: El caso de prueba SII REQUIERE descuento PORCENTUAL
+            # DscRcgGlobal es INFORMATIVO, los Totales deben estar DESPUÉS del descuento
             dr_data = {
                 'NroLinDR': 1,
                 'TpoMov': 'D',  # D=Descuento, R=Recargo
                 'GlosaDR': f'Descuento Global {case.global_discount}%',
-                'TpoValor': '%',  # Porcentaje
-                'ValorDR': case.global_discount,  # El porcentaje directamente
+                'TpoValor': '%',  # Porcentaje (requerido por caso de prueba)
+                'ValorDR': case.global_discount,  # El porcentaje
             }
 
-
+            # NO incluir IndExeDR: por defecto aplica solo a ítems afectos
             desc_rcg_global.append(dr_data)
 
         # Preparar totales

@@ -166,20 +166,42 @@ class CertificationCase(models.Model):
 
     @api.depends('line_ids.subtotal', 'line_ids.exempt', 'global_discount')
     def _compute_amounts(self):
-        """Calcula los montos del caso"""
+        """
+        Calcula los montos del caso.
+
+        IMPORTANTE: Simula el proceso de Odoo Enterprise para descuentos globales por MONTO,
+        usando currency.round() para mantener consistencia con el estándar de Odoo.
+        Aunque el XML envíe el descuento como PORCENTAJE (requerido por SII),
+        los cálculos internos se hacen como si fuera por MONTO.
+        """
         for case in self:
-            # Calcular subtotales
-            subtotal_taxable = sum(line.subtotal for line in case.line_ids if not line.exempt)
+            currency = case.currency_id or self.env.company.currency_id
+
+            # Calcular subtotales BRUTOS (antes de descuento)
+            subtotal_taxable_bruto = sum(line.subtotal for line in case.line_ids if not line.exempt)
             subtotal_exempt = sum(line.subtotal for line in case.line_ids if line.exempt)
 
             # Aplicar descuento global solo al subtotal afecto
+            # SIMULACIÓN del proceso de Odoo Enterprise:
+            # 1. Calcular MONTO del descuento (aunque el caso pida porcentaje)
+            # 2. Redondear el monto del descuento usando currency.round()
+            # 3. Restar ese monto del subtotal
             discount_amount = 0
-            if case.global_discount and subtotal_taxable:
-                discount_amount = subtotal_taxable * (case.global_discount / 100.0)
-                subtotal_taxable -= discount_amount
+            subtotal_taxable = subtotal_taxable_bruto
 
-            # Calcular IVA (19% sobre subtotal afecto)
-            tax_amount = subtotal_taxable * 0.19
+            if case.global_discount and subtotal_taxable_bruto:
+                # Paso 1: Calcular monto del descuento desde el porcentaje
+                discount_amount_raw = subtotal_taxable_bruto * (case.global_discount / 100.0)
+
+                # Paso 2: Redondear usando currency.round() (como Odoo Enterprise)
+                discount_amount = currency.round(discount_amount_raw)
+
+                # Paso 3: Aplicar el descuento
+                subtotal_taxable = subtotal_taxable_bruto - discount_amount
+
+            # Calcular IVA (19% sobre subtotal afecto DESPUÉS del descuento)
+            # Usar currency.round() para redondear correctamente (como Odoo Enterprise)
+            tax_amount = currency.round(subtotal_taxable * 0.19)
 
             # Total
             total_amount = subtotal_taxable + tax_amount + subtotal_exempt
