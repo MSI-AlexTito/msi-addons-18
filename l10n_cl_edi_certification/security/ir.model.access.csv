@@ -37,3 +37,5 @@ access_test_case_template_line_user,test.case.template.line.user,model_l10n_cl_e
 access_test_case_template_line_manager,test.case.template.line.manager,model_l10n_cl_edi_test_case_template_line,group_certification_manager,1,1,1,1
 access_import_sii_testset_wizard_user,import.sii.testset.wizard.user,model_l10n_cl_edi_import_sii_testset_wizard,group_certification_user,1,1,1,1
 access_import_sii_testset_wizard_manager,import.sii.testset.wizard.manager,model_l10n_cl_edi_import_sii_testset_wizard,group_certification_manager,1,1,1,1
+access_xsd_upload_wizard_user,xsd.upload.wizard.user,model_l10n_cl_edi_xsd_upload_wizard,group_certification_user,1,1,1,1
+access_xsd_upload_wizard_manager,xsd.upload.wizard.manager,model_l10n_cl_edi_xsd_upload_wizard,group_certification_manager,1,1,1,1

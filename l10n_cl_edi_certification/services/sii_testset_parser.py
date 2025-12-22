@@ -411,10 +411,15 @@ class SIITestSetParser:
             list de dict con los detalles de cada documento
         """
         print('\n  >> Parseando líneas del libro de compras...')
+        print(f'     Longitud sección: {len(section_content)} caracteres')
+        print(f'     Primeros 300 caracteres de la sección:\n{section_content[:300]}')
+        print(f'     {"=" * 60}')
+
         lines = []
 
         # Dividir por líneas y procesar
         raw_lines = section_content.split('\n')
+        print(f'     Total líneas raw: {len(raw_lines)}')
 
         i = 0
         line_number = 0
@@ -426,29 +431,41 @@ class SIITestSetParser:
                 i += 1
                 continue
 
+            # Debug: mostrar cada línea procesada
+            if i < 20:  # Solo primeras 20 para no saturar el log
+                print(f'     [DEBUG {i}] Procesando: "{line[:80]}"')
+
             # Si la línea contiene un tipo de documento conocido
             if any(doc_type in line.upper() for doc_type in ['FACTURA', 'NOTA DE CREDITO', 'NOTA DE DEBITO']):
                 line_number += 1
-                print(f'\n    Línea {line_number}: {line[:60]}...')
+                print(f'\n    📄 Línea {line_number}: {line[:60]}...')
 
                 try:
                     # Parsear tipo documento y folio de la primera línea
+                    print(f'       [1/3] Parseando tipo documento y folio...')
                     doc_info = cls._parse_purchase_doc_line(line)
+                    print(f'       ✓ Detectado: {doc_info["type_name"]} (código {doc_info["type_code"]}), Folio: {doc_info["folio"]}')
 
                     # Leer observaciones (siguiente línea)
                     observations = ''
                     if i + 1 < len(raw_lines):
                         next_line = raw_lines[i + 1].strip()
+                        print(f'       [2/3] Siguiente línea (posible obs): "{next_line[:80]}"')
                         if next_line and not any(char.isdigit() for char in next_line[:10]):
                             observations = next_line
+                            print(f'       ✓ Observaciones detectadas: "{observations[:50]}..."')
                             i += 1
+                        else:
+                            print(f'       ℹ️ No hay observaciones (línea contiene dígitos al inicio)')
 
                     # Leer montos (siguiente línea)
                     mnt_exento = 0
                     mnt_neto = 0
                     if i + 1 < len(raw_lines):
                         amounts_line = raw_lines[i + 1].strip()
+                        print(f'       [3/3] Siguiente línea (montos): "{amounts_line}"')
                         mnt_exento, mnt_neto = cls._parse_purchase_amounts(amounts_line)
+                        print(f'       ✓ Montos parseados: Exento={mnt_exento}, Neto={mnt_neto}')
                         i += 1
 
                     # Agregar línea procesada
@@ -463,18 +480,22 @@ class SIITestSetParser:
                     }
 
                     lines.append(line_data)
-                    print(f'      ✓ Tipo: {line_data["document_type_name"]} ({line_data["document_type_code"]})')
-                    print(f'      ✓ Folio: {line_data["folio"]}')
-                    print(f'      ✓ Exento: {line_data["mnt_exento"]}, Neto: {line_data["mnt_neto"]}')
-                    print(f'      ✓ Obs: {observations[:50]}...' if observations else '')
+                    print(f'      ✅ LÍNEA PROCESADA:')
+                    print(f'         - Tipo: {line_data["document_type_name"]} ({line_data["document_type_code"]})')
+                    print(f'         - Folio: {line_data["folio"]}')
+                    print(f'         - Exento: ${line_data["mnt_exento"]:,}, Neto: ${line_data["mnt_neto"]:,}')
+                    print(f'         - Obs: {observations[:50]}...' if observations else '         - Obs: (vacío)')
 
                 except Exception as e:
-                    print(f'      ✗ Error parseando línea: {str(e)}')
+                    print(f'      ❌ ERROR parseando línea: {str(e)}')
                     _logger.exception(f'Error en línea {line_number}:')
 
             i += 1
 
-        print(f'\n  >> Total líneas procesadas: {len(lines)}')
+        print(f'\n  >> ✅ RESUMEN PARSEO LIBRO COMPRAS:')
+        print(f'     Total líneas procesadas: {len(lines)}')
+        for idx, line in enumerate(lines, 1):
+            print(f'     {idx}. {line["document_type_name"]} Folio {line["folio"]}: Exento=${line["mnt_exento"]:,}, Neto=${line["mnt_neto"]:,}')
         return lines
 
     @classmethod
@@ -513,8 +534,13 @@ class SIITestSetParser:
         Parsea los montos de la línea.
         Ejemplo: "           5024" o "   7933           4009"
         """
+        print(f'         [_parse_purchase_amounts] Input: "{line}"')
+        print(f'         [_parse_purchase_amounts] Longitud: {len(line)} caracteres')
+
         # Limpiar y dividir por espacios
         parts = [p.strip() for p in re.split(r'\s+', line.strip()) if p.strip()]
+        print(f'         [_parse_purchase_amounts] Parts después de split: {parts}')
+        print(f'         [_parse_purchase_amounts] Cantidad de parts: {len(parts)}')
 
         mnt_exento = 0
         mnt_neto = 0
@@ -522,9 +548,14 @@ class SIITestSetParser:
         if len(parts) == 1:
             # Solo un monto (puede ser exento o neto, asumimos neto)
             mnt_neto = float(parts[0])
+            print(f'         [_parse_purchase_amounts] Un solo monto → asumido como NETO: {mnt_neto}')
         elif len(parts) >= 2:
             # Dos montos: exento y neto
             mnt_exento = float(parts[0])
             mnt_neto = float(parts[1])
+            print(f'         [_parse_purchase_amounts] Dos montos → EXENTO: {mnt_exento}, NETO: {mnt_neto}')
+        else:
+            print(f'         [_parse_purchase_amounts] ⚠️ No se detectaron montos válidos')
 
+        print(f'         [_parse_purchase_amounts] Return: exento={mnt_exento}, neto={mnt_neto}')
         return mnt_exento, mnt_neto

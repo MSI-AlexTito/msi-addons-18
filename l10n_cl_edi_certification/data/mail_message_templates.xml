@@ -121,6 +121,419 @@
             </field>
         </record>
 
+        <record id="message_project_sii_testset_imported" model="mail.template">
+            <field name="name">Certificación: Set de Pruebas SII Importado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_project"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; background-color: #f8f9fa; border-left: 4px solid #28a745; padding: 16px; border-radius: 4px;">
+                    <div style="margin-bottom: 12px;">
+                        <span style="font-size: 24px;">📦</span>
+                        <strong style="font-size: 15px; color: #212529;"> Set de Pruebas SII Importado Exitosamente</strong>
+                    </div>
+
+                    <div style="background-color: white; padding: 12px; border-radius: 4px; margin-bottom: 12px;">
+                        <table style="width: 100%; font-size: 13px; border-collapse: collapse;">
+                            <tr>
+                                <td style="padding: 6px 0; color: #6c757d; width: 140px;"><strong>📋 Número de Atención:</strong></td>
+                                <td style="padding: 6px 0; color: #212529;"><span style="background-color: #e7f3ff; padding: 4px 8px; border-radius: 3px; font-family: monospace;"><t t-out="ctx.get('attention_number', 'N/A')"/></span></td>
+                            </tr>
+                            <tr>
+                                <td style="padding: 6px 0; color: #6c757d;"><strong>📝 Casos Importados:</strong></td>
+                                <td style="padding: 6px 0; color: #212529;"><span style="background-color: #d4edda; padding: 4px 8px; border-radius: 3px; font-weight: 600;"><t t-out="ctx.get('cases_count', 0)"/></span></td>
+                            </tr>
+                            <tr t-if="ctx.get('books_count', 0) > 0">
+                                <td style="padding: 6px 0; color: #6c757d;"><strong>📚 Libros Creados:</strong></td>
+                                <td style="padding: 6px 0; color: #212529;"><span style="background-color: #fff3cd; padding: 4px 8px; border-radius: 3px; font-weight: 600;"><t t-out="ctx.get('books_count', 0)"/></span></td>
+                            </tr>
+                        </table>
+                    </div>
+
+                    <!-- Casos Creados -->
+                    <t t-if="ctx.get('cases_names')">
+                        <div style="background-color: white; padding: 12px; border-radius: 4px; margin-bottom: 12px;">
+                            <div style="color: #495057; font-weight: 600; margin-bottom: 8px; font-size: 13px;">
+                                <span style="color: #28a745;">✓</span> Casos de Prueba:
+                            </div>
+                            <div style="max-height: 200px; overflow-y: auto;">
+                                <table style="width: 100%; font-size: 12px;">
+                                    <t t-foreach="ctx.get('cases_names', [])" t-as="case_name">
+                                        <tr>
+                                            <td style="padding: 4px 0; color: #6c757d;">
+                                                <span style="color: #28a745; margin-right: 6px;">●</span>
+                                                <span style="color: #212529;"><t t-out="case_name or ''"/></span>
+                                            </td>
+                                        </tr>
+                                    </t>
+                                </table>
+                            </div>
+                        </div>
+                    </t>
+
+                    <!-- Libros Creados -->
+                    <t t-if="ctx.get('books_names')">
+                        <div style="background-color: white; padding: 12px; border-radius: 4px; margin-bottom: 12px;">
+                            <div style="color: #495057; font-weight: 600; margin-bottom: 8px; font-size: 13px;">
+                                <span style="color: #ffc107;">📖</span> Libros de Compra/Venta:
+                            </div>
+                            <table style="width: 100%; font-size: 12px;">
+                                <t t-foreach="ctx.get('books_names', [])" t-as="book_info">
+                                    <tr>
+                                        <td style="padding: 4px 0; color: #6c757d;">
+                                            <t t-if="book_info.get('type') == 'sale'">
+                                                <span style="background-color: #d1ecf1; color: #0c5460; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-right: 6px;">VENTAS</span>
+                                            </t>
+                                            <t t-if="book_info.get('type') == 'purchase'">
+                                                <span style="background-color: #f8d7da; color: #721c24; padding: 2px 6px; border-radius: 3px; font-size: 10px; font-weight: 600; margin-right: 6px;">COMPRAS</span>
+                                            </t>
+                                            <span style="color: #212529;"><t t-out="book_info.get('name', '')"/></span>
+                                            <t t-if="book_info.get('lines_count', 0) > 0">
+                                                <span style="color: #6c757d; margin-left: 8px;">(<t t-out="book_info.get('lines_count', 0)"/> líneas)</span>
+                                            </t>
+                                        </td>
+                                    </tr>
+                                </t>
+                            </table>
+                        </div>
+                    </t>
+
+                    <!-- Footer -->
+                    <div style="margin-top: 12px; padding-top: 12px; border-top: 1px solid #dee2e6; font-size: 12px; color: #6c757d;">
+                        <span style="color: #28a745;">✓</span> Los casos y libros están listos para ser procesados.
+                    </div>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- Templates para Libro de Compra/Venta       -->
+        <!-- ============================================ -->
+
+        <record id="message_book_generated" model="mail.template">
+            <field name="name">Certificación: Libro Generado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> <strong>Libro generado exitosamente</strong>
+                        <br/><br/>
+                        <ul>
+                            <li>Líneas procesadas: <strong><t t-out="ctx.get('lines_count', 0)"/></strong></li>
+                            <li>Tipo: <t t-if="object.book_type == 'sale'">Libro de Ventas</t><t t-if="object.book_type == 'purchase'">Libro de Compras</t></li>
+                        </ul>
+                        El XML está listo para ser firmado.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_signed" model="mail.template">
+            <field name="name">Certificación: Libro Firmado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">🔒</span> <strong>Libro firmado digitalmente</strong>
+                        <br/><br/>
+                        El libro ha sido firmado con certificado digital y está listo para validación XSD.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_xsd_validated_no_schema" model="mail.template">
+            <field name="name">Certificación: Libro Validado (Sin XSD)</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #ffc107;">⚠</span> XML validado (XSD no disponible)
+                        <br/><br/>
+                        El XML está bien formado pero no se pudo validar contra esquema XSD porque no está disponible.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_xsd_validated_success" model="mail.template">
+            <field name="name">Certificación: Libro Validado XSD</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✅</span> <strong>XML validado exitosamente con XSD del SII</strong>
+                        <br/><br/>
+                        El libro cumple con todas las especificaciones técnicas del SII y está listo para ser enviado.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_xsd_validation_errors" model="mail.template">
+            <field name="name">Certificación: Libro con Errores XSD</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #dc3545;">❌</span> <strong>Errores de validación XSD</strong>
+                        <br/><br/>
+                        <strong>Errores encontrados:</strong>
+                        <pre style="background-color: #f8d7da; padding: 10px; border-radius: 4px; font-size: 11px; overflow-x: auto;"><t t-out="ctx.get('error_text', 'Error desconocido')"/></pre>
+                        Por favor, corrija los errores antes de enviar al SII.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_sent_to_sii" model="mail.template">
+            <field name="name">Certificación: Libro Enviado al SII</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #17a2b8;">📤</span> <strong>Libro enviado al SII</strong>
+                        <br/><br/>
+                        <ul>
+                            <li>Track ID: <code style="background-color: #e7f3ff; padding: 2px 6px; border-radius: 3px;"><t t-out="ctx.get('track_id', 'N/A')"/></code></li>
+                        </ul>
+                        Esperando respuesta del SII...
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_status_updated" model="mail.template">
+            <field name="name">Certificación: Estado del Libro Actualizado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #17a2b8;">🔄</span> <strong>Estado actualizado desde el SII</strong>
+                        <br/><br/>
+                        Estado: <strong><t t-out="ctx.get('status_msg', 'N/A')"/></strong>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_back_to_draft" model="mail.template">
+            <field name="name">Certificación: Libro Regresado a Borrador</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #6c757d;">↶</span> <strong>Libro regresado a borrador</strong>
+                        <br/><br/>
+                        XMLs, datos de envío y validación XSD limpiados. El libro está listo para ser regenerado.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_book_documents_imported" model="mail.template">
+            <field name="name">Certificación: Documentos Importados al Libro</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_book"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">📥</span> <strong>Documentos importados desde el proyecto</strong>
+                        <br/><br/>
+                        Se importaron <strong><t t-out="ctx.get('imported_count', 0)"/></strong> documentos generados al libro de ventas.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- Templates para Sobre (Envelope)             -->
+        <!-- ============================================ -->
+
+        <record id="message_envelope_created" model="mail.template">
+            <field name="name">Certificación: Sobre Creado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">📦</span> <strong>Sobre creado</strong>
+                        <br/><br/>
+                        Documentos incluidos: <strong><t t-out="ctx.get('documents_count', 0)"/></strong>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_signed" model="mail.template">
+            <field name="name">Certificación: Sobre Firmado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">🔒</span> <strong>Sobre firmado digitalmente</strong>
+                        <br/><br/>
+                        El sobre ha sido firmado y está listo para validación.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_validated" model="mail.template">
+            <field name="name">Certificación: Sobre Validado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✅</span> <strong>Sobre validado correctamente</strong>
+                        <br/><br/>
+                        El sobre cumple con las especificaciones y está listo para ser enviado al SII.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_sent" model="mail.template">
+            <field name="name">Certificación: Sobre Enviado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #17a2b8;">📤</span> <strong>Sobre enviado al SII</strong>
+                        <br/><br/>
+                        Track ID: <code style="background-color: #e7f3ff; padding: 2px 6px; border-radius: 3px;"><t t-out="ctx.get('track_id', 'N/A')"/></code>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_accepted" model="mail.template">
+            <field name="name">Certificación: Sobre Aceptado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; background-color: #d4edda; border-left: 4px solid #28a745; padding: 12px; border-radius: 4px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 14px;">
+                        <span style="font-size: 24px;">🎉</span> <strong style="color: #155724;">¡Sobre aceptado por el SII!</strong>
+                        <br/><br/>
+                        <span style="color: #155724;">Todos los documentos del sobre fueron aceptados exitosamente.</span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_rejected" model="mail.template">
+            <field name="name">Certificación: Sobre Rechazado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; background-color: #f8d7da; border-left: 4px solid #dc3545; padding: 12px; border-radius: 4px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #dc3545;">❌</span> <strong style="color: #721c24;">Sobre rechazado por el SII</strong>
+                        <br/><br/>
+                        <span style="color: #721c24;">Revise los mensajes de error en la pestaña de respuestas SII.</span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_with_repairs" model="mail.template">
+            <field name="name">Certificación: Sobre con Reparos</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px; background-color: #fff3cd; border-left: 4px solid #ffc107; padding: 12px; border-radius: 4px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #856404;">⚠</span> <strong style="color: #856404;">Sobre con reparos</strong>
+                        <br/><br/>
+                        <span style="color: #856404;">Revise los mensajes del SII para corregir los reparos detectados.</span>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_status_received" model="mail.template">
+            <field name="name">Certificación: Sobre Recibido por SII</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #17a2b8;">📨</span> <strong>Sobre recibido por el SII</strong>
+                        <br/><br/>
+                        Estado: <strong><t t-out="ctx.get('status', 'N/A')"/></strong><br/>
+                        Esperando validación...
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_envelope_status_updated" model="mail.template">
+            <field name="name">Certificación: Estado del Sobre Actualizado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_envelope"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #17a2b8;">🔄</span> Estado actual: <strong><t t-out="ctx.get('status', 'N/A')"/></strong>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- Templates para Documento Generado           -->
+        <!-- ============================================ -->
+
+        <record id="message_document_validated" model="mail.template">
+            <field name="name">Certificación: Documento Validado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_generated_document"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✅</span> <strong>Documento validado correctamente</strong>
+                        <br/><br/>
+                        El DTE cumple con todos los requisitos del SII.
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_document_signed" model="mail.template">
+            <field name="name">Certificación: Documento Firmado</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_generated_document"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">🔒</span> <strong>Documento firmado digitalmente</strong>
+                        <br/><br/>
+                        Certificado de: <code style="background-color: #e7f3ff; padding: 2px 6px; border-radius: 3px;"><t t-out="ctx.get('cert_subject', 'N/A')"/></code>
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <!-- ============================================ -->
+        <!-- Templates para Respuesta SII                -->
+        <!-- ============================================ -->
+
+        <record id="message_sii_response_parsed" model="mail.template">
+            <field name="name">Certificación: Respuesta SII Parseada</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_sii_response"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #28a745;">✓</span> Respuesta parseada correctamente
+                    </p>
+                </div>
+            </field>
+        </record>
+
+        <record id="message_sii_response_parse_error" model="mail.template">
+            <field name="name">Certificación: Error al Parsear Respuesta SII</field>
+            <field name="model_id" ref="model_l10n_cl_edi_certification_sii_response"/>
+            <field name="body_html" type="html">
+                <div style="margin: 0px; padding: 0px;">
+                    <p style="margin: 0px; padding: 0px; font-size: 13px;">
+                        <span style="color: #dc3545;">❌</span> <strong>Error al parsear respuesta</strong>
+                        <br/><br/>
+                        Error: <code style="background-color: #f8d7da; padding: 2px 6px; border-radius: 3px;"><t t-out="ctx.get('error', 'Error desconocido')"/></code>
+                    </p>
+                </div>
+            </field>
+        </record>
+
         <!-- ============================================ -->
         <!-- Templates para Caso de Prueba               -->
         <!-- ============================================ -->

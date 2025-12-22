@@ -9,16 +9,22 @@
             <field name="arch" type="xml">
                 <form string="Libro de Compra/Venta">
                     <header>
+                        <button name="action_import_from_project" string="Importar Documentos del Proyecto" type="object"
+                                invisible="book_type != 'sale' or state != 'draft'" class="btn-primary"/>
                         <button name="action_generate_book" string="Generar XML del Libro" type="object"
                                 invisible="state != 'draft'" class="oe_highlight"/>
                         <button name="action_sign_book" string="Firmar Libro" type="object"
                                 invisible="state != 'generated'" class="oe_highlight"/>
+                        <button name="action_validate_xsd" string="Validar XSD" type="object"
+                                invisible="state != 'signed'" class="btn-info"/>
                         <button name="action_send_to_sii" string="Enviar al SII" type="object"
-                                invisible="state != 'signed'" class="oe_highlight"/>
+                                invisible="state not in ['signed', 'validated']" class="oe_highlight"/>
+                        <button name="action_check_status" string="Consultar Estado" type="object"
+                                invisible="state not in ['sent']" class="btn-info"/>
                         <button name="action_back_to_draft" string="Regresar a Borrador" type="object"
                                 invisible="state == 'draft'"/>
                         <field name="state" widget="statusbar"
-                               statusbar_visible="draft,generated,signed,sent,accepted"/>
+                               statusbar_visible="draft,generated,signed,validated,sent,accepted"/>
                     </header>
                     <sheet>
                         <widget name="web_ribbon" title="Aceptado" bg_color="text-bg-success" invisible="state != 'accepted'"/>
@@ -35,12 +41,22 @@
                                 <field name="book_type" widget="badge"/>
                                 <field name="attention_number"/>
                                 <field name="period"/>
+                                <field name="folio_notificacion"
+                                       invisible="book_type != 'purchase'"
+                                       help="Número de folio/atención del SII para Libro ESPECIAL de compras"/>
+                            </group>
+                            <group string="Validación XSD">
+                                <field name="xsd_validated" readonly="1" widget="badge" decoration-success="xsd_validated == True" decoration-danger="xsd_validated == False"/>
+                                <field name="xsd_validation_date" readonly="1"/>
                             </group>
                             <group string="Envío al SII">
                                 <field name="sii_track_id" readonly="1"/>
                                 <field name="sii_send_date" readonly="1"/>
                                 <field name="sii_response_id" readonly="1"/>
                             </group>
+                        </group>
+                        <group string="Errores de Validación XSD" invisible="not xsd_validation_errors">
+                            <field name="xsd_validation_errors" readonly="1" nolabel="1" widget="text"/>
                         </group>
                         <group string="Archivos XML">
                             <group>
@@ -68,6 +84,10 @@
                                         <field name="iva_uso_comun" sum="IVA Uso Común" widget="monetary" optional="show"/>
                                         <field name="factor_proporcionalidad" optional="show"/>
                                         <field name="credito_iva_uso_comun" sum="Crédito IVA" widget="monetary" optional="show"/>
+                                        <field name="iva_no_recuperable" sum="IVA No Rec" widget="monetary" optional="show"/>
+                                        <field name="cod_iva_no_rec" optional="show"/>
+                                        <field name="iva_ret_total" sum="IVA Ret Total" widget="monetary" optional="show"/>
+                                        <field name="iva_ret_parcial" sum="IVA Ret Parcial" widget="monetary" optional="show"/>
                                         <field name="mnt_total" sum="Total" widget="monetary"/>
                                         <field name="currency_id" column_invisible="1"/>
                                     </list>

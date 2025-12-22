@@ -138,10 +138,16 @@ class CertificationSiiResponse(models.Model):
                 if status_node and status_node[0].text:
                     response.status_code = status_node[0].text
 
-                response.message_post(body=_('Respuesta parseada correctamente'))
+                response.message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_sii_response_parsed'),
+                    subtype_xmlid='mail.mt_note'
+                )
 
             except Exception as e:
-                response.message_post(body=_('Error al parsear respuesta: %s') % str(e))
+                response.with_context(error=str(e)).message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_sii_response_parse_error'),
+                    subtype_xmlid='mail.mt_note'
+                )
 
         return True
 

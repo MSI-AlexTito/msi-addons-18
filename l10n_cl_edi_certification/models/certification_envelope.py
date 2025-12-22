@@ -171,7 +171,10 @@ class CertificationEnvelope(models.Model):
             print(f'Tamaño XML: {len(envelope_xml)} caracteres')
             print(f'{"#" * 100}\n')
 
-            envelope.message_post(body=_('Sobre creado con %d documentos') % envelope.documents_count)
+            envelope.with_context(documents_count=envelope.documents_count).message_post_with_source(
+                source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_created'),
+                subtype_xmlid='mail.mt_note'
+            )
 
         return True
 
@@ -199,7 +202,10 @@ class CertificationEnvelope(models.Model):
             print(f'Tamaño XML firmado: {len(signed_xml)} caracteres')
             print(f'{"#" * 100}\n')
 
-            envelope.message_post(body=_('Sobre firmado digitalmente'))
+            envelope.message_post_with_source(
+                source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_signed'),
+                subtype_xmlid='mail.mt_note'
+            )
 
         return True
 
@@ -217,7 +223,10 @@ class CertificationEnvelope(models.Model):
             if not is_valid:
                 raise UserError(_('El sobre tiene errores de validación:\n%s') % envelope.validation_messages)
 
-            envelope.message_post(body=_('Sobre validado correctamente'))
+            envelope.message_post_with_source(
+                source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_validated'),
+                subtype_xmlid='mail.mt_note'
+            )
 
         return True
 
@@ -275,7 +284,10 @@ class CertificationEnvelope(models.Model):
             print(f'Documentos actualizados: {len(envelope.generated_document_ids)}')
             print(f'{"#" * 100}\n')
 
-            envelope.message_post(body=_('Sobre enviado al SII. Track ID: %s') % track_id)
+            envelope.with_context(track_id=track_id).message_post_with_source(
+                source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_sent'),
+                subtype_xmlid='mail.mt_note'
+            )
 
         return True
 
@@ -315,31 +327,46 @@ class CertificationEnvelope(models.Model):
                 print(f'\n✅ SOBRE ACEPTADO POR EL SII')
                 print(f'Estado cambió de {previous_state} a accepted')
                 print(f'Documentos aceptados: {len(envelope.generated_document_ids)}')
-                envelope.message_post(body=_('¡Sobre aceptado por el SII!'))
+                envelope.message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_accepted'),
+                    subtype_xmlid='mail.mt_note'
+                )
             elif status == 'rejected':
                 envelope.state = 'rejected'
                 envelope.generated_document_ids.write({'state': 'rejected'})
                 print(f'\n❌ SOBRE RECHAZADO POR EL SII')
                 print(f'Estado cambió de {previous_state} a rejected')
-                envelope.message_post(body=_('Sobre rechazado por el SII. Revise los mensajes de error.'))
+                envelope.message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_rejected'),
+                    subtype_xmlid='mail.mt_note'
+                )
             elif status == 'with_repairs':
                 envelope.state = 'with_repairs'
                 print(f'\n⚠️  SOBRE CON REPAROS')
                 print(f'Estado cambió de {previous_state} a with_repairs')
-                envelope.message_post(body=_('El sobre tiene reparos. Revise los mensajes del SII.'))
+                envelope.message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_with_repairs'),
+                    subtype_xmlid='mail.mt_note'
+                )
             elif status in ['received', 'validating']:
                 # Estados intermedios: el sobre fue recibido pero aún no procesado
                 # Mantener en 'sent' pero registrar la consulta
                 print(f'\n⏳ SOBRE EN PROCESO DE VALIDACIÓN')
                 print(f'Estado SII: {status}')
                 print(f'Estado del sobre: {envelope.state} (sin cambios - esperando procesamiento)')
-                envelope.message_post(body=_('Sobre recibido por el SII. Estado: %s. Esperando validación.') % status)
+                envelope.with_context(status=status).message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_status_received'),
+                    subtype_xmlid='mail.mt_note'
+                )
             else:
                 # Estado desconocido
                 print(f'\n⚠️  ESTADO DESCONOCIDO')
                 print(f'Estado SII reportado: {status}')
                 print(f'Estado del sobre: {envelope.state}')
-                envelope.message_post(body=_('Estado actual: %s') % status)
+                envelope.with_context(status=status).message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_status_updated'),
+                    subtype_xmlid='mail.mt_note'
+                )
 
             print(f'{"#" * 100}\n')
 

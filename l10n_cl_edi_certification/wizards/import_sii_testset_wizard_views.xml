@@ -30,7 +30,7 @@
                             <!-- Preview automático después de cargar archivo -->
                             <group colspan="2" invisible="not file or not cases_count">
                                 <div class="alert alert-success" role="alert">
-                                    <p><i class="fa fa-check-circle"/> <strong>Archivo procesado exitosamente</strong></p>
+                                    <p><i class="fa fa-check-circle" title="Éxito"/> <strong>Archivo procesado exitosamente</strong></p>
                                     <p>Se detectaron <strong><field name="cases_count" readonly="1" class="oe_inline"/></strong> casos en el set de pruebas del SII.</p>
                                     <p>Número de atención: <strong><field name="attention_number" readonly="1" class="oe_inline"/></strong></p>
                                 </div>
@@ -50,7 +50,7 @@
                         <!-- Completado -->
                         <group invisible="state != 'done'">
                             <div class="alert alert-success" role="alert">
-                                <p><i class="fa fa-check-circle"/> <strong>Importación completada exitosamente</strong></p>
+                                <p><i class="fa fa-check-circle" title="Éxito"/> <strong>Importación completada exitosamente</strong></p>
                                 <p>Los casos han sido importados al proyecto.</p>
                             </div>
                         </group>

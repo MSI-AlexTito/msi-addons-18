@@ -153,5 +153,143 @@
             </TED>
         </template>
 
+        <!-- Template QWeb para generar XML de Libro de VENTAS -->
+        <template id="book_sales_template" name="LibroCompraVenta - Libro de Ventas">
+<LibroCompraVenta xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte LibroCV_v10.xsd" version="1.0">
+    <EnvioLibro ID="SetDoc">
+        <Caratula>
+            <RutEmisorLibro t-out="book_data['Caratula']['RutEmisorLibro']"/>
+            <RutEnvia t-out="book_data['Caratula']['RutEnvia']"/>
+            <PeriodoTributario t-out="book_data['Caratula']['PeriodoTributario']"/>
+            <FchResol t-out="book_data['Caratula']['FchResol']"/>
+            <NroResol t-out="book_data['Caratula']['NroResol']"/>
+            <TipoOperacion>VENTA</TipoOperacion>
+            <TipoLibro t-out="book_data['Caratula']['TipoLibro']"/>
+            <TipoEnvio t-out="book_data['Caratula']['TipoEnvio']"/>
+        </Caratula>
+        <ResumenPeriodo>
+            <t t-foreach="book_data['ResumenPeriodo']" t-as="resumen_item">
+            <TotalesPeriodo>
+                <TpoDoc t-out="resumen_item['TpoDoc']"/>
+                <TotDoc t-out="resumen_item['TotDoc']"/>
+                <TotMntExe t-out="resumen_item.get('MntExe', 0)"/>
+                <TotMntNeto t-out="resumen_item.get('MntNeto', 0)"/>
+                <TotMntIVA t-out="resumen_item.get('MntIVA', 0)"/>
+                <TotMntTotal t-out="resumen_item['TotMntTotal']"/>
+            </TotalesPeriodo>
+            </t>
+        </ResumenPeriodo>
+        <t t-foreach="book_data['Detalles']" t-as="detalle">
+        <Detalle>
+            <TpoDoc t-out="detalle['TpoDoc']"/>
+            <NroDoc t-out="detalle['NroDoc']"/>
+            <TasaImp t-if="detalle.get('TasaImp')" t-out="detalle['TasaImp']"/>
+            <FchDoc t-out="detalle['FchDoc']"/>
+            <RUTDoc t-out="detalle['RUTDoc']"/>
+            <RznSoc t-out="detalle['RznSoc']"/>
+            <MntExe t-if="detalle.get('MntExe')" t-out="detalle['MntExe']"/>
+            <MntNeto t-if="detalle.get('MntNeto')" t-out="detalle['MntNeto']"/>
+            <MntIVA t-if="detalle.get('MntIVA')" t-out="detalle['MntIVA']"/>
+            <MntTotal t-out="detalle['MntTotal']"/>
+        </Detalle>
+        </t>
+        <TmstFirma t-out="book_data['TmstFirma']"/>
+    </EnvioLibro>
+</LibroCompraVenta>
+        </template>
+
+        <!-- Template QWeb para generar XML de Libro de COMPRAS -->
+        <template id="book_purchase_template" name="LibroCompraVenta - Libro de Compras">
+<LibroCompraVenta xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte LibroCV_v10.xsd" version="1.0">
+    <EnvioLibro ID="SetDoc">
+        <Caratula>
+            <RutEmisorLibro t-out="book_data['Caratula']['RutEmisorLibro']"/>
+            <RutEnvia t-out="book_data['Caratula']['RutEnvia']"/>
+            <PeriodoTributario t-out="book_data['Caratula']['PeriodoTributario']"/>
+            <FchResol t-out="book_data['Caratula']['FchResol']"/>
+            <NroResol t-out="book_data['Caratula']['NroResol']"/>
+            <TipoOperacion>COMPRA</TipoOperacion>
+            <TipoLibro>ESPECIAL</TipoLibro>
+            <TipoEnvio>TOTAL</TipoEnvio>
+            <FolioNotificacion t-if="book_data['Caratula'].get('FolioNotificacion')" t-out="book_data['Caratula']['FolioNotificacion']"/>
+        </Caratula>
+        <ResumenPeriodo>
+            <t t-foreach="book_data['ResumenPeriodo']" t-as="resumen_item">
+            <TotalesPeriodo>
+                <TpoDoc t-out="resumen_item['TpoDoc']"/>
+                <TotDoc t-out="resumen_item['TotDoc']"/>
+                <TotMntExe t-out="resumen_item.get('MntExe', 0)"/>
+                <TotMntNeto t-out="resumen_item.get('MntNeto', 0)"/>
+                <TotMntIVA t-out="resumen_item.get('MntIVA', 0)"/>
+                <t t-if="resumen_item.get('IVANoRec')">
+                <TotIVANoRec>
+                    <CodIVANoRec t-out="resumen_item['IVANoRec']['CodIVANoRec']"/>
+                    <TotOpIVANoRec t-out="resumen_item['IVANoRec']['TotOpIVANoRec']"/>
+                    <TotMntIVANoRec t-out="resumen_item['IVANoRec']['TotMntIVANoRec']"/>
+                </TotIVANoRec>
+                </t>
+                <TotOpIVAUsoComun t-if="resumen_item.get('TotOpIVAUsoComun')" t-out="resumen_item['TotOpIVAUsoComun']"/>
+                <TotIVAUsoComun t-if="resumen_item.get('IVAUsoComun')" t-out="resumen_item['IVAUsoComun']"/>
+                <FctProp t-if="resumen_item.get('FctProp')" t-out="resumen_item['FctProp']"/>
+                <TotCredIVAUsoComun t-if="resumen_item.get('TotCredIVAUsoComun')" t-out="resumen_item['TotCredIVAUsoComun']"/>
+                <t t-if="resumen_item.get('OtrosImpuestos')">
+                    <t t-foreach="resumen_item['OtrosImpuestos']" t-as="otro_imp">
+                    <TotOtrosImp>
+                        <CodImp t-out="otro_imp['CodImp']"/>
+                        <TotMntImp t-out="otro_imp['TotMntImp']"/>
+                    </TotOtrosImp>
+                    </t>
+                </t>
+                <TotOpIVARetTotal t-if="resumen_item.get('TotOpIVARetTotal')" t-out="resumen_item['TotOpIVARetTotal']"/>
+                <TotIVARetTotal t-if="resumen_item.get('IVARetTotal')" t-out="resumen_item['IVARetTotal']"/>
+                <TotOpIVARetParcial t-if="resumen_item.get('TotOpIVARetParcial')" t-out="resumen_item['TotOpIVARetParcial']"/>
+                <TotIVARetParcial t-if="resumen_item.get('IVARetParcial')" t-out="resumen_item['IVARetParcial']"/>
+                <TotMntTotal t-out="resumen_item['TotMntTotal']"/>
+            </TotalesPeriodo>
+            </t>
+        </ResumenPeriodo>
+        <t t-foreach="book_data['Detalles']" t-as="detalle">
+        <Detalle>
+            <TpoDoc t-out="detalle['TpoDoc']"/>
+            <NroDoc t-out="detalle['NroDoc']"/>
+            <TasaImp t-if="detalle.get('TasaImp')" t-out="detalle['TasaImp']"/>
+            <FchDoc t-out="detalle['FchDoc']"/>
+            <RUTDoc t-out="detalle['RUTDoc']"/>
+            <RznSoc t-out="detalle['RznSoc']"/>
+            <MntExe t-if="detalle.get('MntExe')" t-out="detalle['MntExe']"/>
+            <MntNeto t-if="detalle.get('MntNeto')" t-out="detalle['MntNeto']"/>
+            <MntIVA t-out="detalle.get('MntIVA', 0)"/>
+            <t t-if="detalle.get('IVANoRec')">
+            <IVANoRec>
+                <CodIVANoRec t-out="detalle['IVANoRec']['CodIVANoRec']"/>
+                <MntIVANoRec t-out="detalle['IVANoRec']['MntIVANoRec']"/>
+            </IVANoRec>
+            </t>
+            <t t-if="detalle.get('IVAUsoComun')">
+            <IVAUsoComun t-out="detalle['IVAUsoComun']"/>
+            </t>
+            <t t-if="detalle.get('OtrosImp')">
+                <t t-foreach="detalle['OtrosImp']" t-as="otro_imp_det">
+                <OtrosImp>
+                    <CodImp t-out="otro_imp_det['CodImp']"/>
+                    <TasaImp t-if="otro_imp_det.get('TasaImp')" t-out="otro_imp_det['TasaImp']"/>
+                    <MntImp t-out="otro_imp_det['MntImp']"/>
+                </OtrosImp>
+                </t>
+            </t>
+            <t t-if="detalle.get('IVARetTotal')">
+            <IVARetTotal t-out="detalle['IVARetTotal']"/>
+            </t>
+            <t t-if="detalle.get('IVARetParcial')">
+            <IVARetParcial t-out="detalle['IVARetParcial']"/>
+            </t>
+            <MntTotal t-out="detalle['MntTotal']"/>
+        </Detalle>
+        </t>
+        <TmstFirma t-out="book_data['TmstFirma']"/>
+    </EnvioLibro>
+</LibroCompraVenta>
+        </template>
+
     </data>
 </odoo>

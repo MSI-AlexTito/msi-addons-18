@@ -1,88 +1,66 @@
 # Esquemas XSD del SII para Validación
 
-Este módulo utiliza el **mismo sistema que Odoo Enterprise** para validar XML contra esquemas XSD.
+Este módulo incluye los **esquemas XSD oficiales del SII** para validar XML antes de enviar.
 
 ## ¿Cómo Funciona?
 
-Los esquemas XSD se almacenan como **adjuntos (`ir.attachment`)** en la base de datos, NO como archivos físicos. Esto es exactamente como lo hace `l10n_cl_edi` de Odoo Enterprise.
+A diferencia de Odoo Enterprise que usa `ir.attachment`, este módulo usa los **archivos XSD directamente** desde la carpeta `schemas/`. Esto es más simple y no requiere configuración adicional.
 
-## Instalación de Esquemas XSD (Opcional)
+## Esquemas XSD Incluidos
 
-### Paso 1: Descargar Esquemas del SII
+Los siguientes esquemas ya están incluidos en la carpeta `schemas/`:
 
-Obtén los esquemas XSD oficiales desde:
-- **Sitio SII**: https://www.sii.cl/factura_electronica/
-- **Esquemas necesarios**:
-  - `DTE_v10.xsd` - Documento Tributario Electrónico
-  - `EnvioDTE_v10.xsd` - Sobre de Envío
-  - `RespuestaDTE_v10.xsd` - Respuesta del SII
-  - `SiiTypes_v10.xsd` - Tipos comunes (dependencia)
+### Libros de Compra/Venta (IECV)
+- ✅ **LibroCV_v10.xsd** - Esquema principal de LibroCompraVenta
+- ✅ **xmldsignature_v10.xsd** - Validación de firmas digitales
+- ✅ **LceCoCertif_v10.xsd** - Estructuras para certificación
+- ✅ **LceSiiTypes_v10.xsd** - Tipos comunes del SII
+- ✅ **LceCal_v10.xsd** - Certificado de Autorización de Libros
 
-### Paso 2: Subir a Odoo como Adjuntos
+### Para DTEs (Futuro)
+- ⏳ **DTE_v10.xsd** - Documento Tributario Electrónico (por agregar)
+- ⏳ **EnvioDTE_v10.xsd** - Sobre de Envío (por agregar)
+- ⏳ **RespuestaDTE_v10.xsd** - Respuesta del SII (por agregar)
 
-**Opción A: Interfaz de Odoo (Recomendado)**
+## Uso Automático
 
-1. Ve a: **Configuración → Técnico → Estructura de la Base de Datos → Adjuntos**
-2. Crea un nuevo adjunto para cada esquema:
-   - **Nombre**: `l10n_cl_edi_certification.DTE_v10.xsd`
-   - **Tipo**: Archivo binario
-   - **Archivo**: Selecciona el archivo XSD descargado
-   - **Público**: ✓ (marcado)
+La validación XSD se ejecuta **automáticamente** al firmar un libro:
 
-3. Repite para cada esquema:
-   - `l10n_cl_edi_certification.DTE_v10.xsd`
-   - `l10n_cl_edi_certification.EnvioDTE_v10.xsd`
-   - `l10n_cl_edi_certification.RespuestaDTE_v10.xsd`
-   - `l10n_cl_edi_certification.SiiTypes_v10.xsd`
+1. Usuario genera el libro → se crea XML
+2. Usuario firma el libro → **se valida contra XSD primero**
+3. Si hay errores → se muestra mensaje con detalles
+4. Si es válido → se firma normalmente
 
-**⚠️ IMPORTANTE**: El nombre debe empezar con `l10n_cl_edi_certification.` (prefijo del módulo)
+**NO se requiere configuración adicional** - los esquemas se cargan desde `schemas/` automáticamente.
 
-**Opción B: Código Python (Avanzado)**
+## Beneficios de la Validación XSD
 
-```python
-import base64
+✅ **Validación automática** antes de firmar:
+- Valida estructura XML contra esquema oficial del SII
+- Detecta errores tempranos (antes de enviar)
+- Reduce rechazos del SII (STATUS 7)
+- Muestra errores específicos con números de línea
 
-# Leer archivo XSD
-with open('/ruta/a/DTE_v10.xsd', 'rb') as f:
-    xsd_content = f.read()
+✅ **Sin configuración**:
+- Los esquemas ya están incluidos en el módulo
+- Se cargan automáticamente desde `schemas/`
+- No requiere subir archivos a Odoo
 
-# Crear adjunto
-self.env['ir.attachment'].create({
-    'name': 'l10n_cl_edi_certification.DTE_v10.xsd',
-    'raw': xsd_content,
-    'public': True,
-})
-```
+✅ **Opcional pero recomendado**:
+- Si faltan los esquemas XSD → solo muestra advertencia
+- La firma continúa normalmente
+- El SII valida de todas formas al enviar
 
-### Paso 3: Verificar Instalación
+## Ventajas vs Odoo Enterprise
 
-1. Ve a un documento generado
-2. Haz clic en "Validar"
-3. Si el mensaje NO dice "esquema no encontrado", ¡está funcionando! ✓
+Este módulo usa archivos XSD directos en lugar de `ir.attachment`:
 
-## ¿Es Obligatorio?
-
-**NO.** La validación XSD es completamente opcional:
-
-### Sin XSD (por defecto):
-- ✓ Validación de reglas de negocio (RUT, folios, montos, fechas)
-- ✓ Validación de firma digital
-- ⚠️ Se omite validación de estructura XML
-- ✓ El SII valida al enviar (validación definitiva)
-
-### Con XSD (recomendado):
-- ✓ Todas las validaciones anteriores
-- ✓ Validación de estructura XML contra esquema oficial
-- ✓ Detección temprana de errores de formato
-- ✓ Reduce rechazos en el SII
-
-## Ventajas del Enfoque de Odoo (ir.attachment)
-
-1. **Portabilidad**: Los esquemas se exportan/importan con la base de datos
-2. **Versionamiento**: Fácil actualizar esquemas sin tocar archivos
-3. **Multi-empresa**: Diferentes empresas pueden usar diferentes versiones
-4. **Seguridad**: Odoo gestiona permisos de acceso automáticamente
-5. **Consistencia**: Mismo enfoque que `l10n_cl_edi` de Odoo Enterprise
+| Característica | Este Módulo | Odoo Enterprise |
+|----------------|-------------|-----------------|
+| Configuración | ✅ Ninguna | ⚠️ Subir XSD manualmente |
+| Versionamiento | ✅ Con Git | ⚠️ En base de datos |
+| Portabilidad | ✅ Con el módulo | ⚠️ Exportar/importar BD |
+| Dependencias | ✅ Auto-resueltas | ⚠️ Gestión manual |
 
 ## Versiones de Esquemas
 

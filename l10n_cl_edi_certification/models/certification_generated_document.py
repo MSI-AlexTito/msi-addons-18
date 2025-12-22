@@ -204,7 +204,10 @@ class CertificationGeneratedDocument(models.Model):
 
             if is_valid:
                 doc.state = 'validated'
-                doc.message_post(body=_('Documento validado correctamente'))
+                doc.message_post_with_source(
+                    source_ref=self.env.ref('l10n_cl_edi_certification.message_document_validated'),
+                    subtype_xmlid='mail.mt_note'
+                )
             else:
                 raise UserError(_('El documento tiene errores de validación:\n%s') % doc.validation_messages)
 
@@ -280,7 +283,10 @@ class CertificationGeneratedDocument(models.Model):
             })
 
             cert_subject = client_info.social_reason or 'Cliente'
-            doc.message_post(body=_('Documento firmado digitalmente - Certificado de: %s') % cert_subject)
+            doc.with_context(cert_subject=cert_subject).message_post_with_source(
+                source_ref=self.env.ref('l10n_cl_edi_certification.message_document_signed'),
+                subtype_xmlid='mail.mt_note'
+            )
 
         return True
 

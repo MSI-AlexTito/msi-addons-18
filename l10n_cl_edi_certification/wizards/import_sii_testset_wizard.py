@@ -331,7 +331,11 @@ class ImportSIITestSetWizard(models.TransientModel):
             print(f'  Las líneas se agregarán automáticamente al generar DTEs del SET BASICO')
             print('=' * 80 + '\n')
 
-            books_created.append(sales_book.name)
+            books_created.append({
+                'name': sales_book.name,
+                'type': 'sale',
+                'lines_count': 0  # Las líneas se agregan después al generar DTEs
+            })
 
         if books.get('purchase_book'):
             print('\n' + '=' * 80)
@@ -355,13 +359,31 @@ class ImportSIITestSetWizard(models.TransientModel):
             # Crear líneas del libro de compras
             BookLine = self.env['l10n_cl_edi.certification.book.line']
             for line_data in purchase_book_data.get('lines', []):
-                # Calcular IVA y total
+                # Calcular IVA y total con redondeo matemático (como el SII)
+                from decimal import Decimal, ROUND_HALF_UP
+
                 mnt_neto = line_data['mnt_neto']
                 mnt_exento = line_data['mnt_exento']
-                mnt_iva = int(round(mnt_neto * 0.19)) if mnt_neto else 0
-                mnt_total = mnt_neto + mnt_exento + mnt_iva
 
-                BookLine.create({
+                # Calcular IVA con redondeo matemático
+                if mnt_neto > 0:
+                    iva_decimal = Decimal(str(mnt_neto)) * Decimal('0.19')
+                    mnt_iva = int(iva_decimal.quantize(Decimal('1'), rounding=ROUND_HALF_UP))
+                else:
+                    mnt_iva = 0
+
+                # Para Tipo 46 (Factura de Compra con IVA Retenido), el total NO incluye el IVA
+                # Porque el IVA es retenido por el comprador y no se paga al proveedor
+                if line_data['document_type_code'] == '46':
+                    mnt_total = mnt_neto + mnt_exento  # SIN IVA
+                else:
+                    mnt_total = mnt_neto + mnt_exento + mnt_iva
+
+                print(f'\n    >> Procesando Línea {line_data["sequence"]}: {line_data["document_type_name"]} Folio {line_data["folio"]}')
+                print(f'       MntNeto: {mnt_neto}, MntExe: {mnt_exento}, MntIVA: {mnt_iva}, Total: {mnt_total}')
+
+                # Preparar valores base de la línea
+                line_vals = {
                     'book_id': purchase_book.id,
                     'sequence': line_data['sequence'],
                     'document_type_code': line_data['document_type_code'],
@@ -374,42 +396,58 @@ class ImportSIITestSetWizard(models.TransientModel):
                     'mnt_neto': mnt_neto,
                     'mnt_iva': mnt_iva,
                     'mnt_total': mnt_total,
-                })
+                }
 
-                print(f'    ✓ Línea {line_data["sequence"]}: {line_data["document_type_name"]} - Folio {line_data["folio"]}')
+                # CONFIGURACIÓN AUTOMÁTICA DE CAMPOS ESPECÍFICOS DE COMPRAS
+                tipo_doc = line_data['document_type_code']
+                folio = line_data['folio']
+
+                # Tipo 46: Factura de Compra Electrónica → IVA Retenido Total
+                if tipo_doc == '46' and mnt_iva > 0:
+                    line_vals['iva_ret_total'] = mnt_iva
+                    print(f'       ✓ AUTO-CONFIG: IVA Retenido Total = {mnt_iva}')
+
+                # Tipo 33 Folio 67: Entrega Gratuita → IVA No Recuperable código 4
+                elif tipo_doc == '33' and folio == 67 and mnt_iva > 0:
+                    line_vals['iva_no_recuperable'] = mnt_iva
+                    line_vals['cod_iva_no_rec'] = '4'  # Código 4: Entregas gratuitas
+                    print(f'       ✓ AUTO-CONFIG: IVA No Recuperable = {mnt_iva} (código 4: entrega gratuita)')
+
+                # Tipo 30: Factura → Solo IVA Uso Común si la observación lo indica
+                elif tipo_doc == '30' and mnt_iva > 0 and 'IVA USO COMUN' in line_data.get('observations', '').upper():
+                    line_vals['iva_uso_comun'] = mnt_iva
+                    line_vals['factor_proporcionalidad'] = 0.60
+                    # Calcular crédito IVA uso común
+                    credito = int(Decimal(str(mnt_iva)) * Decimal('0.60'))
+                    line_vals['credito_iva_uso_comun'] = credito
+                    print(f'       ✓ AUTO-CONFIG: IVA Uso Común = {mnt_iva}, Factor = 0.60, Crédito = {credito}')
+
+                # Crear la línea con todos los valores (base + específicos)
+                new_line = BookLine.create(line_vals)
+                print(f'    ✓ Línea creada: ID {new_line.id}')
 
             print(f'✓ {len(purchase_book_data.get("lines", []))} líneas creadas')
             print('=' * 80 + '\n')
 
-            books_created.append(purchase_book.name)
+            books_created.append({
+                'name': purchase_book.name,
+                'type': 'purchase',
+                'lines_count': len(purchase_book_data.get('lines', []))
+            })
 
-        # Mensaje de éxito
-        message_body_parts = [
-            '<p><strong>Set de Pruebas SII Importado</strong></p>',
-            '<ul>',
-            f'<li>Número de Atención: {result["attention_number"]}</li>',
-            f'<li>Casos Importados: {len(cases_created)}</li>',
-        ]
+        # Preparar contexto para el template
+        template_ctx = {
+            'attention_number': result['attention_number'],
+            'cases_count': len(cases_created),
+            'cases_names': cases_created,
+            'books_count': len(books_created),
+            'books_names': books_created,
+        }
 
-        if books_created:
-            message_body_parts.append(f'<li>Libros Creados: {len(books_created)}</li>')
-
-        message_body_parts.append('</ul>')
-        message_body_parts.append('<p>Casos creados:</p>')
-        message_body_parts.append('<ul>')
-        for name in cases_created:
-            message_body_parts.append(f'<li>{name}</li>')
-        message_body_parts.append('</ul>')
-
-        if books_created:
-            message_body_parts.append('<p>Libros creados:</p>')
-            message_body_parts.append('<ul>')
-            for name in books_created:
-                message_body_parts.append(f'<li>{name}</li>')
-            message_body_parts.append('</ul>')
-
-        self.project_id.message_post(
-            body=''.join(message_body_parts)
+        # Publicar mensaje con template
+        self.project_id.with_context(**template_ctx).message_post_with_source(
+            source_ref=self.env.ref('l10n_cl_edi_certification.message_project_sii_testset_imported'),
+            subtype_xmlid='mail.mt_note'
         )
 
         self.state = 'done'

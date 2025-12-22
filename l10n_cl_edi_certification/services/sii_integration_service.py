@@ -118,7 +118,23 @@ class SiiIntegrationService(models.AbstractModel):
 
         print(f'  ✓ Certificado temporal creado')
         print(f'    - subject_common_name: {cert_temp.subject_common_name}')
-        print(f'    - subject_serial_number: {cert_temp.subject_serial_number}')
+
+        # Forzar el cálculo del subject_serial_number si no está presente
+        if not cert_temp.subject_serial_number and cert_temp.pem_certificate:
+            cert_temp._compute_subject_serial_number()
+            print(f'    - subject_serial_number: {cert_temp.subject_serial_number} (calculado)')
+        else:
+            print(f'    - subject_serial_number: {cert_temp.subject_serial_number}')
+
+        # Si el certificado no tiene subject_serial_number en el Subject del X.509,
+        # usar el RUT del cliente (ya que el certificado le pertenece)
+        if not cert_temp.subject_serial_number:
+            print(f'    ⚠️  El certificado no tiene RUT en subject_serial_number')
+            print(f'    ✓ Usando RUT del cliente: {client_info.rut}')
+            # Asignar manualmente el RUT del cliente al certificado temporal
+            cert_temp.subject_serial_number = self._l10n_cl_format_vat(client_info.rut)
+            print(f'    - subject_serial_number: {cert_temp.subject_serial_number} (del cliente)')
+
         print(f'    - is_valid: {cert_temp.is_valid}')
         print(f'    - date_end: {cert_temp.date_end}')
 
@@ -389,10 +405,12 @@ class SiiIntegrationService(models.AbstractModel):
                 print(f'\n{"=" * 80}')
                 print(f'INFORMACIÓN DETALLADA DE ESTADO')
                 print(f'{"=" * 80}')
-                print(f'Estado SII: {estado}')
+                print(f'Código SII: {estado}')
                 print(f'Glosa: {glosa}')
                 print(f'Código de error: {err_code}')
-                print(f'Estado mapeado: {status}')
+                print(f'')
+                print(f'Mapeo: {estado} → {status}')
+                print(f'Estado final: {status}')
 
                 if tipo_docto:
                     print(f'\nResumen de documentos:')
@@ -436,6 +454,162 @@ class SiiIntegrationService(models.AbstractModel):
             print(f'{"!" * 80}\n')
             raise UserError(_('Error al consultar estado: %s') % str(e))
 
+    @api.model
+    def send_book(self, book):
+        """
+        Envía un LibroCompraVenta al SII usando DATOS DEL CLIENTE.
+
+        Args:
+            book: l10n_cl_edi.certification.book
+
+        Returns:
+            tuple: (track_id, response_xml)
+        """
+        project = book.project_id
+        client_info = project.client_info_id
+
+        if not book.book_xml_signed:
+            raise UserError(_('El libro debe estar firmado antes de enviar.'))
+
+        # Mapear environment a mode
+        mode = 'SIITEST' if client_info.environment == 'certification' else 'SII'
+
+        try:
+            print(f'\n{"#" * 100}')
+            print(f'ENVIANDO LIBRO DE {book.book_type.upper()} AL SII')
+            print(f'{"#" * 100}')
+            print(f'Libro: {book.name}')
+            print(f'Tipo: {dict(book._fields["book_type"].selection).get(book.book_type)}')
+            print(f'Período: {book.period}')
+            print(f'Proyecto: {project.name}')
+            print(f'Cliente: {client_info.partner_id.name}')
+            print(f'RUT Cliente: {client_info.rut}')
+            print(f'Ambiente: {mode}')
+            print(f'Cantidad de líneas: {book.lines_count}')
+
+            # Crear certificado temporal del cliente
+            certificate = self._get_certificate(client_info, project.company_id)
+
+            # Preparar XML (ISO-8859-1 encoding requerido por SII)
+            xml_content = base64.b64decode(book.book_xml_signed).decode('ISO-8859-1')
+
+            # LOG: Mostrar el XML completo del libro firmado
+            self._log_xml_pretty(xml_content, f'XML LIBRO {book.book_type.upper()} FIRMADO COMPLETO - {book.name}')
+
+            # IMPORTANTE: Para libros, los parámetros deben coincidir con el XML:
+            # - rutSender/dvSender = RutEnvia del XML (RUT del cliente/certificado)
+            # - rutCompany/dvCompany = RutEmisorLibro del XML (RUT de la empresa)
+            company = project.company_id
+            if not company or not company.partner_id.vat:
+                raise UserError(_('La compañía debe tener un RUT configurado.'))
+
+            # Normalizar RUTs (remover puntos, mantener guión y DV)
+            company_rut = self._l10n_cl_format_vat(company.partner_id.vat)  # RutEmisorLibro: "77697659-8"
+            client_rut = self._l10n_cl_format_vat(client_info.rut)  # RutEnvia: "8530047-4"
+
+            # Preparar parámetros para el upload
+            book_type_str = 'Ventas' if book.book_type == 'sale' else 'Compras'
+            file_name = f'Libro{book_type_str}_{book.period.replace("-", "")}.xml'
+
+            params = {
+                # rutSender: Quien envía (RutEnvia en XML = cliente/certificado)
+                'rutSender': client_rut[:-2],  # "8530047"
+                'dvSender': client_rut[-1],     # "4"
+
+                # rutCompany: Empresa emisora del libro (RutEmisorLibro en XML)
+                'rutCompany': company_rut[:-2],  # "77697659"
+                'dvCompany': company_rut[-1],    # "8"
+
+                'archivo': (file_name, xml_content.encode('ISO-8859-1', 'replace'), 'text/xml'),
+            }
+
+            # Sitio web del cliente (usar sitio genérico)
+            company_website = 'http://www.odoo.com'
+
+            print(f'\n{"=" * 80}')
+            print(f'PARÁMETROS DE ENVÍO AL SII (LIBRO)')
+            print(f'{"=" * 80}')
+            print(f'RUT Cliente (RutEnvia): {client_rut}')
+            print(f'RUT Empresa (RutEmisorLibro): {company_rut}')
+            print(f'')
+            print(f'rutSender (quien envía): {params["rutSender"]}-{params["dvSender"]} ← RutEnvia')
+            print(f'rutCompany (empresa): {params["rutCompany"]}-{params["dvCompany"]} ← RutEmisorLibro')
+            print(f'')
+            print(f'Archivo: {file_name}')
+            print(f'Tamaño XML: {len(xml_content)} caracteres')
+            print(f'Website: {company_website}')
+            print(f'Endpoint: /cgi_dte/UPL/DTEUpload')
+            print(f'{"=" * 80}')
+
+            # Enviar usando método heredado: _send_xml_to_sii(mode, company_website, params, digital_signature, post)
+            print(f'\n>>> Iniciando envío del libro al SII...')
+            response = self._send_xml_to_sii(
+                mode,
+                company_website,
+                params,
+                certificate,
+                '/cgi_dte/UPL/DTEUpload'  # Mismo endpoint que DTEs
+            )
+
+            if not response:
+                raise UserError(_('No se obtuvo respuesta del SII'))
+
+            # LOG: Mostrar respuesta del SII
+            self._log_xml_pretty(response, 'RESPUESTA SII - ENVÍO DE LIBRO')
+
+            # Extraer Track ID de la respuesta
+            track_id = self._extract_track_id(response)
+
+            # Extraer información adicional de la respuesta
+            try:
+                response_str = response.decode('utf-8', errors='ignore') if isinstance(response, bytes) else str(response)
+                parsed = etree.fromstring(response_str.encode('utf-8') if isinstance(response_str, str) else response_str)
+
+                status = parsed.findtext('.//STATUS')
+                timestamp = parsed.findtext('.//TIMESTAMP')
+                file_name_resp = parsed.findtext('.//FILE')
+
+                print(f'\n{"=" * 80}')
+                print(f'INFORMACIÓN DE RESPUESTA SII (LIBRO)')
+                print(f'{"=" * 80}')
+                print(f'Track ID: {track_id}')
+                print(f'Status: {status}')
+                print(f'Timestamp: {timestamp}')
+                print(f'Archivo: {file_name_resp}')
+
+                # Mapeo de códigos de STATUS
+                status_map = {
+                    '0': 'Envío recibido correctamente',
+                    '1': 'Error en tamaño del archivo',
+                    '2': 'Error en archivo (no reconocido)',
+                    '3': 'Error en archivo (no contiene XML)',
+                    '5': 'Token no válido',
+                    '6': 'Error en firma digital',
+                    '7': 'RUT emisor no está autorizado',
+                }
+                if status in status_map:
+                    print(f'Descripción: {status_map[status]}')
+                print(f'{"=" * 80}')
+            except Exception as e:
+                print(f'No se pudo extraer información detallada de la respuesta: {e}')
+
+            print(f'\n✅ LIBRO ENVIADO EXITOSAMENTE')
+            print(f'Track ID: {track_id}')
+            print(f'{"#" * 100}\n')
+
+            return track_id, response
+
+        except Exception as e:
+            print(f'\n{"!" * 80}')
+            print(f'ERROR AL ENVIAR LIBRO AL SII')
+            print(f'{"!" * 80}')
+            print(f'Libro: {book.name}')
+            print(f'Error: {str(e)}')
+            import traceback
+            print(traceback.format_exc())
+            print(f'{"!" * 80}\n')
+            raise UserError(_('Error al enviar libro al SII: %s') % str(e))
+
     def _parse_status_response(self, response_xml):
         """Parsea la respuesta de estado del SII"""
         try:
@@ -476,8 +650,23 @@ class SiiIntegrationService(models.AbstractModel):
                         elif aceptados == 0 and rechazados == 0:
                             return 'validating'
 
+                # Para libros, primero verificar si hay un estado del libro tributario
+                # Buscar el elemento que contiene información del libro tributario
+                libro_estado_nodes = xml_doc.xpath('//text()[contains(., "Libro Cerrado")]')
+                if libro_estado_nodes:
+                    # Si el libro está cerrado, significa que fue aceptado
+                    return 'accepted'
+
+                # Buscar estado del libro tributario en el XML
+                # Puede estar como "LTC", "LRH", etc.
+                libro_tributario_text = xml_doc.xpath('string(//text()[contains(., "Estado del Libro Tributario")])')
+                if libro_tributario_text and 'LTC' in libro_tributario_text:
+                    # LTC = Libro Cerrado - Información Cuadrada
+                    return 'accepted'
+
                 # Mapear otros códigos del SII a nuestros estados
                 status_map = {
+                    # Estados de DTEs
                     'REC': 'received',  # Recibido (aún no procesado)
                     'PRD': 'validating',  # Procesando
                     'SOK': 'accepted',  # Aceptado
@@ -487,6 +676,17 @@ class SiiIntegrationService(models.AbstractModel):
                     'RCT': 'rejected',  # Rechazado Total
                     'RPR': 'with_repairs',  # Rechazado con Reparos
                     'RLV': 'with_repairs',  # Rechazado Leve
+
+                    # Estados específicos de Libros - Envío
+                    'LOK': 'accepted',  # Libro Aceptado - Cuadrado
+                    'LRH': 'rejected',  # Libro Rechazado
+                    'LRC': 'rejected',  # Libro Rechazado - Carátula inválida
+                    'LER': 'with_repairs',  # Libro con Errores/Reparos
+                    'LNC': 'validating',  # Libro No Corresponde (problema con tipo de envío, pero el libro puede estar aceptado)
+
+                    # Estados del Libro Tributario (dentro de la respuesta)
+                    'LTC': 'accepted',  # Libro Cerrado - Información Cuadrada (ACEPTADO)
+                    'LTO': 'validating',  # Libro Abierto (en proceso)
                 }
 
                 return status_map.get(estado_code, 'validating')
