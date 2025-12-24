@@ -27,9 +27,6 @@ class BookGeneratorService(models.AbstractModel):
         Returns:
             str: XML del libro sin firmar
         """
-        print(f'\n{"=" * 80}')
-        print(f'GENERANDO XML DE LIBRO: {book.name}')
-        print(f'{"=" * 80}')
 
         if not book.line_ids:
             raise UserError(_('El libro no tiene líneas para generar.'))
@@ -40,14 +37,10 @@ class BookGeneratorService(models.AbstractModel):
         # Generar XML usando template QWeb
         xml_string = self._generate_book_xml_with_template(book_data, book)
 
-        print(f'✓ XML generado: {len(xml_string)} caracteres')
-        print(f'{"=" * 80}\n')
-
         return xml_string
 
     def _prepare_book_data(self, book):
         """Prepara los datos del libro para el template"""
-        print(f'\nPreparando datos del libro...')
 
         # Obtener información del cliente (quien envía/firma con certificado)
         client_info = book.project_id.client_info_id
@@ -95,15 +88,6 @@ class BookGeneratorService(models.AbstractModel):
         # Preparar Detalles
         detalles = self._prepare_detalles(book)
 
-        print(f'  Carátula: {caratula["TipoOperacion"]} - Período {caratula["PeriodoTributario"]}')
-        print(f'  RutEmisorLibro (empresa): {caratula["RutEmisorLibro"]}')
-        print(f'  RutEnvia (cliente/certificado): {caratula["RutEnvia"]}')
-        print(f'  Resolución DTE: N°{caratula["NroResol"]} del {caratula["FchResol"]}')
-        if caratula.get('FolioNotificacion'):
-            print(f'  FolioNotificacion (Libro ESPECIAL): {caratula["FolioNotificacion"]}')
-        print(f'  Resumen: {len(resumen)} tipos de documento')
-        print(f'  Detalles: {len(detalles)} líneas')
-
         return {
             'Caratula': caratula,
             'ResumenPeriodo': resumen,
@@ -118,9 +102,6 @@ class BookGeneratorService(models.AbstractModel):
         Returns:
             list: Lista de diccionarios con totales por tipo de documento
         """
-        print(f'\n{"=" * 100}')
-        print(f'PREPARANDO RESUMEN PERIODO - DEBUG')
-        print(f'{"=" * 100}')
 
         # Agrupar líneas por tipo de documento
         doc_groups = defaultdict(lambda: {
@@ -187,14 +168,6 @@ class BookGeneratorService(models.AbstractModel):
         # Convertir a lista de diccionarios
         resumen = []
         for tipo_doc, totales in sorted(doc_groups.items()):
-            print(f'\nTipo Doc {tipo_doc}:')
-            print(f'  Cantidad: {totales["cantidad"]}')
-            print(f'  MntNeto: {totales["mnt_neto"]}, MntExe: {totales["mnt_exento"]}, MntIVA: {totales["mnt_iva"]}')
-            print(f'  Campos específicos COMPRAS:')
-            print(f'    iva_uso_comun: {totales["iva_uso_comun"]}')
-            print(f'    iva_no_recuperable: {totales["iva_no_recuperable"]}')
-            print(f'    iva_ret_total: {totales["iva_ret_total"]}')
-            print(f'    iva_ret_parcial: {totales["iva_ret_parcial"]}')
 
             item = {
                 'TpoDoc': tipo_doc,
@@ -216,12 +189,6 @@ class BookGeneratorService(models.AbstractModel):
                     factor_prop = 0.6
                     item['FctProp'] = factor_prop
                     item['TotCredIVAUsoComun'] = int(round(totales['iva_uso_comun'] * factor_prop, 0))
-                    print(f'    ✓ AGREGADO al resumen: TotOpIVAUsoComun = {totales["iva_uso_comun_count"]}')
-                    print(f'    ✓ AGREGADO al resumen: TotIVAUsoComun = {int(totales["iva_uso_comun"])}')
-                    print(f'    ✓ AGREGADO al resumen: FctProp = {factor_prop}')
-                    print(f'    ✓ AGREGADO al resumen: TotCredIVAUsoComun = {item["TotCredIVAUsoComun"]}')
-                else:
-                    print(f'    ✗ NO agregado al resumen: TotIVAUsoComun (total: {totales["iva_uso_comun"]})')
 
                 # IVA No Recuperable
                 if totales['iva_no_recuperable']:
@@ -232,27 +199,16 @@ class BookGeneratorService(models.AbstractModel):
                         'TotOpIVANoRec': totales['iva_no_rec_count'],
                         'TotMntIVANoRec': int(totales['iva_no_recuperable']),
                     }
-                    print(f'    ✓ AGREGADO al resumen: TotIVANoRec = {int(totales["iva_no_recuperable"])} ({totales["iva_no_rec_count"]} ops, código: {cod})')
-                else:
-                    print(f'    ✗ NO agregado al resumen: TotIVANoRec (total: {totales["iva_no_recuperable"]})')
 
                 # IVA Retenido Total
                 if totales['iva_ret_total']:
                     item['TotOpIVARetTotal'] = totales['iva_ret_total_count']
                     item['IVARetTotal'] = int(totales['iva_ret_total'])
-                    print(f'    ✓ AGREGADO al resumen: TotOpIVARetTotal = {totales["iva_ret_total_count"]}')
-                    print(f'    ✓ AGREGADO al resumen: TotIVARetTotal = {int(totales["iva_ret_total"])}')
-                else:
-                    print(f'    ✗ NO agregado al resumen: TotIVARetTotal (total: {totales["iva_ret_total"]})')
 
                 # IVA Retenido Parcial
                 if totales['iva_ret_parcial']:
                     item['TotOpIVARetParcial'] = totales['iva_ret_parcial_count']
                     item['IVARetParcial'] = int(totales['iva_ret_parcial'])
-                    print(f'    ✓ AGREGADO al resumen: TotOpIVARetParcial = {totales["iva_ret_parcial_count"]}')
-                    print(f'    ✓ AGREGADO al resumen: TotIVARetParcial = {int(totales["iva_ret_parcial"])}')
-                else:
-                    print(f'    ✗ NO agregado al resumen: TotIVARetParcial (total: {totales["iva_ret_parcial"]})')
 
                 # TotOtrosImp: Otros Impuestos (IVA Retenido Total/Parcial)
                 otros_impuestos = []
@@ -261,21 +217,18 @@ class BookGeneratorService(models.AbstractModel):
                         'CodImp': 15,  # Código 15 = IVA Retenido Total
                         'TotMntImp': int(totales['iva_ret_total'])
                     })
-                    print(f'    ✓ AGREGADO TotOtrosImp: Código 15 (IVA Ret Total) = {int(totales["iva_ret_total"])}')
 
                 if totales['iva_ret_parcial']:
                     otros_impuestos.append({
                         'CodImp': 16,  # Código 16 = IVA Retenido Parcial
                         'TotMntImp': int(totales['iva_ret_parcial'])
                     })
-                    print(f'    ✓ AGREGADO TotOtrosImp: Código 16 (IVA Ret Parcial) = {int(totales["iva_ret_parcial"])}')
 
                 if otros_impuestos:
                     item['OtrosImpuestos'] = otros_impuestos
 
             resumen.append(item)
 
-        print(f'{"=" * 100}\n')
         return resumen
 
     def _prepare_detalles(self, book):
@@ -286,12 +239,6 @@ class BookGeneratorService(models.AbstractModel):
             list: Lista de diccionarios con datos de cada documento
         """
         detalles = []
-
-        print(f'\n{"=" * 100}')
-        print(f'PREPARANDO DETALLES DEL LIBRO - DEBUG')
-        print(f'{"=" * 100}')
-        print(f'Tipo de libro: {book.book_type}')
-        print(f'Total líneas: {len(book.line_ids)}')
 
         for line in book.line_ids:
             # Calcular MntIVA según reglas del SII
@@ -323,25 +270,12 @@ class BookGeneratorService(models.AbstractModel):
             if line.mnt_iva and line.mnt_iva > 0:
                 detalle['TasaImp'] = 19  # Tasa IVA en Chile
 
-            print(f'\n--- Línea {line.folio} (Tipo {line.document_type_code}) ---')
-            print(f'  MntNeto: {line.mnt_neto}, MntExe: {line.mnt_exento}, MntIVA: {line.mnt_iva}')
-
             # Campos específicos de LIBRO DE COMPRAS
             if book.book_type == 'purchase':
-                print(f'  → Es COMPRA, verificando campos específicos...')
-                print(f'     iva_uso_comun: {line.iva_uso_comun}')
-                print(f'     iva_no_recuperable: {line.iva_no_recuperable}')
-                print(f'     cod_iva_no_rec: {line.cod_iva_no_rec}')
-                print(f'     iva_ret_total: {line.iva_ret_total}')
-                print(f'     iva_ret_parcial: {line.iva_ret_parcial}')
-                print(f'     factor_proporcionalidad: {line.factor_proporcionalidad}')
-                print(f'     credito_iva_uso_comun: {line.credito_iva_uso_comun}')
+
                 # IVA Uso Común
                 if line.iva_uso_comun:
                     detalle['IVAUsoComun'] = int(line.iva_uso_comun)
-                    print(f'     ✓ AGREGADO: IVAUsoComun = {int(line.iva_uso_comun)}')
-                else:
-                    print(f'     ✗ NO agregado: IVAUsoComun (valor: {line.iva_uso_comun})')
 
                 # IVA No Recuperable
                 if line.iva_no_recuperable:
@@ -349,9 +283,6 @@ class BookGeneratorService(models.AbstractModel):
                         'CodIVANoRec': line.cod_iva_no_rec or '1',
                         'MntIVANoRec': int(line.iva_no_recuperable),
                     }
-                    print(f'     ✓ AGREGADO: IVANoRec = {int(line.iva_no_recuperable)} (código: {line.cod_iva_no_rec or "1"})')
-                else:
-                    print(f'     ✗ NO agregado: IVANoRec (valor: {line.iva_no_recuperable})')
 
                 # OtrosImp: Otros Impuestos (IVA Retenido Total/Parcial)
                 otros_imp_detalle = []
@@ -361,7 +292,6 @@ class BookGeneratorService(models.AbstractModel):
                         'TasaImp': 19,
                         'MntImp': int(line.iva_ret_total)
                     })
-                    print(f'     ✓ AGREGADO OtrosImp: Código 15 (IVA Ret Total) = {int(line.iva_ret_total)}')
 
                 if line.iva_ret_parcial:
                     otros_imp_detalle.append({
@@ -369,7 +299,6 @@ class BookGeneratorService(models.AbstractModel):
                         'TasaImp': 19,
                         'MntImp': int(line.iva_ret_parcial)
                     })
-                    print(f'     ✓ AGREGADO OtrosImp: Código 16 (IVA Ret Parcial) = {int(line.iva_ret_parcial)}')
 
                 if otros_imp_detalle:
                     detalle['OtrosImp'] = otros_imp_detalle
@@ -377,28 +306,15 @@ class BookGeneratorService(models.AbstractModel):
                 # IVA Retenido Total (para FC Electrónica tipo 46)
                 if line.iva_ret_total:
                     detalle['IVARetTotal'] = int(line.iva_ret_total)
-                    print(f'     ✓ AGREGADO: IVARetTotal = {int(line.iva_ret_total)}')
-                else:
-                    print(f'     ✗ NO agregado: IVARetTotal (valor: {line.iva_ret_total})')
 
                 # IVA Retenido Parcial
                 if line.iva_ret_parcial:
                     detalle['IVARetParcial'] = int(line.iva_ret_parcial)
-                    print(f'     ✓ AGREGADO: IVARetParcial = {int(line.iva_ret_parcial)}')
-                else:
-                    print(f'     ✗ NO agregado: IVARetParcial (valor: {line.iva_ret_parcial})')
 
                 # CreditoIVAUsoComun NO se incluye (no está en esquema XSD del SII)
                 # Observaciones NO se incluyen en LibroCompraVenta (no es válido según esquema SII)
 
             detalles.append(detalle)
-
-        print(f'\n{"=" * 100}')
-        print(f'RESUMEN DETALLES:')
-        print(f'  Total detalles generados: {len(detalles)}')
-        campos_agregados = sum(1 for d in detalles if any(k in d for k in ['IVAUsoComun', 'IVANoRec', 'IVARetTotal', 'IVARetParcial']))
-        print(f'  Detalles con campos específicos de compras: {campos_agregados}')
-        print(f'{"=" * 100}\n')
 
         return detalles
 
@@ -416,10 +332,8 @@ class BookGeneratorService(models.AbstractModel):
             # Seleccionar template según tipo de operación
             if book.book_type == 'purchase':
                 template_id = 'l10n_cl_edi_certification.book_purchase_template'
-                print('✓ Usando template de LIBRO DE COMPRAS')
             else:  # sale
                 template_id = 'l10n_cl_edi_certification.book_sales_template'
-                print('✓ Usando template de LIBRO DE VENTAS')
 
             xml_string = self.env['ir.qweb']._render(template_id, {
                 'book_data': book_data,

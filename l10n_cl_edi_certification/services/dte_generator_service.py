@@ -73,11 +73,6 @@ class DteGeneratorService(models.AbstractModel):
     def _prepare_dte_data(self, case, folio):
         """Prepara los datos para generar el DTE"""
 
-        print('=' * 80)
-        print(f'PREPARANDO DTE: {case.name} (Folio: {folio})')
-        print(f'Tipo Documento: {case.document_type_code}')
-        print(f'Número de líneas: {len(case.line_ids)}')
-
         client_info = case.project_id.client_info_id
         if not client_info:
             raise UserError(_('El proyecto no tiene información del cliente configurada.'))
@@ -201,12 +196,6 @@ class DteGeneratorService(models.AbstractModel):
         else:
             # Sin líneas: crear una línea descriptiva
             # El SII requiere al menos una línea de detalle
-            import logging
-            _logger = logging.getLogger(__name__)
-            print('⚠️ Caso sin líneas - Creando detalle por defecto')
-            print(f'Total del caso: {total}')
-            print(f'Reference reason: {case.reference_reason}')
-
             item_name = case.reference_reason or 'Item de prueba'
 
             # Para NC/ND administrativas (total=0), NO incluir QtyItem/PrcItem
@@ -233,8 +222,6 @@ class DteGeneratorService(models.AbstractModel):
 
         # Validación: siempre debe haber al menos un detalle
         if not detalle:
-            import logging
-            _logger = logging.getLogger(__name__)
             print('❌ ERROR CRÍTICO: No se generó ningún detalle')
             detalle.append({
                 'NroLinDet': 1,
@@ -248,11 +235,6 @@ class DteGeneratorService(models.AbstractModel):
         # Preparar descuentos/recargos globales
         desc_rcg_global = []
         if case.global_discount > 0:
-            print(f'\n📊 DESCUENTO GLOBAL DETECTADO:')
-            print(f'  Porcentaje: {case.global_discount}%')
-            print(f'  Monto calculado: {case.discount_amount:,}')
-            print(f'  Se enviará como PORCENTAJE (TpoValor=%)')
-
             # IMPORTANTE: El caso de prueba SII REQUIERE descuento PORCENTUAL
             # DscRcgGlobal es INFORMATIVO, los Totales deben estar DESPUÉS del descuento
             dr_data = {
@@ -284,13 +266,6 @@ class DteGeneratorService(models.AbstractModel):
             'MntTotal': int(total),
         }
 
-        print(f'✓ Detalles generados: {len(detalle)}')
-        for idx, det in enumerate(detalle, 1):
-            qty = det.get('QtyItem', 'N/A')
-            precio = det.get('PrcItem', 'N/A')
-            print(f'  Línea {idx}: {det["NmbItem"]} - Qty: {qty} - Precio: {precio} - Total: {det["MontoItem"]}')
-        print('=' * 80)
-
         # Timestamp de firma (obligatorio según XSD) - SIN timezone
         santiago_tz = pytz.timezone('America/Santiago')
         now_santiago = datetime.now(santiago_tz)
@@ -315,11 +290,6 @@ class DteGeneratorService(models.AbstractModel):
         """
         from markupsafe import Markup
 
-        print('\n' + '=' * 80)
-        print('GENERANDO XML CON TEMPLATE QWEB')
-        print(f"Template: l10n_cl_edi_certification.dte_certification_template")
-        print(f"Detalles a renderizar: {len(dte_data.get('Detalle', []))}")
-
         # Renderizar el template
         template = 'l10n_cl_edi_certification.dte_certification_template'
         xml_content = self.env['ir.qweb']._render(template, {
@@ -339,15 +309,10 @@ class DteGeneratorService(models.AbstractModel):
         # de Enterprise ya lo hace automáticamente cuando se firma el documento
 
         # Verificar si el XML contiene elementos Detalle
-        if '<Detalle>' in xml_str:
-            print(f"✓ XML contiene elementos <Detalle>")
-            detalle_count = xml_str.count('<Detalle>')
-            print(f"  Cantidad de elementos <Detalle>: {detalle_count}")
-        else:
+        if '<Detalle>' not in xml_str:
             print("❌ ERROR: XML NO contiene elementos <Detalle>")
             print("Primeros 1000 caracteres del XML:")
             print(xml_str[:1000])
-        print('=' * 80 + '\n')
 
         return xml_str
 
@@ -363,14 +328,23 @@ class DteGeneratorService(models.AbstractModel):
         from markupsafe import Markup
         import base64
 
-        # Obtener el CAF assignment para este tipo de documento
+        # Obtener el CAF assignment que cubra ESTE FOLIO específico
+        folio = dte_data['Encabezado']['IdDoc']['Folio']
         assignment = self.env['l10n_cl_edi.certification.folio.assignment'].search([
             ('project_id', '=', case.project_id.id),
             ('document_type_id', '=', case.document_type_id.id),
+            ('folio_start', '<=', folio),
+            ('folio_end', '>=', folio),
         ], limit=1)
 
         if not assignment:
-            raise UserError(_('No hay asignación de folios para este tipo de documento.'))
+            raise UserError(_(
+                'No hay asignación de CAF para el folio %s del tipo de documento %s.\n\n'
+                'Debe cargar un CAF que cubra este folio en "Folios Asignados".'
+            ) % (folio, case.document_type_id.name))
+
+        print(f'\n✓ Datos extraídos del CAF para Folio {folio}:')
+        print(f'  Asignación Odoo: {assignment.folio_start} - {assignment.folio_end}')
 
         # Obtener el contenido XML del CAF
         try:
@@ -395,6 +369,25 @@ class DteGeneratorService(models.AbstractModel):
             rng_d = da.xpath('RNG/D')[0].text  # Desde
             rng_h = da.xpath('RNG/H')[0].text  # Hasta
 
+            print(f'  RNG del archivo CAF: {rng_d} - {rng_h}')
+
+            # VALIDACIÓN: Verificar que el folio esté en el rango del CAF
+            if int(folio) < int(rng_d) or int(folio) > int(rng_h):
+                raise UserError(_(
+                    '❌ ERROR CRÍTICO: El folio %s NO está en el rango del archivo CAF.\n\n'
+                    'Asignación en Odoo: %s-%s\n'
+                    'Rango en archivo CAF: %s-%s\n\n'
+                    'El archivo CAF cargado NO corresponde a la asignación.\n'
+                    'SOLUCIÓN: Sube el archivo CAF correcto en la asignación de folios %s-%s.'
+                ) % (
+                    folio,
+                    assignment.folio_start, assignment.folio_end,
+                    rng_d, rng_h,
+                    assignment.folio_start, assignment.folio_end
+                ))
+
+            print(f'  ✓ Folio {folio} está dentro del rango del CAF')
+
             # Extraer FA (Fecha de Autorización)
             fa = da.xpath('FA')[0].text
 
@@ -406,12 +399,8 @@ class DteGeneratorService(models.AbstractModel):
             frma_node = caf_xml.xpath('//AUTORIZACION/CAF/FRMA')
             frma = frma_node[0].text if frma_node else ''
 
-            print(f'\n✓ Datos extraídos del CAF:')
-            print(f'  RNG: {rng_d} - {rng_h}')
-            print(f'  FA: {fa}')
-            print(f'  RSAPK/M: {rsapk_m[:50]}...')
-            print(f'  RSAPK/E: {rsapk_e}')
-
+        except UserError:
+            raise
         except Exception as e:
             raise UserError(_('Error al extraer datos del CAF: %s') % str(e))
 
@@ -469,7 +458,6 @@ class DteGeneratorService(models.AbstractModel):
                 raise UserError(_('El nodo RSASK está vacío en el CAF.'))
 
             rsask_pem = rsask_pem.strip()  # Limpiar espacios y saltos de línea
-            print(f'✓ RSASK extraído del CAF')
         except Exception as e:
             raise UserError(_('Error al extraer RSASK del CAF: %s') % str(e))
 
@@ -499,7 +487,6 @@ class DteGeneratorService(models.AbstractModel):
 
             # Codificar firma en base64
             frmt = base64.b64encode(signature).decode('utf-8')
-            print(f'✓ TED firmado con RSASK del CAF')
 
         except Exception as e:
             raise UserError(_('Error al firmar el DD con RSASK: %s') % str(e))

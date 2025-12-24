@@ -1,0 +1,204 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista List inline para documentos de simulación -->
+        <record id="view_simulation_document_list" model="ir.ui.view">
+            <field name="name">simulation.document.list</field>
+            <field name="model">l10n_cl_edi.certification.generated.document</field>
+            <field name="arch" type="xml">
+                <list>
+                    <field name="document_type_id"/>
+                    <field name="folio"/>
+                    <field name="issue_date"/>
+                    <field name="receiver_name"/>
+                    <field name="mnt_neto" sum="Total Neto"/>
+                    <field name="mnt_iva" sum="Total IVA"/>
+                    <field name="mnt_total" sum="Total"/>
+                    <field name="state" widget="badge"/>
+                    <field name="reference_folio" optional="show"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Form: Simulación -->
+        <record id="view_certification_simulation_form" model="ir.ui.view">
+            <field name="name">certification.simulation.form</field>
+            <field name="model">l10n_cl_edi.certification.simulation</field>
+            <field name="arch" type="xml">
+                <form string="Set de Simulación">
+                    <header>
+                        <button name="action_generate_documents" string="Generar Documentos" type="object"
+                                invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_create_envelope" string="Crear Sobre" type="object"
+                                invisible="state != 'generated'" class="oe_highlight"/>
+                        <button name="action_send_to_sii" string="Enviar al SII" type="object"
+                                invisible="state != 'envelope_created'" class="oe_highlight"/>
+                        <button name="action_check_sii_status" string="Consultar Estado SII" type="object"
+                                invisible="not sii_track_id" class="btn-primary"/>
+                        <button name="action_view_envelope" string="Ver Sobre" type="object"
+                                invisible="not envelope_id" class="btn-info"/>
+                        <button name="action_back_to_draft" string="Regresar a Borrador" type="object"
+                                invisible="state == 'draft'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,generated,envelope_created,sent,accepted"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Aceptado" bg_color="text-bg-success" invisible="state != 'accepted'"/>
+                        <widget name="web_ribbon" title="Rechazado" bg_color="text-bg-danger" invisible="state != 'rejected'"/>
+                        <div class="oe_title">
+                            <label for="name" string="Nombre"/>
+                            <h1>
+                                <field name="name" placeholder="ej. Simulación Enero 2025"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Información General">
+                                <field name="project_id"/>
+                                <field name="total_documents"/>
+                                <field name="documents_count" readonly="1" invisible="documents_count == 0"/>
+                                <field name="date_from"/>
+                                <field name="date_to"/>
+                            </group>
+                            <group string="Distribución de Documentos">
+                                <label for="invoices_count" string="Facturas Electrónicas (33)"/>
+                                <div class="o_row">
+                                    <field name="invoices_count" class="oe_inline"/>
+                                    <span class="mx-2">documentos desde folio</span>
+                                    <field name="folio_start_invoice" placeholder="0 = automático" class="oe_inline"/>
+                                </div>
+                                <label for="credit_notes_count" string="Notas de Crédito (61)"/>
+                                <div class="o_row">
+                                    <field name="credit_notes_count" class="oe_inline"/>
+                                    <span class="mx-2">documentos desde folio</span>
+                                    <field name="folio_start_credit_note" placeholder="0 = automático" class="oe_inline"/>
+                                </div>
+                                <label for="debit_notes_count" string="Notas de Débito (56)"/>
+                                <div class="o_row">
+                                    <field name="debit_notes_count" class="oe_inline"/>
+                                    <span class="mx-2">documentos desde folio</span>
+                                    <field name="folio_start_debit_note" placeholder="0 = automático" class="oe_inline"/>
+                                </div>
+                            </group>
+                        </group>
+                        <group string="Datos del Receptor">
+                            <group>
+                                <field name="receiver_id" options="{'no_create': True, 'no_open': True}"/>
+                                <field name="receiver_rut" readonly="1"/>
+                                <field name="receiver_name" readonly="1"/>
+                            </group>
+                            <group>
+                                <field name="receiver_giro" readonly="1"/>
+                                <field name="receiver_address" readonly="1"/>
+                                <field name="receiver_comuna" readonly="1"/>
+                            </group>
+                        </group>
+                        <group string="Sobre de Envío" invisible="not envelope_id">
+                            <field name="envelope_id" readonly="1"/>
+                        </group>
+                        <group string="Envío al SII" invisible="not sii_track_id">
+                            <field name="sii_track_id" readonly="1"/>
+                            <field name="sii_send_date" readonly="1"/>
+                        </group>
+                        <notebook>
+                            <page string="Documentos Generados" name="documents" invisible="documents_count == 0">
+                                <field name="document_ids" readonly="1"
+                                       context="{'tree_view_ref': 'l10n_cl_edi_certification.view_simulation_document_list'}"/>
+                            </page>
+                            <page string="Notas" name="notes">
+                                <field name="notes" placeholder="Notas adicionales sobre la simulación..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista List: Simulación -->
+        <record id="view_certification_simulation_list" model="ir.ui.view">
+            <field name="name">certification.simulation.list</field>
+            <field name="model">l10n_cl_edi.certification.simulation</field>
+            <field name="arch" type="xml">
+                <list string="Sets de Simulación"
+                      decoration-muted="state == 'draft'"
+                      decoration-info="state == 'generated'"
+                      decoration-warning="state in ['envelope_created', 'sent']"
+                      decoration-success="state == 'accepted'"
+                      decoration-danger="state == 'rejected'">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="total_documents"/>
+                    <field name="documents_count"/>
+                    <field name="date_from"/>
+                    <field name="date_to"/>
+                    <field name="sii_track_id"/>
+                    <field name="state" widget="badge"
+                           decoration-muted="state == 'draft'"
+                           decoration-info="state == 'generated'"
+                           decoration-warning="state in ['envelope_created', 'sent']"
+                           decoration-success="state == 'accepted'"
+                           decoration-danger="state == 'rejected'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Search -->
+        <record id="view_certification_simulation_search" model="ir.ui.view">
+            <field name="name">certification.simulation.search</field>
+            <field name="model">l10n_cl_edi.certification.simulation</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Simulaciones">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="receiver_id"/>
+                    <field name="sii_track_id"/>
+                    <separator/>
+                    <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="Documentos Generados" name="generated" domain="[('state', '=', 'generated')]"/>
+                    <filter string="Sobre Creado" name="envelope_created" domain="[('state', '=', 'envelope_created')]"/>
+                    <filter string="Enviado" name="sent" domain="[('state', '=', 'sent')]"/>
+                    <filter string="Aceptado" name="accepted" domain="[('state', '=', 'accepted')]"/>
+                    <filter string="Rechazado" name="rejected" domain="[('state', '=', 'rejected')]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Proyecto" name="group_project" context="{'group_by': 'project_id'}"/>
+                        <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_certification_simulation" model="ir.actions.act_window">
+            <field name="name">Sets de Simulación</field>
+            <field name="res_model">l10n_cl_edi.certification.simulation</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear un nuevo Set de Simulación
+                </p>
+                <p>
+                    Los sets de simulación generan entre 20 y 100 documentos con datos realistas
+                    para cumplir con la etapa de SIMULACIÓN del proceso de certificación ante el SII.
+                </p>
+                <p>
+                    Los documentos generados incluyen:
+                    <ul>
+                        <li>Facturas Electrónicas (33)</li>
+                        <li>Notas de Crédito (61)</li>
+                        <li>Notas de Débito (56)</li>
+                    </ul>
+                </p>
+            </field>
+        </record>
+
+        <!-- Menuitem -->
+        <menuitem id="menu_certification_simulation"
+                  name="Simulación"
+                  parent="menu_certification_root"
+                  action="action_certification_simulation"
+                  sequence="50"/>
+
+    </data>
+</odoo>

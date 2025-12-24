@@ -13,8 +13,17 @@
                                 invisible="state != 'generated'" class="oe_highlight"/>
                         <button name="action_validate" string="Validar" type="object"
                                 invisible="state not in ['signed', 'validated']" class="oe_highlight"/>
+                        <button name="action_generate_ted" string="Generar TED" type="object"
+                                invisible="not xml_dte_signed or ted_xml"
+                                class="btn-primary" icon="fa-barcode"/>
+                        <button name="action_generate_pdf" string="Generar PDF Impreso" type="object"
+                                invisible="not ted_xml or pdf_file"
+                                class="oe_highlight" icon="fa-file-pdf-o"/>
                         <button name="action_download_xml" string="Descargar XML" type="object"
                                 invisible="not xml_dte_signed"
+                                class="btn-secondary" icon="fa-download"/>
+                        <button name="action_download_pdf" string="Descargar PDF" type="object"
+                                invisible="not pdf_file"
                                 class="btn-primary" icon="fa-download"/>
                         <button name="action_view_case" string="Ver Caso" type="object"
                                 invisible="not case_id"
@@ -50,6 +59,7 @@
                             <group string="Información General">
                                 <field name="project_id" readonly="1"/>
                                 <field name="case_id" readonly="1"/>
+                                <field name="simulation_id" readonly="1"/>
                                 <field name="document_type_code" invisible="1"/>
                                 <field name="issue_date"/>
                                 <field name="emission_date"/>
@@ -57,17 +67,25 @@
                             <group string="Receptor">
                                 <field name="receiver_rut"/>
                                 <field name="receiver_name"/>
+                                <field name="receiver_giro"/>
+                                <field name="receiver_address"/>
+                                <field name="receiver_comuna"/>
                             </group>
                         </group>
                         <group string="Montos">
                             <group>
                                 <field name="currency_id" invisible="1"/>
-                                <field name="subtotal_taxable" widget="monetary"/>
-                                <field name="subtotal_exempt" widget="monetary"/>
+                                <field name="mnt_neto"/>
+                                <field name="mnt_exento"/>
+                                <field name="subtotal_taxable" widget="monetary" invisible="not subtotal_taxable"/>
+                                <field name="subtotal_exempt" widget="monetary" invisible="not subtotal_exempt"/>
                             </group>
                             <group>
-                                <field name="tax_amount" widget="monetary"/>
-                                <field name="total_amount" widget="monetary" class="oe_subtotal_footer_separator"/>
+                                <field name="iva_percent"/>
+                                <field name="mnt_iva"/>
+                                <field name="mnt_total" class="oe_subtotal_footer_separator"/>
+                                <field name="tax_amount" widget="monetary" invisible="not tax_amount"/>
+                                <field name="total_amount" widget="monetary" class="oe_subtotal_footer_separator" invisible="not total_amount"/>
                             </group>
                         </group>
                         <notebook>
@@ -85,9 +103,36 @@
                             </page>
                             <page string="Timbre Electrónico (TED)" name="ted">
                                 <group>
-                                    <field name="ted_xml" widget="text"/>
-                                    <field name="barcode_image" widget="image" class="oe_avatar"/>
+                                    <group string="TED XML">
+                                        <field name="ted_xml" widget="text"/>
+                                    </group>
+                                    <group string="Código de Barras PDF417">
+                                        <field name="barcode_image" widget="image" class="oe_avatar"/>
+                                    </group>
                                 </group>
+                                <div class="alert alert-info" role="alert" invisible="ted_xml">
+                                    <p><strong>Instrucciones:</strong></p>
+                                    <ol>
+                                        <li>Primero debe firmar el documento (botón "Firmar")</li>
+                                        <li>Luego genere el TED (botón "Generar TED")</li>
+                                        <li>El TED contiene el código de barras PDF417 requerido por el SII</li>
+                                    </ol>
+                                </div>
+                            </page>
+                            <page string="PDF Impreso" name="pdf">
+                                <group>
+                                    <field name="pdf_file" filename="pdf_filename" widget="binary"/>
+                                    <field name="pdf_filename" invisible="1"/>
+                                </group>
+                                <div class="alert alert-info" role="alert" invisible="pdf_file">
+                                    <p><strong>Instrucciones:</strong></p>
+                                    <ol>
+                                        <li>Primero debe generar el TED (pestaña anterior)</li>
+                                        <li>Luego genere el PDF impreso (botón "Generar PDF Impreso")</li>
+                                        <li>El PDF incluye el timbre electrónico con código de barras PDF417</li>
+                                        <li>Este PDF es el documento impreso tributario válido ante el SII</li>
+                                    </ol>
+                                </div>
                             </page>
                             <page string="Validación" name="validation">
                                 <group>
@@ -102,6 +147,22 @@
                                     <field name="sii_status"/>
                                     <field name="sii_response_date"/>
                                 </group>
+                            </page>
+                            <page string="Referencias" name="references" invisible="not reference_folio">
+                                <group>
+                                    <group string="Documento Referenciado">
+                                        <field name="reference_doc_type"/>
+                                        <field name="reference_folio"/>
+                                        <field name="reference_date"/>
+                                    </group>
+                                    <group string="Detalles de Referencia">
+                                        <field name="reference_code"/>
+                                        <field name="reference_reason"/>
+                                    </group>
+                                </group>
+                            </page>
+                            <page string="Detalle de Líneas" name="detalle" invisible="not detalle_json">
+                                <field name="detalle_json" widget="text"/>
                             </page>
                         </notebook>
                     </sheet>
@@ -123,7 +184,8 @@
                       decoration-success="state == 'accepted'"
                       decoration-danger="state == 'rejected'">
                     <field name="project_id"/>
-                    <field name="case_id"/>
+                    <field name="case_id" optional="show"/>
+                    <field name="simulation_id" optional="show"/>
                     <field name="document_type_id"/>
                     <field name="folio"/>
                     <field name="issue_date"/>
@@ -148,6 +210,7 @@
                 <search string="Buscar Documentos">
                     <field name="project_id"/>
                     <field name="case_id"/>
+                    <field name="simulation_id"/>
                     <field name="document_type_id"/>
                     <field name="folio"/>
                     <field name="receiver_name"/>
@@ -162,6 +225,8 @@
                     <separator/>
                     <filter string="Con XML Firmado" name="has_signed" domain="[('xml_dte_signed', '!=', False)]"/>
                     <filter string="Sin Sobre" name="no_envelope" domain="[('envelope_id', '=', False)]"/>
+                    <filter string="De Simulación" name="from_simulation" domain="[('simulation_id', '!=', False)]"/>
+                    <filter string="De Casos de Prueba" name="from_cases" domain="[('case_id', '!=', False)]"/>
                     <group expand="0" string="Agrupar por">
                         <filter string="Proyecto" name="group_project" context="{'group_by': 'project_id'}"/>
                         <filter string="Caso" name="group_case" context="{'group_by': 'case_id'}"/>

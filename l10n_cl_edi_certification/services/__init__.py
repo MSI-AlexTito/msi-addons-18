@@ -6,3 +6,6 @@ from . import envelope_service
 from . import sii_integration_service
 from . import folio_service
 from . import book_generator_service
+from . import simulation_generator_service
+from . import exchange_generator_service
+from . import pdf_generator_service

@@ -105,13 +105,6 @@ class CertificationFolioAssignment(models.Model):
         store=True
     )
 
-    # Constraints
-    _sql_constraints = [
-        ('project_document_type_unique',
-         'unique(project_id, document_type_id)',
-         'Ya existe una asignación de folios para este tipo de documento en el proyecto.'),
-    ]
-
     @api.depends('document_type_id.name', 'folio_start', 'folio_end')
     def _compute_complete_name(self):
         for record in self:
@@ -284,6 +277,36 @@ class CertificationFolioAssignment(models.Model):
                 raise ValidationError(_('El folio de inicio debe ser mayor a 0.'))
             if assignment.folio_end < assignment.folio_start:
                 raise ValidationError(_('El folio final debe ser mayor o igual al folio inicial.'))
+
+    @api.constrains('project_id', 'document_type_id', 'folio_start', 'folio_end')
+    def _check_overlapping_folios(self):
+        """Verifica que no existan rangos de folios superpuestos para el mismo tipo de documento"""
+        for assignment in self:
+            if not assignment.project_id or not assignment.document_type_id:
+                continue
+
+            # Buscar otras asignaciones del mismo proyecto y tipo de documento
+            overlapping = self.search([
+                ('id', '!=', assignment.id),
+                ('project_id', '=', assignment.project_id.id),
+                ('document_type_id', '=', assignment.document_type_id.id),
+                '|',
+                '&', ('folio_start', '<=', assignment.folio_start), ('folio_end', '>=', assignment.folio_start),
+                '&', ('folio_start', '<=', assignment.folio_end), ('folio_end', '>=', assignment.folio_end),
+            ])
+
+            if overlapping:
+                raise ValidationError(_(
+                    'El rango de folios %s-%s se superpone con otro CAF existente (%s-%s) '
+                    'para el tipo de documento %s.\n\n'
+                    'Los rangos de folios deben ser secuenciales y no superpuestos.'
+                ) % (
+                    assignment.folio_start,
+                    assignment.folio_end,
+                    overlapping[0].folio_start,
+                    overlapping[0].folio_end,
+                    assignment.document_type_id.name
+                ))
 
     @api.constrains('caf_id', 'folio_start', 'folio_end')
     def _check_caf_range(self):

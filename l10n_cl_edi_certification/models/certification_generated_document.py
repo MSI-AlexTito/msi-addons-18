@@ -34,6 +34,11 @@ class CertificationGeneratedDocument(models.Model):
         string='Sobre de Envío',
         help='Sobre en el que se incluyó este documento'
     )
+    simulation_id = fields.Many2one(
+        'l10n_cl_edi.certification.simulation',
+        string='Simulación',
+        help='Simulación que generó este documento'
+    )
 
     # Tipo y Folio
     document_type_id = fields.Many2one(
@@ -72,6 +77,65 @@ class CertificationGeneratedDocument(models.Model):
     receiver_name = fields.Char(
         string='Razón Social Receptor'
     )
+    receiver_giro = fields.Char(
+        string='Giro Receptor'
+    )
+    receiver_address = fields.Char(
+        string='Dirección Receptor'
+    )
+    receiver_comuna = fields.Char(
+        string='Comuna Receptor'
+    )
+
+    # Montos (alternativa a los campos Monetary para compatibilidad SII)
+    mnt_neto = fields.Integer(
+        string='Monto Neto',
+        help='Monto neto (afecto a IVA)'
+    )
+    mnt_exento = fields.Integer(
+        string='Monto Exento',
+        help='Monto exento de IVA'
+    )
+    iva_percent = fields.Integer(
+        string='% IVA',
+        default=19
+    )
+    mnt_iva = fields.Integer(
+        string='Monto IVA',
+        help='Monto del IVA'
+    )
+    mnt_total = fields.Integer(
+        string='Monto Total',
+        help='Monto total del documento'
+    )
+
+    # Detalle de líneas (JSON)
+    detalle_json = fields.Text(
+        string='Detalle JSON',
+        help='Detalle de líneas del documento en formato JSON'
+    )
+
+    # Referencias (para NC y ND)
+    reference_doc_type = fields.Char(
+        string='Tipo Doc Referencia',
+        help='Tipo de documento referenciado (ej: 33 para Factura)'
+    )
+    reference_folio = fields.Integer(
+        string='Folio Referencia',
+        help='Folio del documento referenciado'
+    )
+    reference_date = fields.Date(
+        string='Fecha Referencia',
+        help='Fecha del documento referenciado'
+    )
+    reference_code = fields.Char(
+        string='Código Referencia',
+        help='Código de referencia (1=Anula, 2=Corrige texto, 3=Corrige monto)'
+    )
+    reference_reason = fields.Char(
+        string='Razón Referencia',
+        help='Razón de la referencia'
+    )
 
     # Archivos XML
     xml_dte_file = fields.Binary(
@@ -104,6 +168,18 @@ class CertificationGeneratedDocument(models.Model):
         string='Código de Barras',
         attachment=True,
         help='Imagen del código de barras PDF417'
+    )
+
+    # PDF Impreso
+    pdf_file = fields.Binary(
+        string='PDF Impreso',
+        attachment=True,
+        help='PDF impreso del documento con timbre TED'
+    )
+    pdf_filename = fields.Char(
+        string='Nombre PDF',
+        compute='_compute_filenames',
+        store=True
     )
 
     # Montos
@@ -183,9 +259,11 @@ class CertificationGeneratedDocument(models.Model):
                 base_name = f"DTE_{doc.document_type_code}_{doc.folio}"
                 doc.xml_dte_filename = f"{base_name}.xml"
                 doc.xml_dte_signed_filename = f"{base_name}_signed.xml"
+                doc.pdf_filename = f"{base_name}.pdf"
             else:
                 doc.xml_dte_filename = "DTE.xml"
                 doc.xml_dte_signed_filename = "DTE_signed.xml"
+                doc.pdf_filename = "DTE.pdf"
 
     # Métodos de Acción
     def action_validate(self):
@@ -290,15 +368,138 @@ class CertificationGeneratedDocument(models.Model):
 
         return True
 
+    def action_generate_ted(self):
+        """Genera el TED (Timbre Electrónico) y su código de barras PDF417"""
+        for doc in self:
+            print(f'\n[TED] Procesando documento: {doc.complete_name} (ID: {doc.id})')
+            print(f'  - Proyecto: {doc.project_id.name if doc.project_id else "N/A"}')
+            print(f'  - Estado: {doc.state}')
+            print(f'  - Tiene XML firmado: {bool(doc.xml_dte_signed)}')
+            print(f'  - Ya tiene TED: {bool(doc.ted_xml)}')
+            print(f'  - Ya tiene código de barras: {bool(doc.barcode_image)}')
+
+            if not doc.xml_dte_signed:
+                print(f'  ✗ ERROR: No tiene XML firmado')
+                raise UserError(_('Debe firmar el documento antes de generar el TED.'))
+
+            if doc.ted_xml and doc.barcode_image:
+                print(f'  ℹ️  Ya tiene TED y código de barras - REGENERANDO...')
+
+            print(f'  → Generando TED XML...')
+            # Generar TED XML
+            pdf_service = self.env['l10n_cl_edi.pdf.generator.service']
+            ted_xml = pdf_service.generate_ted_xml(doc)
+            print(f'  → TED XML generado ({len(ted_xml)} caracteres)')
+
+            print(f'  → Generando código de barras PDF417...')
+            # Generar código de barras PDF417
+            barcode_data = pdf_service.generate_ted_barcode(ted_xml)
+            print(f'  → Código de barras generado ({len(barcode_data)} bytes)')
+
+            # Guardar TED y código de barras
+            print(f'  → Guardando TED y código de barras...')
+            doc.write({
+                'ted_xml': ted_xml,
+                'barcode_image': base64.b64encode(barcode_data),
+            })
+            print(f'  ✓ TED guardado exitosamente')
+
+            doc.message_post(body=_('TED generado exitosamente.'))
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('TED Generado'),
+                'message': _('El Timbre Electrónico fue generado correctamente.'),
+                'type': 'success',
+            }
+        }
+
+    def action_generate_pdf(self):
+        """Genera el PDF impreso del documento con timbre TED"""
+        self.ensure_one()
+
+        print(f'\n[PDF] Procesando documento: {self.complete_name} (ID: {self.id})')
+        print(f'  - Proyecto: {self.project_id.name if self.project_id else "N/A"}')
+        print(f'  - Estado: {self.state}')
+        print(f'  - Tiene TED: {bool(self.ted_xml)}')
+        print(f'  - Tiene barcode: {bool(self.barcode_image)}')
+        print(f'  - Ya tiene PDF: {bool(self.pdf_file)}')
+
+        if not self.ted_xml or not self.barcode_image:
+            print(f'  ✗ ERROR: Falta TED o código de barras')
+            raise UserError(_(
+                'Debe generar el TED primero.\n'
+                'Use el botón "Generar TED" antes de generar el PDF.'
+            ))
+
+        # Generar PDF
+        print(f'  → Generando PDF impreso...')
+        pdf_service = self.env['l10n_cl_edi.pdf.generator.service']
+        pdf_data = pdf_service.generate_printed_pdf(self)
+        print(f'  → PDF generado ({len(pdf_data)} bytes)')
+
+        # Guardar PDF
+        print(f'  → Guardando PDF...')
+        self.write({
+            'pdf_file': base64.b64encode(pdf_data),
+        })
+        print(f'  ✓ PDF guardado exitosamente')
+
+        self.message_post(body=_('PDF impreso generado exitosamente.'))
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('PDF Generado'),
+                'message': _('El PDF impreso fue generado correctamente.'),
+                'type': 'success',
+            }
+        }
+
+    def action_download_pdf(self):
+        """Descarga el PDF impreso"""
+        self.ensure_one()
+        if not self.pdf_file:
+            raise UserError(_('No hay PDF generado para descargar.'))
+
+        # Buscar el attachment del PDF
+        attachment = self.env['ir.attachment'].search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', self.id),
+            ('res_field', '=', 'pdf_file'),
+        ], limit=1)
+
+        if not attachment:
+            raise UserError(_('No se encontró el archivo PDF.'))
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'self',
+        }
+
     def action_download_xml(self):
         """Descarga el XML firmado"""
         self.ensure_one()
         if not self.xml_dte_signed:
             raise UserError(_('No hay XML firmado para descargar.'))
 
+        # Buscar el attachment del XML firmado
+        attachment = self.env['ir.attachment'].search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', self.id),
+            ('res_field', '=', 'xml_dte_signed'),
+        ], limit=1)
+
+        if not attachment:
+            raise UserError(_('No se encontró el archivo XML firmado.'))
+
         return {
             'type': 'ir.actions.act_url',
-            'url': f'/web/content/{self.id}?field=xml_dte_signed&download=true&filename={self.xml_dte_signed_filename}',
+            'url': f'/web/content/{attachment.id}?download=true',
             'target': 'self',
         }
 

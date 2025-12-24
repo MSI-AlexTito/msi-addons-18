@@ -8,5 +8,7 @@ from . import certification_envelope
 from . import certification_sii_response
 from . import certification_book
 from . import certification_book_line
+from . import certification_simulation
+from . import certification_exchange
 from . import test_case_template
 from . import test_case_template_line

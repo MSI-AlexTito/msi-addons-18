@@ -61,13 +61,6 @@ class EnvelopeService(models.AbstractModel):
 
         documents = envelope.generated_document_ids.sorted(key=document_sort_key)
 
-        print(f'\n{"=" * 80}')
-        print(f'ORDEN DE DOCUMENTOS EN EL SOBRE (para evitar REF-3-750)')
-        print(f'{"=" * 80}')
-        for idx, doc in enumerate(documents, 1):
-            print(f'{idx}. {doc.complete_name} - Tipo: {doc.document_type_code} - Folio: {doc.folio}')
-        print(f'{"=" * 80}\n')
-
         # Validar datos requeridos
         if not client_info.subject_serial_number:
             raise UserError(_('Debe configurar el RUT Emisor del Certificado en la información del cliente.'))
@@ -119,16 +112,12 @@ class EnvelopeService(models.AbstractModel):
             # Decodificar XML firmado
             dte_xml = base64.b64decode(doc.xml_dte_signed).decode('ISO-8859-1')
 
-            print(f'\n  Procesando: {doc.complete_name} (Folio {doc.folio})')
-
             # IMPORTANTE: Los DTEs dentro del SetDTE SÍ deben incluir su firma individual
             # según el esquema XSD y los ejemplos de Odoo Enterprise
             # Estructura: <DTE><Documento>...</Documento><Signature>...</Signature></DTE>
 
             # Remover solo la declaración XML (no la firma)
             dte_xml_sin_declaracion = re.sub(r'<\?xml[^>]+\?>\s*', '', dte_xml)
-
-            print(f'    ✓ DTE completo con firma - Longitud: {len(dte_xml_sin_declaracion)} chars')
 
             dtes.append({
                 'folio': doc.folio,
@@ -144,33 +133,11 @@ class EnvelopeService(models.AbstractModel):
         """Genera el XML del sobre usando template"""
         from markupsafe import Markup
 
-        print(f'\n{"=" * 80}')
-        print(f'GENERANDO XML DEL SOBRE (EnvioDTE)')
-        print(f'{"=" * 80}')
-        print(f'Cantidad de DTEs a incluir: {len(envelope_data["DTEs"])}')
-
-        # Mostrar información de la carátula
-        caratula = envelope_data["Caratula"]
-        print(f'\nCarátula:')
-        print(f'  RUT Emisor: {caratula["RutEmisor"]}')
-        print(f'  RUT Envía: {caratula["RutEnvia"]}')
-        print(f'  RUT Receptor: {caratula["RutReceptor"]} (SII)')
-        print(f'  Fecha Resolución: {caratula["FchResol"]}')
-        print(f'  Nro Resolución: {caratula["NroResol"]}')
-
-        print(f'\nSubtotales por tipo de documento:')
-        for subtot in caratula["SubTotDTE"]:
-            print(f'  Tipo {subtot["TpoDTE"]}: {subtot["NroDTE"]} documento(s)')
-
         # Convertir los XMLs de DTEs a Markup para que QWeb no los escape
-        print(f'\nDTEs a incluir en el sobre:')
-        for idx, dte_item in enumerate(envelope_data['DTEs'], 1):
+        for dte_item in envelope_data['DTEs']:
             dte_item['xml'] = Markup(dte_item['xml'])
-            print(f'  {idx}. Folio {dte_item["folio"]}: {len(dte_item["xml"])} caracteres')
 
         template = 'l10n_cl_edi_certification.envelope_certification_template'
-
-        print(f'\nGenerando XML usando template: {template}')
 
         xml_content = self.env['ir.qweb']._render(template, {
             'envelope_data': envelope_data,
@@ -196,10 +163,6 @@ class EnvelopeService(models.AbstractModel):
 
         # Nota: No es necesario agregar la declaración XML aquí porque el método _sign_full_xml
         # de Enterprise ya lo hace automáticamente
-
-        print(f'\n✅ EnvioDTE generado exitosamente')
-        print(f'Longitud total: {len(xml_str)} caracteres')
-        print(f'{"=" * 80}\n')
 
         return xml_str
 

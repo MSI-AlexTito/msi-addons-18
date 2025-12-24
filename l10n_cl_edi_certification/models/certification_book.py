@@ -165,41 +165,17 @@ class CertificationBook(models.Model):
             if not book.line_ids:
                 raise UserError(_('Debe agregar al menos una línea al libro.'))
 
-            print('\n' + '#' * 100)
-            print(f'GENERANDO LIBRO DE {book.book_type.upper()}')
-            print('#' * 100)
-            print(f'Libro: {book.name}')
-            print(f'Proyecto: {book.project_id.name}')
-            print(f'Período: {book.period}')
-            print(f'Cantidad de líneas: {len(book.line_ids)}')
-
             try:
-                print(f'\n🔧 Paso 1: Obteniendo servicio...')
                 # Llamar al servicio de generación de libro
                 book_service = self.env['l10n_cl_edi.book.generator.service'].sudo()
-                print(f'✓ Servicio obtenido: {book_service}')
-
-                print(f'\n🔧 Paso 2: Generando XML...')
                 book_xml = book_service.generate_book_xml(book)
-                print(f'✓ XML generado: {len(book_xml)} caracteres')
-                print(f'  Primeras líneas:')
-                for line in book_xml.split('\n')[:5]:
-                    print(f'    {line}')
-
-                print(f'\n🔧 Paso 3: Codificando XML...')
                 xml_encoded = base64.b64encode(book_xml.encode('ISO-8859-1'))
-                print(f'✓ XML codificado: {len(xml_encoded)} bytes')
 
-                print(f'\n🔧 Paso 4: Guardando en BD...')
                 # Guardar XML y cambiar estado
                 book.write({
                     'book_xml': xml_encoded,
                     'state': 'generated',
                 })
-                print(f'✓ XML guardado en BD')
-
-                print(f'\n✅ LIBRO GENERADO EXITOSAMENTE')
-                print('#' * 100 + '\n')
 
                 book.with_context(lines_count=book.lines_count).message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_book_generated'),
@@ -208,7 +184,6 @@ class CertificationBook(models.Model):
 
             except Exception as e:
                 _logger.error(f'❌ Error generando libro: {str(e)}')
-                print(f'\n❌ ERROR: {str(e)}')
                 import traceback
                 traceback.print_exc()
                 raise UserError(_('Error al generar el libro: %s') % str(e))
@@ -221,28 +196,18 @@ class CertificationBook(models.Model):
             if not book.book_xml:
                 raise UserError(_('Debe generar el libro primero.'))
 
-            print('\n' + '#' * 100)
-            print(f'FIRMANDO LIBRO DE {book.book_type.upper()}')
-            print('#' * 100)
-
             # Decodificar XML
             xml_string = base64.b64decode(book.book_xml).decode('ISO-8859-1')
 
-            print(f'Libro: {book.name}')
-            print(f'✓ XML decodificado: {len(xml_string)} caracteres')
-
             try:
-
                 # Obtener certificado desde client_info
                 if not book.project_id.client_info_id:
                     raise UserError(_('El proyecto no tiene información de cliente configurada.'))
 
                 client = book.project_id.client_info_id
-                print(f'✓ Cliente: {client.social_reason} ({client.rut})')
 
                 # Obtener datos del certificado
                 cert_data, cert_password = client.get_certificate_data()
-                print(f'✓ Certificado obtenido: {len(cert_data)} bytes')
 
                 # Obtener company
                 company = book.project_id.company_id
@@ -258,16 +223,12 @@ class CertificationBook(models.Model):
                     company,
                     reference_uri='#SetDoc'  # Referencia al ID del EnvioLibro
                 )
-                print(f'✓ XML firmado: {len(xml_signed)} caracteres')
 
                 # Guardar XML firmado
                 book.write({
                     'book_xml_signed': base64.b64encode(xml_signed.encode('ISO-8859-1')),
                     'state': 'signed',
                 })
-
-                print(f'\n✅ LIBRO FIRMADO EXITOSAMENTE')
-                print('#' * 100 + '\n')
 
                 book.message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_book_signed'),
@@ -276,7 +237,6 @@ class CertificationBook(models.Model):
 
             except Exception as e:
                 _logger.error(f'❌ Error firmando libro: {str(e)}')
-                print(f'\n❌ ERROR: {str(e)}')
                 import traceback
                 traceback.print_exc()
                 raise UserError(_('Error al firmar el libro: %s') % str(e))
@@ -295,27 +255,18 @@ class CertificationBook(models.Model):
             if not book.book_xml_signed:
                 raise UserError(_('No hay XML firmado para validar.'))
 
-            print('\n' + '#' * 100)
-            print(f"ACTION: VALIDAR XML CON XSD")
-            print('#' * 100)
-
             try:
                 # Decodificar el XML firmado
                 xml_content = base64.b64decode(book.book_xml_signed)
-                print(f"XML decodificado: {len(xml_content)} bytes")
 
                 # Parsear el XML
                 xml_doc = etree.fromstring(xml_content)
-                print(f"XML parseado correctamente")
 
                 # Buscar el archivo XSD en el módulo (carpeta schemas)
                 module_path = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
                 xsd_path = os.path.join(module_path, 'schemas', 'LibroCV_v10.xsd')
 
                 if not os.path.exists(xsd_path):
-                    print(f"⚠️ Archivo XSD no encontrado en: {xsd_path}")
-                    print(f"📝 Continuando sin validación XSD (asumiéndolo válido)")
-
                     # Si no hay XSD, marcar como validado de todos modos
                     book.write({
                         'state': 'validated',
@@ -328,29 +279,20 @@ class CertificationBook(models.Model):
                         subtype_xmlid='mail.mt_note'
                     )
 
-                    print(f"\n✅ XML marcado como validado (sin XSD)")
-                    print('#' * 100 + '\n')
-
                     return {
                         'type': 'ir.actions.client',
                         'tag': 'reload',
                     }
-
-                print(f"Cargando XSD desde: {xsd_path}")
 
                 # Cargar el esquema XSD
                 with open(xsd_path, 'rb') as xsd_file:
                     xsd_doc = etree.parse(xsd_file)
                     xsd_schema = etree.XMLSchema(xsd_doc)
 
-                print(f"XSD cargado correctamente")
-
                 # Validar el XML contra el XSD
                 is_valid = xsd_schema.validate(xml_doc)
 
                 if is_valid:
-                    print(f"\n✅ XML VÁLIDO según esquema XSD")
-
                     # Marcar como validado
                     book.write({
                         'state': 'validated',
@@ -362,8 +304,6 @@ class CertificationBook(models.Model):
                         source_ref=self.env.ref('l10n_cl_edi_certification.message_book_xsd_validated_success'),
                         subtype_xmlid='mail.mt_note'
                     )
-
-                    print('#' * 100 + '\n')
 
                     return {
                         'type': 'ir.actions.client',
@@ -388,9 +328,6 @@ class CertificationBook(models.Model):
                         source_ref=self.env.ref('l10n_cl_edi_certification.message_book_xsd_validation_errors'),
                         subtype_xmlid='mail.mt_note'
                     )
-
-                    print(f"\n❌ XML INVÁLIDO")
-                    print('#' * 100 + '\n')
 
                     raise UserError(_('El XML no cumple con el esquema XSD del SII:\n\n%s') % error_text)
 
@@ -420,10 +357,6 @@ class CertificationBook(models.Model):
             if book.state not in ['signed', 'validated']:
                 raise UserError(_('El libro debe estar firmado antes de enviar al SII.'))
 
-            print('\n' + '#' * 100)
-            print(f"ACTION: ENVIAR LIBRO AL SII")
-            print('#' * 100)
-
             try:
                 # Llamar al servicio de integración SII
                 sii_service = self.env['l10n_cl_edi.sii.integration.service'].sudo()
@@ -449,11 +382,6 @@ class CertificationBook(models.Model):
                 sii_response = self.env['l10n_cl_edi.certification.sii.response'].create(response_vals)
                 book.sii_response_id = sii_response.id
 
-                print(f'\n✅ Libro enviado y registrado')
-                print(f'  Track ID: {track_id}')
-                print(f'  Estado: sent')
-                print('#' * 100 + '\n')
-
                 book.with_context(track_id=track_id).message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_book_sent_to_sii'),
                     subtype_xmlid='mail.mt_note'
@@ -467,7 +395,6 @@ class CertificationBook(models.Model):
 
             except Exception as e:
                 _logger.error(f'❌ Error enviando libro al SII: {str(e)}')
-                print(f'\\n❌ ERROR: {str(e)}')
                 import traceback
                 traceback.print_exc()
                 raise UserError(_('Error al enviar el libro al SII: %s') % str(e))
@@ -477,10 +404,6 @@ class CertificationBook(models.Model):
         for book in self:
             if not book.sii_track_id:
                 raise UserError(_('El libro no tiene Track ID. Debe enviarlo primero al SII.'))
-
-            print('#' * 100)
-            print(f'ACTION: CONSULTAR ESTADO DE LIBRO EN SII')
-            print('#' * 100 + '\n')
 
             try:
                 # Llamar al servicio de integración SII
@@ -511,12 +434,6 @@ class CertificationBook(models.Model):
                         'response_date': fields.Datetime.now(),
                     })
 
-                print(f'\n✅ Estado consultado y actualizado')
-                print(f'  Track ID: {book.sii_track_id}')
-                print(f'  Estado SII: {status}')
-                print(f'  Estado libro: {new_state}')
-                print('\n' + '#' * 100 + '\n')
-
                 # Mensaje descriptivo
                 status_messages = {
                     'received': 'Recibido - En proceso de validación',
@@ -540,7 +457,6 @@ class CertificationBook(models.Model):
 
             except Exception as e:
                 _logger.error(f'❌ Error consultando estado: {str(e)}')
-                print(f'\\n❌ ERROR: {str(e)}')
                 import traceback
                 traceback.print_exc()
                 raise UserError(_('Error al consultar estado: %s') % str(e))
@@ -590,12 +506,6 @@ class CertificationBook(models.Model):
         if not self.project_id:
             raise UserError(_('El libro debe estar asociado a un proyecto.'))
 
-        print('\n' + '#' * 100)
-        print(f'IMPORTANDO DOCUMENTOS DEL PROYECTO AL LIBRO DE VENTAS')
-        print('#' * 100)
-        print(f'Libro: {self.name}')
-        print(f'Proyecto: {self.project_id.name}')
-
         # Buscar documentos generados del proyecto
         generated_docs = self.env['l10n_cl_edi.certification.generated.document'].search([
             ('case_id.project_id', '=', self.project_id.id),
@@ -605,24 +515,17 @@ class CertificationBook(models.Model):
         if not generated_docs:
             raise UserError(_('No hay documentos generados en el proyecto para importar.'))
 
-        print(f'✓ Encontrados {len(generated_docs)} documentos generados')
-
         # Verificar si ya existen líneas para estos documentos
         existing_lines = self.env['l10n_cl_edi.certification.book.line'].search([
             ('book_id', '=', self.id),
             ('generated_document_id', 'in', generated_docs.ids),
         ])
 
-        if existing_lines:
-            print(f'⚠️  Ya existen {len(existing_lines)} líneas importadas para algunos documentos')
-
         # Filtrar documentos que no están ya en el libro
         docs_to_import = generated_docs.filtered(lambda d: d.id not in existing_lines.mapped('generated_document_id').ids)
 
         if not docs_to_import:
             raise UserError(_('Todos los documentos del proyecto ya están importados en este libro.'))
-
-        print(f'✓ Importando {len(docs_to_import)} documentos nuevos...')
 
         # Crear líneas para cada documento
         created_lines = 0
@@ -641,16 +544,9 @@ class CertificationBook(models.Model):
                 line._onchange_generated_document_id()
 
                 created_lines += 1
-                print(f'  ✓ Línea creada para Folio {doc.folio} - {doc.document_type_name}')
 
             except Exception as e:
                 _logger.warning(f'Error importando documento {doc.folio}: {str(e)}')
-                print(f'  ⚠️  Error en Folio {doc.folio}: {str(e)}')
-
-        print(f'\n✅ IMPORTACIÓN COMPLETADA')
-        print(f'  Líneas creadas: {created_lines}')
-        print(f'  Total líneas en libro: {len(self.line_ids)}')
-        print('#' * 100 + '\n')
 
         self.with_context(imported_count=created_lines).message_post_with_source(
             source_ref=self.env.ref('l10n_cl_edi_certification.message_book_documents_imported'),

@@ -1,0 +1,206 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+    <data>
+
+        <!-- Vista Form: Intercambio -->
+        <record id="view_certification_exchange_form" model="ir.ui.view">
+            <field name="name">certification.exchange.form</field>
+            <field name="model">l10n_cl_edi.certification.exchange</field>
+            <field name="arch" type="xml">
+                <form string="Proceso de Intercambio">
+                    <header>
+                        <button name="action_process_received_dte" string="Procesar DTE Recibido" type="object"
+                                invisible="state != 'draft'" class="oe_highlight"/>
+                        <button name="action_generate_responses" string="Generar Respuestas" type="object"
+                                invisible="state != 'dte_received'" class="oe_highlight"/>
+                        <button name="action_mark_uploaded" string="Marcar como Subido al SII" type="object"
+                                invisible="state != 'responses_generated'" class="btn-primary"/>
+                        <button name="action_mark_completed" string="Marcar como Completado" type="object"
+                                invisible="state != 'uploaded_to_sii'" class="oe_highlight"/>
+                        <button name="action_back_to_draft" string="Regresar a Borrador" type="object"
+                                invisible="state == 'draft'"/>
+                        <field name="state" widget="statusbar"
+                               statusbar_visible="draft,dte_received,responses_generated,uploaded_to_sii,completed"/>
+                    </header>
+                    <sheet>
+                        <widget name="web_ribbon" title="Completado" bg_color="text-bg-success" invisible="state != 'completed'"/>
+                        <div class="oe_title">
+                            <label for="name" string="Nombre"/>
+                            <h1>
+                                <field name="name" placeholder="ej. Intercambio Enero 2025"/>
+                            </h1>
+                        </div>
+                        <group>
+                            <group string="Información General">
+                                <field name="project_id"/>
+                            </group>
+                        </group>
+
+                        <notebook>
+                            <page string="1. XML Descargado del SII" name="sii_xml">
+                                <div class="alert alert-info" role="alert" invisible="state != 'draft'">
+                                    <strong>Instrucciones:</strong>
+                                    <ol>
+                                        <li>Ingresa el RUT de tu empresa en el portal del SII</li>
+                                        <li>El SII generará un DTE de prueba para intercambio</li>
+                                        <li>Descarga el archivo XML que te proporcione el SII</li>
+                                        <li>Súbelo aquí abajo</li>
+                                        <li>Haz clic en "Procesar DTE Recibido"</li>
+                                    </ol>
+                                </div>
+                                <group string="Archivo XML del SII">
+                                    <field name="sii_downloaded_xml" filename="sii_downloaded_filename"/>
+                                    <field name="sii_downloaded_filename" invisible="1"/>
+                                </group>
+                                <group string="Información Extraída del DTE" invisible="state == 'draft'">
+                                    <group>
+                                        <field name="dte_type"/>
+                                        <field name="dte_folio"/>
+                                        <field name="dte_date"/>
+                                    </group>
+                                    <group>
+                                        <field name="dte_rut_emisor"/>
+                                        <field name="dte_rut_receptor"/>
+                                        <field name="dte_monto_total"/>
+                                    </group>
+                                </group>
+                            </page>
+
+                            <page string="2. Respuestas Generadas" name="responses" invisible="state in ['draft', 'dte_received']">
+                                <group>
+                                    <group string="1. Respuesta de Intercambio (EnvioRecibos)">
+                                        <field name="envio_recibos_xml" filename="envio_recibos_filename"/>
+                                        <field name="envio_recibos_filename" invisible="1"/>
+                                        <button name="action_download_envio_recibos" string="Descargar EnvioRecibos"
+                                                type="object" class="btn-primary" icon="fa-download"
+                                                invisible="not envio_recibos_xml"/>
+                                    </group>
+                                    <group string="2. Recibo de Mercaderías (Ley 19.983)">
+                                        <field name="recepcion_envio_xml" filename="recepcion_envio_filename"/>
+                                        <field name="recepcion_envio_filename" invisible="1"/>
+                                        <button name="action_download_recepcion_envio" string="Descargar RecepcionEnvio"
+                                                type="object" class="btn-primary" icon="fa-download"
+                                                invisible="not recepcion_envio_xml"/>
+                                    </group>
+                                </group>
+                                <group>
+                                    <group string="3. Resultado Comercial (ResultadoDTE)">
+                                        <field name="resultado_dte_xml" filename="resultado_dte_filename"/>
+                                        <field name="resultado_dte_filename" invisible="1"/>
+                                        <button name="action_download_resultado_dte" string="Descargar ResultadoDTE"
+                                                type="object" class="btn-primary" icon="fa-download"
+                                                invisible="not resultado_dte_xml"/>
+                                    </group>
+                                </group>
+                                <div class="alert alert-info" role="alert" invisible="state != 'responses_generated'">
+                                    <strong>Instrucciones para subir al SII:</strong>
+                                    <ol>
+                                        <li>Descargar los 3 archivos XML (botones arriba)</li>
+                                        <li>Ir al portal del SII: <a href="https://maullin.sii.cl/cvc_cgi/dte/ee_ingreso_env_recep" target="_blank">Portal de Certificación</a></li>
+                                        <li>Subir uno por uno en orden:
+                                            <ul>
+                                                <li>1. EnvioRecibos (Respuesta de Intercambio)</li>
+                                                <li>2. RecepcionEnvio (Recibo de Mercaderías)</li>
+                                                <li>3. ResultadoDTE (Resultado Comercial)</li>
+                                            </ul>
+                                        </li>
+                                        <li>Una vez subidos los 3, hacer clic en "Marcar como Subido al SII"</li>
+                                    </ol>
+                                </div>
+                            </page>
+
+                            <page string="Notas" name="notes">
+                                <field name="notes" placeholder="Notas adicionales sobre el proceso de intercambio..."/>
+                            </page>
+                        </notebook>
+                    </sheet>
+                    <chatter/>
+                </form>
+            </field>
+        </record>
+
+        <!-- Vista List: Intercambio -->
+        <record id="view_certification_exchange_list" model="ir.ui.view">
+            <field name="name">certification.exchange.list</field>
+            <field name="model">l10n_cl_edi.certification.exchange</field>
+            <field name="arch" type="xml">
+                <list string="Procesos de Intercambio"
+                      decoration-muted="state == 'draft'"
+                      decoration-info="state == 'dte_received'"
+                      decoration-warning="state in ['responses_generated', 'uploaded_to_sii']"
+                      decoration-success="state == 'completed'">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="dte_type"/>
+                    <field name="dte_folio"/>
+                    <field name="dte_date"/>
+                    <field name="dte_monto_total"/>
+                    <field name="state" widget="badge"
+                           decoration-muted="state == 'draft'"
+                           decoration-info="state == 'dte_received'"
+                           decoration-warning="state in ['responses_generated', 'uploaded_to_sii']"
+                           decoration-success="state == 'completed'"/>
+                </list>
+            </field>
+        </record>
+
+        <!-- Vista Search -->
+        <record id="view_certification_exchange_search" model="ir.ui.view">
+            <field name="name">certification.exchange.search</field>
+            <field name="model">l10n_cl_edi.certification.exchange</field>
+            <field name="arch" type="xml">
+                <search string="Buscar Procesos de Intercambio">
+                    <field name="name"/>
+                    <field name="project_id"/>
+                    <field name="dte_type"/>
+                    <field name="dte_folio"/>
+                    <separator/>
+                    <filter string="Borrador" name="draft" domain="[('state', '=', 'draft')]"/>
+                    <filter string="DTE Recibido" name="dte_received" domain="[('state', '=', 'dte_received')]"/>
+                    <filter string="Respuestas Generadas" name="responses_generated" domain="[('state', '=', 'responses_generated')]"/>
+                    <filter string="Subido al SII" name="uploaded_to_sii" domain="[('state', '=', 'uploaded_to_sii')]"/>
+                    <filter string="Completado" name="completed" domain="[('state', '=', 'completed')]"/>
+                    <group expand="0" string="Agrupar por">
+                        <filter string="Proyecto" name="group_project" context="{'group_by': 'project_id'}"/>
+                        <filter string="Tipo DTE" name="group_dte_type" context="{'group_by': 'dte_type'}"/>
+                        <filter string="Estado" name="group_state" context="{'group_by': 'state'}"/>
+                    </group>
+                </search>
+            </field>
+        </record>
+
+        <!-- Action -->
+        <record id="action_certification_exchange" model="ir.actions.act_window">
+            <field name="name">Intercambio</field>
+            <field name="res_model">l10n_cl_edi.certification.exchange</field>
+            <field name="view_mode">list,form</field>
+            <field name="context">{}</field>
+            <field name="help" type="html">
+                <p class="o_view_nocontent_smiling_face">
+                    Crear un nuevo Proceso de Intercambio
+                </p>
+                <p>
+                    El proceso de intercambio es parte de la certificación SII.
+                    El SII te envía un DTE y debes generar 3 respuestas:
+                </p>
+                <ol>
+                    <li><strong>EnvioRecibos</strong>: Respuesta de Intercambio (Acuse de recibo técnico)</li>
+                    <li><strong>RecepcionEnvio</strong>: Recibo de Mercaderías (Ley 19.983)</li>
+                    <li><strong>ResultadoDTE</strong>: Resultado Comercial (Aceptación DTE)</li>
+                </ol>
+                <p>
+                    Estos 3 archivos XML deben ser subidos al portal del SII en:
+                    <br/><strong>DECLARAR AVANCE DE LA POSTULACIÓN</strong>
+                </p>
+            </field>
+        </record>
+
+        <!-- Menuitem -->
+        <menuitem id="menu_certification_exchange"
+                  name="Intercambio"
+                  parent="menu_certification_root"
+                  action="action_certification_exchange"
+                  sequence="60"/>
+
+    </data>
+</odoo>

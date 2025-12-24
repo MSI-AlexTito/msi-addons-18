@@ -65,19 +65,12 @@ class ImportSIITestSetWizard(models.TransientModel):
 
         if self.file:
             try:
-                print('=' * 80)
-                print('WIZARD: Iniciando procesamiento de archivo')
-                print(f'Nombre del archivo: {self.filename}')
 
                 # Decodificar archivo
-                print('Decodificando archivo desde base64...')
                 file_content = base64.b64decode(self.file)
-                print(f'Archivo decodificado - Tamaño: {len(file_content)} bytes')
 
                 # Parsear
-                print('Llamando al parser SII...')
                 result = SIITestSetParser.parse_file(file_content)
-                print(f'Parser completado - Resultado: {result.get("attention_number")}, {len(result.get("cases", []))} casos')
 
                 # Actualizar campos
                 self.attention_number = result['attention_number']
@@ -126,10 +119,6 @@ class ImportSIITestSetWizard(models.TransientModel):
                     self.error_messages = False
 
                 self.preview_text = '\n'.join(preview_lines)
-
-                print('Vista previa generada:')
-                print(self.preview_text)
-                print('=' * 80)
 
             except Exception as e:
                 _logger.exception('ERROR EN WIZARD AL PROCESAR ARCHIVO:')
@@ -226,8 +215,6 @@ class ImportSIITestSetWizard(models.TransientModel):
                     })
 
         # Tercera pasada: copiar precios de factura referenciada a NC/ND
-        print('\n' + '=' * 80)
-        print('COPIANDO PRECIOS Y/O ÍTEMS DE FACTURAS REFERENCIADAS A NC/ND')
         for case_data in result['cases']:
             current_case = case_map.get(case_data['code'])
 
@@ -243,20 +230,11 @@ class ImportSIITestSetWizard(models.TransientModel):
             ref_case = case_map.get(ref_code)
 
             if not ref_case:
-                print(f'⚠️ Caso {current_case.code}: No se encontró caso referenciado {ref_code}')
                 continue
-
-            print(f'\nProcesando {current_case.code} (NC/ND) → Referencia: {ref_case.code}')
-            print(f'  Tipo: {current_case.document_type_id.name}')
-            print(f'  Razón: {current_case.reference_reason or "Sin razón"}')
 
             # CASO 1: NC/ND sin ítems que es ANULACIÓN → Copiar TODOS los ítems de la factura
             if not current_case.line_ids and current_case.reference_reason and 'ANULA' in current_case.reference_reason.upper():
-                print(f'  ⚠️ Es una ANULACIÓN sin ítems → Copiando TODOS los ítems de la factura referenciada')
-
-                if not ref_case.line_ids:
-                    print(f'    ❌ ERROR: Factura referenciada {ref_case.code} tampoco tiene ítems')
-                else:
+                if ref_case.line_ids:
                     # Copiar todos los ítems de la factura original
                     for idx, ref_line in enumerate(ref_case.line_ids, start=1):
                         new_line = CaseLine.create({
@@ -268,15 +246,12 @@ class ImportSIITestSetWizard(models.TransientModel):
                             'discount': ref_line.discount,
                             'exempt': ref_line.exempt,
                         })
-                        print(f'    ✓ Copiado ítem {idx}: {ref_line.description} - Qty: {ref_line.qty} - Precio: {ref_line.price_unit}')
 
                 # Recalcular montos del caso
                 current_case._compute_amounts()
-                print(f'    ✓ Montos recalculados - Total: {current_case.total_amount}')
 
             # CASO 2: NC/ND con ítems parciales → Copiar solo precios
             elif current_case.line_ids:
-                print(f'  ℹ️ Tiene {len(current_case.line_ids)} ítems → Copiando precios de ítems coincidentes')
 
                 for current_line in current_case.line_ids:
                     # Buscar línea correspondiente en factura original (por nombre del ítem)
@@ -287,23 +262,11 @@ class ImportSIITestSetWizard(models.TransientModel):
                     if ref_line:
                         ref_line = ref_line[0]  # Tomar la primera coincidencia
 
-                        # Copiar precio y descuento de la factura original
-                        print(f'    ✓ {current_line.description}:')
-                        print(f'      Antes: precio={current_line.price_unit}, desc={current_line.discount}%')
-                        print(f'      Después: precio={ref_line.price_unit}, desc={ref_line.discount}%')
-
                         current_line.write({
                             'price_unit': ref_line.price_unit,
                             'discount': ref_line.discount,
                         })
-                    else:
-                        print(f'    ⚠️ {current_line.description}: No se encontró en factura original')
 
-            # CASO 3: NC/ND sin ítems administrativa (CORRIGE GIRO, etc.) → Dejar como está
-            else:
-                print(f'  ℹ️ NC/ND administrativa sin ítems (monto $0) - OK')
-
-        print('=' * 80 + '\n')
 
         # =====================================================================
         # PASO 4: Crear libros si fueron detectados
@@ -312,9 +275,6 @@ class ImportSIITestSetWizard(models.TransientModel):
         books = result.get('books', {})
 
         if books.get('sales_book'):
-            print('\n' + '=' * 80)
-            print('CREANDO LIBRO DE VENTAS')
-            print('=' * 80)
 
             sales_book_data = books['sales_book']
             sales_book = self.env['l10n_cl_edi.certification.book'].create({
@@ -326,11 +286,6 @@ class ImportSIITestSetWizard(models.TransientModel):
                 'notes': 'Importado desde set de pruebas SII. El libro se generará automáticamente desde los documentos del SET BASICO.',
             })
 
-            print(f'✓ Libro de Ventas creado: {sales_book.name}')
-            print(f'  ID: {sales_book.id}')
-            print(f'  Las líneas se agregarán automáticamente al generar DTEs del SET BASICO')
-            print('=' * 80 + '\n')
-
             books_created.append({
                 'name': sales_book.name,
                 'type': 'sale',
@@ -338,9 +293,6 @@ class ImportSIITestSetWizard(models.TransientModel):
             })
 
         if books.get('purchase_book'):
-            print('\n' + '=' * 80)
-            print('CREANDO LIBRO DE COMPRAS')
-            print('=' * 80)
 
             purchase_book_data = books['purchase_book']
             purchase_book = self.env['l10n_cl_edi.certification.book'].create({
@@ -351,10 +303,6 @@ class ImportSIITestSetWizard(models.TransientModel):
                 'period': fields.Date.context_today(self).strftime('%Y-%m'),
                 'notes': 'Importado desde set de pruebas SII.',
             })
-
-            print(f'✓ Libro de Compras creado: {purchase_book.name}')
-            print(f'  ID: {purchase_book.id}')
-            print(f'  Creando {len(purchase_book_data.get("lines", []))} líneas...')
 
             # Crear líneas del libro de compras
             BookLine = self.env['l10n_cl_edi.certification.book.line']
@@ -379,9 +327,6 @@ class ImportSIITestSetWizard(models.TransientModel):
                 else:
                     mnt_total = mnt_neto + mnt_exento + mnt_iva
 
-                print(f'\n    >> Procesando Línea {line_data["sequence"]}: {line_data["document_type_name"]} Folio {line_data["folio"]}')
-                print(f'       MntNeto: {mnt_neto}, MntExe: {mnt_exento}, MntIVA: {mnt_iva}, Total: {mnt_total}')
-
                 # Preparar valores base de la línea
                 line_vals = {
                     'book_id': purchase_book.id,
@@ -405,13 +350,11 @@ class ImportSIITestSetWizard(models.TransientModel):
                 # Tipo 46: Factura de Compra Electrónica → IVA Retenido Total
                 if tipo_doc == '46' and mnt_iva > 0:
                     line_vals['iva_ret_total'] = mnt_iva
-                    print(f'       ✓ AUTO-CONFIG: IVA Retenido Total = {mnt_iva}')
 
                 # Tipo 33 Folio 67: Entrega Gratuita → IVA No Recuperable código 4
                 elif tipo_doc == '33' and folio == 67 and mnt_iva > 0:
                     line_vals['iva_no_recuperable'] = mnt_iva
                     line_vals['cod_iva_no_rec'] = '4'  # Código 4: Entregas gratuitas
-                    print(f'       ✓ AUTO-CONFIG: IVA No Recuperable = {mnt_iva} (código 4: entrega gratuita)')
 
                 # Tipo 30: Factura → Solo IVA Uso Común si la observación lo indica
                 elif tipo_doc == '30' and mnt_iva > 0 and 'IVA USO COMUN' in line_data.get('observations', '').upper():
@@ -420,14 +363,9 @@ class ImportSIITestSetWizard(models.TransientModel):
                     # Calcular crédito IVA uso común
                     credito = int(Decimal(str(mnt_iva)) * Decimal('0.60'))
                     line_vals['credito_iva_uso_comun'] = credito
-                    print(f'       ✓ AUTO-CONFIG: IVA Uso Común = {mnt_iva}, Factor = 0.60, Crédito = {credito}')
 
                 # Crear la línea con todos los valores (base + específicos)
-                new_line = BookLine.create(line_vals)
-                print(f'    ✓ Línea creada: ID {new_line.id}')
-
-            print(f'✓ {len(purchase_book_data.get("lines", []))} líneas creadas')
-            print('=' * 80 + '\n')
+                BookLine.create(line_vals)
 
             books_created.append({
                 'name': purchase_book.name,

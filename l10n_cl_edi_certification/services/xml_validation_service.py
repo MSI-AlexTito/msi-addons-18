@@ -31,10 +31,6 @@ class XmlValidationService(models.AbstractModel):
                 - is_valid (bool): True si el XML es válido
                 - errors (list): Lista de errores encontrados
         """
-        print(f'\n{"=" * 100}')
-        print(f'VALIDANDO XML CONTRA ESQUEMA XSD')
-        print(f'{"=" * 100}')
-
         try:
             # Ruta al esquema XSD
             module_path = os.path.dirname(os.path.dirname(__file__))
@@ -42,12 +38,8 @@ class XmlValidationService(models.AbstractModel):
 
             if not os.path.exists(xsd_path):
                 _logger.warning(f'Esquema XSD no encontrado en: {xsd_path}')
-                print(f'⚠️  Esquema XSD no encontrado - Omitiendo validación')
-                print(f'    Ubicación esperada: {xsd_path}')
-                print(f'{"=" * 100}\n')
                 return True, []
 
-            print(f'✓ Esquema encontrado: {xsd_path}')
 
             # Cargar el esquema XSD
             # IMPORTANTE: Cambiar el directorio de trabajo para que lxml pueda resolver
@@ -66,8 +58,6 @@ class XmlValidationService(models.AbstractModel):
                 # Restaurar directorio original
                 os.chdir(current_dir)
 
-            print(f'✓ Esquema XSD cargado correctamente (con dependencias)')
-
             # Parsear el XML a validar
             xml_doc = etree.fromstring(xml_string.encode('ISO-8859-1'))
 
@@ -75,8 +65,6 @@ class XmlValidationService(models.AbstractModel):
             is_valid = xmlschema.validate(xml_doc)
 
             if is_valid:
-                print(f'\n✅ XML VÁLIDO - Cumple con el esquema LibroCV_v10.xsd')
-                print(f'{"=" * 100}\n')
                 return True, []
             else:
                 # Recopilar errores
@@ -84,24 +72,15 @@ class XmlValidationService(models.AbstractModel):
                 for error in xmlschema.error_log:
                     error_msg = f'Línea {error.line}: {error.message}'
                     errors.append(error_msg)
-                    print(f'  ❌ {error_msg}')
-
-                print(f'\n❌ XML INVÁLIDO - {len(errors)} errores encontrados')
-                print(f'{"=" * 100}\n')
                 return False, errors
 
         except etree.XMLSyntaxError as e:
             error_msg = f'Error de sintaxis XML: {str(e)}'
-            print(f'❌ {error_msg}')
-            print(f'{"=" * 100}\n')
             return False, [error_msg]
 
         except Exception as e:
             error_msg = f'Error al validar XML: {str(e)}'
             _logger.error(error_msg)
-            print(f'⚠️  {error_msg}')
-            print(f'    Omitiendo validación...')
-            print(f'{"=" * 100}\n')
             # En caso de error técnico, permitir continuar
             return True, []
 

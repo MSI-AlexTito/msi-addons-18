@@ -129,34 +129,16 @@ class CertificationEnvelope(models.Model):
             if not envelope.generated_document_ids:
                 raise UserError(_('Debe agregar al menos un documento al sobre.'))
 
-            print(f'\n{"#" * 100}')
-            print(f'CREANDO SOBRE DE ENVÍO')
-            print(f'{"#" * 100}')
-            print(f'Sobre: {envelope.name}')
-            print(f'Proyecto: {envelope.project_id.name}')
-            print(f'Cantidad de documentos: {len(envelope.generated_document_ids)}')
-
-            print(f'\nEstado de documentos a incluir:')
-            for doc in envelope.generated_document_ids:
-                print(f'  - {doc.complete_name}:')
-                print(f'      Estado: {doc.state}')
-                print(f'      XML Firmado: {"✓" if doc.xml_dte_signed else "✗"}')
-                print(f'      Folio: {doc.folio}')
-
             # Verificar que todos los documentos tengan XML firmado
             unsigned_docs = envelope.generated_document_ids.filtered(lambda d: not d.xml_dte_signed)
 
             if unsigned_docs:
-                print(f'\n❌ Documentos sin firmar: {len(unsigned_docs)}')
-                for doc in unsigned_docs:
-                    print(f'  - {doc.complete_name} (estado: {doc.state})')
                 raise UserError(_(
                     'Todos los documentos deben estar firmados antes de crear el sobre.\n'
                     'Documentos sin firmar: %s'
                 ) % ', '.join(unsigned_docs.mapped('complete_name')))
 
             # Llamar al servicio de sobre
-            print(f'\n>>> Generando XML del sobre...')
             envelope_service = self.env['l10n_cl_edi.envelope.service']
             envelope_xml = envelope_service.create_envelope(envelope)
 
@@ -164,12 +146,6 @@ class CertificationEnvelope(models.Model):
                 'envelope_xml': base64.b64encode(envelope_xml.encode('ISO-8859-1')),
                 'state': 'created',
             })
-
-            print(f'\n✅ SOBRE CREADO EXITOSAMENTE')
-            print(f'Nombre: {envelope.name}')
-            print(f'Documentos incluidos: {envelope.documents_count}')
-            print(f'Tamaño XML: {len(envelope_xml)} caracteres')
-            print(f'{"#" * 100}\n')
 
             envelope.with_context(documents_count=envelope.documents_count).message_post_with_source(
                 source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_created'),
@@ -184,12 +160,6 @@ class CertificationEnvelope(models.Model):
             if not envelope.envelope_xml:
                 raise UserError(_('Debe crear el sobre primero.'))
 
-            print(f'\n{"#" * 100}')
-            print(f'FIRMANDO SOBRE DIGITALMENTE')
-            print(f'{"#" * 100}')
-            print(f'Sobre: {envelope.name}')
-            print(f'Proyecto: {envelope.project_id.name}')
-
             signature_service = self.env['l10n_cl_edi.signature.service']
             signed_xml = signature_service.sign_envelope(envelope)
 
@@ -197,10 +167,6 @@ class CertificationEnvelope(models.Model):
                 'envelope_xml_signed': base64.b64encode(signed_xml.encode('ISO-8859-1')),
                 'state': 'signed',
             })
-
-            print(f'\n✅ SOBRE FIRMADO EXITOSAMENTE')
-            print(f'Tamaño XML firmado: {len(signed_xml)} caracteres')
-            print(f'{"#" * 100}\n')
 
             envelope.message_post_with_source(
                 source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_signed'),
@@ -236,20 +202,10 @@ class CertificationEnvelope(models.Model):
             if envelope.state != 'signed':
                 raise UserError(_('El sobre debe estar firmado antes de enviar al SII.'))
 
-            print(f'\n{"#" * 100}')
-            print(f'INICIANDO ENVÍO AL SII')
-            print(f'{"#" * 100}')
-            print(f'Sobre: {envelope.name}')
-            print(f'Estado actual: {envelope.state}')
-            print(f'Documentos: {envelope.documents_count}')
-
             # Validar primero
-            print(f'\n>>> Validando sobre contra esquemas XSD...')
             envelope.action_validate_envelope()
-            print(f'✓ Validación exitosa')
 
             # Enviar al SII
-            print(f'\n>>> Enviando sobre al SII...')
             sii_service = self.env['l10n_cl_edi.sii.integration.service']
             track_id, response = sii_service.send_envelope(envelope)
 
@@ -278,12 +234,6 @@ class CertificationEnvelope(models.Model):
                 'sii_track_id': track_id,
             })
 
-            print(f'\n✅ SOBRE ENVIADO AL SII EXITOSAMENTE')
-            print(f'Track ID: {track_id}')
-            print(f'Estado sobre: sent')
-            print(f'Documentos actualizados: {len(envelope.generated_document_ids)}')
-            print(f'{"#" * 100}\n')
-
             envelope.with_context(track_id=track_id).message_post_with_source(
                 source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_sent'),
                 subtype_xmlid='mail.mt_note'
@@ -296,13 +246,6 @@ class CertificationEnvelope(models.Model):
         for envelope in self:
             if not envelope.sii_track_id:
                 raise UserError(_('El sobre no ha sido enviado al SII.'))
-
-            print(f'\n{"#" * 100}')
-            print(f'VERIFICANDO ESTADO DEL SOBRE EN SII')
-            print(f'{"#" * 100}')
-            print(f'Sobre: {envelope.name}')
-            print(f'Track ID: {envelope.sii_track_id}')
-            print(f'Estado actual: {envelope.state}')
 
             sii_service = self.env['l10n_cl_edi.sii.integration.service']
             status, response = sii_service.check_status(envelope.sii_track_id, envelope.project_id)
@@ -320,13 +263,9 @@ class CertificationEnvelope(models.Model):
             sii_response = self.env['l10n_cl_edi.certification.sii.response'].create(response_vals)
 
             # Actualizar estado del sobre
-            previous_state = envelope.state
             if status == 'accepted':
                 envelope.state = 'accepted'
                 envelope.generated_document_ids.write({'state': 'accepted'})
-                print(f'\n✅ SOBRE ACEPTADO POR EL SII')
-                print(f'Estado cambió de {previous_state} a accepted')
-                print(f'Documentos aceptados: {len(envelope.generated_document_ids)}')
                 envelope.message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_accepted'),
                     subtype_xmlid='mail.mt_note'
@@ -334,16 +273,12 @@ class CertificationEnvelope(models.Model):
             elif status == 'rejected':
                 envelope.state = 'rejected'
                 envelope.generated_document_ids.write({'state': 'rejected'})
-                print(f'\n❌ SOBRE RECHAZADO POR EL SII')
-                print(f'Estado cambió de {previous_state} a rejected')
                 envelope.message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_rejected'),
                     subtype_xmlid='mail.mt_note'
                 )
             elif status == 'with_repairs':
                 envelope.state = 'with_repairs'
-                print(f'\n⚠️  SOBRE CON REPAROS')
-                print(f'Estado cambió de {previous_state} a with_repairs')
                 envelope.message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_with_repairs'),
                     subtype_xmlid='mail.mt_note'
@@ -351,24 +286,16 @@ class CertificationEnvelope(models.Model):
             elif status in ['received', 'validating']:
                 # Estados intermedios: el sobre fue recibido pero aún no procesado
                 # Mantener en 'sent' pero registrar la consulta
-                print(f'\n⏳ SOBRE EN PROCESO DE VALIDACIÓN')
-                print(f'Estado SII: {status}')
-                print(f'Estado del sobre: {envelope.state} (sin cambios - esperando procesamiento)')
                 envelope.with_context(status=status).message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_status_received'),
                     subtype_xmlid='mail.mt_note'
                 )
             else:
                 # Estado desconocido
-                print(f'\n⚠️  ESTADO DESCONOCIDO')
-                print(f'Estado SII reportado: {status}')
-                print(f'Estado del sobre: {envelope.state}')
                 envelope.with_context(status=status).message_post_with_source(
                     source_ref=self.env.ref('l10n_cl_edi_certification.message_envelope_status_updated'),
                     subtype_xmlid='mail.mt_note'
                 )
-
-            print(f'{"#" * 100}\n')
 
         return True
 

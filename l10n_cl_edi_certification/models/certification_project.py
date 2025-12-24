@@ -282,26 +282,10 @@ class CertificationProject(models.Model):
     def action_validate(self):
         """Marca el proyecto como en validación"""
         for record in self:
-            print('=' * 80)
-            print('DEBUG ACTION_VALIDATE')
-            print(f'Proyecto: {record.name}')
-            print(f'cases_generated_count: {record.cases_generated_count}')
-            print(f'cases_total_count: {record.cases_total_count}')
-
             # Contar documentos generados (no importa el estado del caso)
             docs_generated = self.env['l10n_cl_edi.certification.generated.document'].search_count([
                 ('project_id', '=', record.id)
             ])
-            print(f'Documentos generados (total): {docs_generated}')
-
-            # Mostrar estados de los casos
-            cases = record.certification_case_ids
-            for case in cases:
-                has_doc = 'SÍ' if case.generated_document_id else 'NO'
-                doc_state = case.generated_document_id.state if case.generated_document_id else 'N/A'
-                print(f'  - Caso {case.code}: case_state={case.state}, tiene_doc={has_doc}, doc_state={doc_state}')
-
-            print('=' * 80)
 
             # La validación debería ser: al menos 1 documento generado (en cualquier estado)
             if docs_generated == 0:
@@ -481,4 +465,115 @@ class CertificationProject(models.Model):
             'view_mode': 'form',
             'target': 'new',
             'context': {'default_project_id': self.id},
+        }
+
+    # Métodos para Generación Masiva de PDFs (Última Etapa de Certificación)
+    def action_bulk_generate_ted(self):
+        """
+        Genera TED para todos los documentos firmados que no lo tienen.
+        Útil para la última etapa de certificación donde se requieren PDFs impresos.
+        """
+        self.ensure_one()
+
+        # Buscar documentos firmados sin código de barras
+        documents = self.env['l10n_cl_edi.certification.generated.document'].search([
+            ('project_id', '=', self.id),
+            ('xml_dte_signed', '!=', False),
+            ('barcode_image', '=', False),
+        ])
+
+        if not documents:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Sin documentos'),
+                    'message': _('No hay documentos firmados pendientes de generar TED y código de barras.'),
+                    'type': 'warning',
+                }
+            }
+
+        # Generar TED para cada documento
+        success_count = 0
+        error_count = 0
+        errors = []
+
+        for doc in documents:
+            try:
+                doc.action_generate_ted()
+                success_count += 1
+            except Exception as e:
+                error_count += 1
+                error_msg = str(e)
+                errors.append(f'{doc.complete_name}: {error_msg}')
+
+        # Mensaje de resultado
+        message = _(
+            'TED generado exitosamente para %d documentos.%s'
+        ) % (success_count, '\n\nErrores:\n' + '\n'.join(errors) if errors else '')
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('TED Generados'),
+                'message': message,
+                'type': 'success' if error_count == 0 else 'warning',
+                'sticky': True if error_count > 0 else False,
+            }
+        }
+
+    def action_bulk_generate_pdf(self):
+        """
+        Genera PDFs impresos para todos los documentos con TED que no tienen PDF.
+        Útil para la última etapa de certificación donde se requieren PDFs impresos.
+        """
+        self.ensure_one()
+
+        # Buscar documentos con TED sin PDF
+        documents = self.env['l10n_cl_edi.certification.generated.document'].search([
+            ('project_id', '=', self.id),
+            ('ted_xml', '!=', False),
+            ('pdf_file', '=', False),
+        ])
+
+        if not documents:
+            return {
+                'type': 'ir.actions.client',
+                'tag': 'display_notification',
+                'params': {
+                    'title': _('Sin documentos'),
+                    'message': _('No hay documentos con TED pendientes de generar PDF.'),
+                    'type': 'warning',
+                }
+            }
+
+        # Generar PDF para cada documento
+        success_count = 0
+        error_count = 0
+        errors = []
+
+        for doc in documents:
+            try:
+                doc.action_generate_pdf()
+                success_count += 1
+            except Exception as e:
+                error_count += 1
+                error_msg = str(e)
+                errors.append(f'{doc.complete_name}: {error_msg}')
+
+        # Mensaje de resultado
+        message = _(
+            'PDF generado exitosamente para %d documentos.%s'
+        ) % (success_count, '\n\nErrores:\n' + '\n'.join(errors) if errors else '')
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('PDFs Generados'),
+                'message': message,
+                'type': 'success' if error_count == 0 else 'warning',
+                'sticky': True if error_count > 0 else False,
+            }
         }

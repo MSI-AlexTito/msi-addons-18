@@ -63,6 +63,8 @@
             'cryptography',
             'pytz',
             'PyYAML',
+            'reportlab',
+            'pdf417gen',
         ],
     },
     'data': [
@@ -93,6 +95,8 @@
         'views/certification_client_views.xml',
         'views/certification_envelope_views.xml',
         'views/certification_book_views.xml',
+        'views/certification_simulation_views.xml',
+        'views/certification_exchange_views.xml',
         # TODO: Create these view files
         # 'views/certification_folio_assignment_views.xml',
         # 'views/certification_sii_response_views.xml',

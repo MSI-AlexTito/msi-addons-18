@@ -36,22 +36,6 @@ class ValidationService(models.AbstractModel):
         xml_bytes = base64.b64decode(document.xml_dte_signed)
         xml_content = xml_bytes.decode('ISO-8859-1')
 
-        print('\n' + '=' * 80)
-        print('VALIDANDO DOCUMENTO')
-        print(f'Documento ID: {document.id}, Folio: {document.folio}')
-        print(f'Longitud XML a validar: {len(xml_content)} caracteres')
-
-        # Verificar si el XML contiene Detalle
-        if '<Detalle>' in xml_content:
-            detalle_count = xml_content.count('<Detalle>')
-            print(f'✓ XML A VALIDAR contiene {detalle_count} elementos <Detalle>')
-        else:
-            print('❌ XML A VALIDAR NO contiene elementos <Detalle>')
-            print('\nPrimeros 2000 caracteres del XML a validar:')
-            print(xml_content[:2000])
-
-        print('=' * 80 + '\n')
-
         # 1. Validar esquema XSD (pasar bytes porque tiene declaración de encoding)
         is_valid_schema, schema_messages = self._validate_schema(xml_bytes, 'DTE')
         messages.extend(schema_messages)
@@ -73,15 +57,6 @@ class ValidationService(models.AbstractModel):
 
     @api.model
     def validate_envelope(self, envelope):
-        """
-        Valida un sobre de envío.
-
-        Args:
-            envelope: l10n_cl_edi.certification.envelope
-
-        Returns:
-            tuple: (bool, list) - (es_válido, mensajes)
-        """
         messages = []
 
         if not envelope.envelope_xml_signed:
@@ -103,21 +78,6 @@ class ValidationService(models.AbstractModel):
         return is_valid, messages
 
     def _validate_schema(self, xml_bytes, schema_type):
-        """
-        Valida XML contra esquema XSD usando el sistema de Odoo.
-
-        Busca esquemas en múltiples ubicaciones:
-        1. ir.attachment con prefijo 'l10n_cl_edi' (Odoo Enterprise)
-        2. ir.attachment con prefijo 'l10n_cl_edi_certification' (este módulo)
-        3. Archivos del módulo l10n_cl_edi
-
-        Args:
-            xml_bytes (bytes): Contenido XML en bytes (con declaración de encoding)
-            schema_type (str): Tipo de esquema ('DTE', 'EnvioDTE', etc.)
-
-        Returns:
-            tuple: (bool, list) - (es_válido, mensajes)
-        """
         try:
             from odoo.tools.xml_utils import validate_xml_from_attachment
             from lxml import etree
@@ -136,48 +96,10 @@ class ValidationService(models.AbstractModel):
                 ('l10n_cl_edi_certification', 'Este módulo'),
             ]
 
-            print("="*80)
-            print(f"INICIANDO BÚSQUEDA DE XSD: {xsd_filename}")
-            print("="*80)
-
-            # Buscar en ir.attachment directamente
-            for prefix, description in search_locations:
-                full_name = f'{prefix}.{xsd_filename}' if prefix else xsd_filename
-                print(f"Buscando XSD en ir.attachment: {full_name} ({description})")
-
-                attachment = self.env['ir.attachment'].search([
-                    ('name', '=', full_name)
-                ], limit=1)
-
-                if attachment:
-                    print(f"✓ ENCONTRADO: {full_name}")
-                    print(f"  - ID: {attachment.id}")
-                    print(f"  - Tamaño: {len(attachment.raw) if attachment.raw else 0} bytes")
-                    print(f"  - Tipo MIME: {attachment.mimetype}")
-                else:
-                    print(f"✗ NO ENCONTRADO: {full_name}")
-
-            # Buscar todos los XSD en la base de datos
-            print("\nBuscando TODOS los archivos XSD en ir.attachment...")
-            all_xsd = self.env['ir.attachment'].search([
-                ('name', 'like', '%.xsd')
-            ])
-            print(f"Total de archivos .xsd encontrados: {len(all_xsd)}")
-            for xsd in all_xsd:
-                print(f"  - {xsd.name} (ID: {xsd.id})")
-
             # Intentar validar con cada ubicación
             for prefix, description in search_locations:
                 try:
-                    prefix_str = prefix if prefix else 'None (sin prefijo)'
-                    print(f"\nIntentando validar con prefijo: {prefix_str}")
-
-                    # Debug: Ver qué XML se está enviando al validador
-                    xml_str_debug = xml_bytes.decode('ISO-8859-1')
-                    print(f"DEBUG - Longitud XML bytes: {len(xml_bytes)}")
-                    print(f"DEBUG - XML COMPLETO a validar:")
-                    print(xml_str_debug)
-                    print(f"\nDEBUG - ¿Contiene '<Detalle>'?: {'✓ SÍ' if '<Detalle>' in xml_str_debug else '❌ NO'}")
+                    xml_bytes.decode('ISO-8859-1')
 
                     validate_xml_from_attachment(
                         self.env,
@@ -186,28 +108,17 @@ class ValidationService(models.AbstractModel):
                         prefix=prefix
                     )
                     # Si llegamos aquí, la validación pasó
-                    full_name = f'{prefix}.{xsd_filename}' if prefix else xsd_filename
-                    print(f"✓ VALIDACIÓN EXITOSA usando: {full_name}")
                     messages.append(f"✅ Validación XSD exitosa usando: {description}")
                     return True, messages
 
                 except FileNotFoundError:
-                    print(f"✗ FileNotFoundError con prefijo: {prefix_str}")
                     continue
                 except etree.DocumentInvalid as e:
                     # El XSD existe pero el XML no es válido
-                    full_name = f'{prefix}.{xsd_filename}' if prefix else xsd_filename
-                    print(f"✗ XML INVÁLIDO según {full_name}")
                     for error in e.error_log:
                         error_msg = f"Línea {error.line}: {error.message}"
-                        print(f"  - {error_msg}")
                         messages.append(error_msg)
                     return False, messages
-
-            # Si llegamos aquí, no se encontró ningún XSD
-            print("="*80)
-            print("NO SE ENCONTRÓ NINGÚN ESQUEMA XSD EN NINGUNA UBICACIÓN")
-            print("="*80)
 
             messages.append(_(
                 'Advertencia: Validación XSD omitida (esquema no encontrado).\n'

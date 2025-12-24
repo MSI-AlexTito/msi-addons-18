@@ -39,100 +39,51 @@ class SIITestSetParser:
         _logger = logging.getLogger(__name__)
 
         try:
-            print('=' * 80)
-            print('INICIANDO PARSEO DE ARCHIVO SII')
-            print(f'Tipo de contenido recibido: {type(file_content)}')
-            print(f'Longitud del contenido: {len(file_content) if file_content else 0}')
-
             # Decodificar si viene en bytes
             if isinstance(file_content, bytes):
-                print('Contenido es bytes, intentando decodificar...')
                 # Probar diferentes encodings
                 for encoding in ['utf-8', 'latin-1', 'iso-8859-1', 'cp1252']:
                     try:
                         file_content = file_content.decode(encoding)
-                        print(f'✓ Decodificado exitosamente con: {encoding}')
                         break
                     except UnicodeDecodeError:
-                        print(f'✗ Falló decodificación con: {encoding}')
                         continue
                 else:
                     raise UserError(_('No se pudo decodificar el archivo. Verifique el encoding.'))
-            else:
-                print('Contenido ya es string')
 
-            # Mostrar primeros caracteres para debug
-            print(f'Primeros 200 caracteres del archivo:\n{file_content[:200]}')
 
-            # Extraer número de atención
-            print('Buscando número de atención...')
             attention_match = re.search(r'NUMERO DE ATENCION:\s*(\d+)', file_content)
             if not attention_match:
-                print('❌ NO SE ENCONTRÓ número de atención')
-                print(f'Buscando en contenido: {file_content[:500]}')
                 raise UserError(_('No se encontró el número de atención en el archivo.'))
 
             attention_number = attention_match.group(1)
-            print(f'✓ Número de atención encontrado: {attention_number}')
 
             # Dividir por casos
-            print('Dividiendo archivo por casos...')
             case_pattern = r'CASO\s+(\d+-\d+)\s*\n={10,}'
             cases_raw = re.split(case_pattern, file_content)
-
-            print(f'Patrón de búsqueda: {case_pattern}')
-            print(f'Partes encontradas después de split: {len(cases_raw)}')
-
-            # Debug: Mostrar las primeras partes
-            for idx, part in enumerate(cases_raw[:5]):
-                print(f'Parte {idx}: {part[:100] if part else "VACÍO"}...')
 
             # Procesar casos
             cases = []
             errors = []
 
             # cases_raw viene como: [texto_antes, caso1_code, caso1_content, caso2_code, caso2_content, ...]
-            print(f'Procesando {(len(cases_raw) - 1) // 2} casos...')
 
             for i in range(1, len(cases_raw), 2):
                 if i + 1 < len(cases_raw):
                     case_code = cases_raw[i].strip()
                     case_content = cases_raw[i + 1]
 
-                    print(f'Procesando caso: {case_code}')
-                    print(f'Contenido del caso (primeros 200 chars): {case_content[:200]}')
-
                     try:
                         case_data = cls._parse_case(case_code, case_content, attention_number)
                         if case_data:
-                            print(f'✓ Caso {case_code} procesado exitosamente')
-                            print(f'  - Tipo documento: {case_data["document_type_code"]}')
-                            print(f'  - Items: {len(case_data.get("items", []))}')
                             cases.append(case_data)
-                        else:
-                            print(f'✗ Caso {case_code} retornó None (sin datos)')
                     except Exception as e:
                         error_msg = f"Error en caso {case_code}: {str(e)}"
-                        print(error_msg)
                         _logger.exception('Detalle del error:')
                         errors.append(error_msg)
 
             # Detectar libros
             books = cls._detect_books(file_content)
-
-            print('=' * 80)
-            print(f'RESUMEN DEL PARSEO:')
-            print(f'  - Número de atención: {attention_number}')
-            print(f'  - Casos procesados exitosamente: {len(cases)}')
-            print(f'  - Errores: {len(errors)}')
-            if books['sales_book']:
-                print(f'  - Libro de Ventas: {books["sales_book"]["name"]}')
-            if books['purchase_book']:
-                print(f'  - Libro de Compras: {books["purchase_book"]["name"]} ({len(books["purchase_book"].get("lines", []))} líneas)')
-            if errors:
-                for error in errors:
-                    print(f'    {error}')
-            print('=' * 80)
 
             return {
                 'attention_number': attention_number,
@@ -337,9 +288,6 @@ class SIITestSetParser:
                 'purchase_book': {attention_number, period, lines} o None
             }
         """
-        print('\n' + '=' * 80)
-        print('DETECTANDO SECCIONES DE LIBROS')
-        print('=' * 80)
 
         books = {
             'sales_book': None,
@@ -350,19 +298,15 @@ class SIITestSetParser:
         sales_match = re.search(r'SET LIBRO DE VENTAS.*?NUMERO DE ATENCION:\s*(\d+)', file_content, re.IGNORECASE | re.DOTALL)
         if sales_match:
             attention_number = sales_match.group(1)
-            print(f'✓ SET LIBRO DE VENTAS encontrado - Atención: {attention_number}')
             books['sales_book'] = {
                 'attention_number': attention_number,
                 'name': f'Libro de Ventas {attention_number}',
             }
-        else:
-            print('✗ SET LIBRO DE VENTAS no encontrado')
 
         # Buscar SET LIBRO DE COMPRAS
         purchase_match = re.search(r'SET LIBRO DE COMPRAS.*?NUMERO DE ATENCION:\s*(\d+)', file_content, re.IGNORECASE | re.DOTALL)
         if purchase_match:
             attention_number = purchase_match.group(1)
-            print(f'✓ SET LIBRO DE COMPRAS encontrado - Atención: {attention_number}')
 
             # Extraer las líneas de detalle del libro de compras
             purchase_section = cls._extract_purchase_book_section(file_content)
@@ -373,13 +317,7 @@ class SIITestSetParser:
                     'name': f'Libro de Compras {attention_number}',
                     'lines': lines,
                 }
-                print(f'  Líneas procesadas: {len(lines)}')
-            else:
-                print('  ⚠️ No se pudo extraer el detalle del libro de compras')
-        else:
-            print('✗ SET LIBRO DE COMPRAS no encontrado')
 
-        print('=' * 80 + '\n')
         return books
 
     @classmethod
@@ -399,27 +337,10 @@ class SIITestSetParser:
 
     @classmethod
     def _parse_purchase_book_lines(cls, section_content):
-        """
-        Parsea las líneas del libro de compras.
-
-        Formato esperado:
-        TIPO DOCUMENTO                FOLIO
-        OBSERVACIONES
-        MONTO EXENTO    MONTO AFECTO
-
-        Returns:
-            list de dict con los detalles de cada documento
-        """
-        print('\n  >> Parseando líneas del libro de compras...')
-        print(f'     Longitud sección: {len(section_content)} caracteres')
-        print(f'     Primeros 300 caracteres de la sección:\n{section_content[:300]}')
-        print(f'     {"=" * 60}')
-
         lines = []
 
         # Dividir por líneas y procesar
         raw_lines = section_content.split('\n')
-        print(f'     Total líneas raw: {len(raw_lines)}')
 
         i = 0
         line_number = 0
@@ -431,41 +352,28 @@ class SIITestSetParser:
                 i += 1
                 continue
 
-            # Debug: mostrar cada línea procesada
-            if i < 20:  # Solo primeras 20 para no saturar el log
-                print(f'     [DEBUG {i}] Procesando: "{line[:80]}"')
-
             # Si la línea contiene un tipo de documento conocido
             if any(doc_type in line.upper() for doc_type in ['FACTURA', 'NOTA DE CREDITO', 'NOTA DE DEBITO']):
                 line_number += 1
-                print(f'\n    📄 Línea {line_number}: {line[:60]}...')
 
                 try:
                     # Parsear tipo documento y folio de la primera línea
-                    print(f'       [1/3] Parseando tipo documento y folio...')
                     doc_info = cls._parse_purchase_doc_line(line)
-                    print(f'       ✓ Detectado: {doc_info["type_name"]} (código {doc_info["type_code"]}), Folio: {doc_info["folio"]}')
 
                     # Leer observaciones (siguiente línea)
                     observations = ''
                     if i + 1 < len(raw_lines):
                         next_line = raw_lines[i + 1].strip()
-                        print(f'       [2/3] Siguiente línea (posible obs): "{next_line[:80]}"')
                         if next_line and not any(char.isdigit() for char in next_line[:10]):
                             observations = next_line
-                            print(f'       ✓ Observaciones detectadas: "{observations[:50]}..."')
                             i += 1
-                        else:
-                            print(f'       ℹ️ No hay observaciones (línea contiene dígitos al inicio)')
 
                     # Leer montos (siguiente línea)
                     mnt_exento = 0
                     mnt_neto = 0
                     if i + 1 < len(raw_lines):
                         amounts_line = raw_lines[i + 1].strip()
-                        print(f'       [3/3] Siguiente línea (montos): "{amounts_line}"')
                         mnt_exento, mnt_neto = cls._parse_purchase_amounts(amounts_line)
-                        print(f'       ✓ Montos parseados: Exento={mnt_exento}, Neto={mnt_neto}')
                         i += 1
 
                     # Agregar línea procesada
@@ -480,22 +388,12 @@ class SIITestSetParser:
                     }
 
                     lines.append(line_data)
-                    print(f'      ✅ LÍNEA PROCESADA:')
-                    print(f'         - Tipo: {line_data["document_type_name"]} ({line_data["document_type_code"]})')
-                    print(f'         - Folio: {line_data["folio"]}')
-                    print(f'         - Exento: ${line_data["mnt_exento"]:,}, Neto: ${line_data["mnt_neto"]:,}')
-                    print(f'         - Obs: {observations[:50]}...' if observations else '         - Obs: (vacío)')
 
                 except Exception as e:
-                    print(f'      ❌ ERROR parseando línea: {str(e)}')
                     _logger.exception(f'Error en línea {line_number}:')
 
             i += 1
 
-        print(f'\n  >> ✅ RESUMEN PARSEO LIBRO COMPRAS:')
-        print(f'     Total líneas procesadas: {len(lines)}')
-        for idx, line in enumerate(lines, 1):
-            print(f'     {idx}. {line["document_type_name"]} Folio {line["folio"]}: Exento=${line["mnt_exento"]:,}, Neto=${line["mnt_neto"]:,}')
         return lines
 
     @classmethod
@@ -534,13 +432,9 @@ class SIITestSetParser:
         Parsea los montos de la línea.
         Ejemplo: "           5024" o "   7933           4009"
         """
-        print(f'         [_parse_purchase_amounts] Input: "{line}"')
-        print(f'         [_parse_purchase_amounts] Longitud: {len(line)} caracteres')
 
         # Limpiar y dividir por espacios
         parts = [p.strip() for p in re.split(r'\s+', line.strip()) if p.strip()]
-        print(f'         [_parse_purchase_amounts] Parts después de split: {parts}')
-        print(f'         [_parse_purchase_amounts] Cantidad de parts: {len(parts)}')
 
         mnt_exento = 0
         mnt_neto = 0
@@ -548,14 +442,9 @@ class SIITestSetParser:
         if len(parts) == 1:
             # Solo un monto (puede ser exento o neto, asumimos neto)
             mnt_neto = float(parts[0])
-            print(f'         [_parse_purchase_amounts] Un solo monto → asumido como NETO: {mnt_neto}')
         elif len(parts) >= 2:
             # Dos montos: exento y neto
             mnt_exento = float(parts[0])
             mnt_neto = float(parts[1])
-            print(f'         [_parse_purchase_amounts] Dos montos → EXENTO: {mnt_exento}, NETO: {mnt_neto}')
-        else:
-            print(f'         [_parse_purchase_amounts] ⚠️ No se detectaron montos válidos')
 
-        print(f'         [_parse_purchase_amounts] Return: exento={mnt_exento}, neto={mnt_neto}')
         return mnt_exento, mnt_neto

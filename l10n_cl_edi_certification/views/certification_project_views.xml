@@ -25,6 +25,14 @@
                         <button name="action_open_wizard_generate" string="Generar Documentos" type="object"
                                 invisible="state not in ['in_progress', 'validating']"
                                 class="btn-primary"/>
+                        <button name="action_bulk_generate_ted" string="📋 Generar TED Masivo" type="object"
+                                invisible="state not in ['in_progress', 'validating', 'completed']"
+                                class="btn-secondary"
+                                help="Genera TED para todos los documentos firmados"/>
+                        <button name="action_bulk_generate_pdf" string="📄 Generar PDFs Impresos" type="object"
+                                invisible="state not in ['in_progress', 'validating', 'completed']"
+                                class="btn-secondary"
+                                help="Genera PDFs impresos con timbre TED para todos los documentos"/>
                         <button name="action_import_basic_testset" string="⚡ Importar SET BÁSICO" type="object"
                                 invisible="state != 'draft'"
                                 class="btn-secondary"

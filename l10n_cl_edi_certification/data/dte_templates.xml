@@ -59,7 +59,7 @@
                 <MontoItem t-out="item['MontoItem']"/>
             </Detalle>
         </t>
-        <t t-if="dte_data.get('DscRcgGlobal')" t-foreach="dte_data['DscRcgGlobal']" t-as="dr">
+        <t t-foreach="dte_data.get('DscRcgGlobal', [])" t-as="dr">
             <DscRcgGlobal>
                 <NroLinDR t-out="dr['NroLinDR']"/>
                 <TpoMov t-out="dr['TpoMov']"/>
@@ -69,7 +69,7 @@
                 <ValorDROtrMnda t-if="dr.get('ValorDROtrMnda')" t-out="dr['ValorDROtrMnda']"/>
             </DscRcgGlobal>
         </t>
-        <t t-if="dte_data.get('Referencia')" t-foreach="dte_data['Referencia']" t-as="ref">
+        <t t-foreach="dte_data.get('Referencias', [])" t-as="ref">
             <Referencia>
                 <NroLinRef t-out="ref['NroLinRef']"/>
                 <TpoDocRef t-out="ref['TpoDocRef']"/>
@@ -289,6 +289,118 @@
         <TmstFirma t-out="book_data['TmstFirma']"/>
     </EnvioLibro>
 </LibroCompraVenta>
+        </template>
+
+        <!-- Template QWeb para generar XML de RespuestaDTE con RecepcionEnvio (Archivo 1: Respuesta de Intercambio) -->
+        <template id="envio_recibos_template" name="RespuestaDTE RecepcionEnvio Exchange Template">
+<RespuestaDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://www.sii.cl/SiiDte RespuestaEnvioDTE_v10.xsd">
+    <Resultado ID="Resultado">
+        <Caratula version="1.0">
+            <RutResponde t-out="recibo_data['RutReceptor']"/>
+            <RutRecibe t-out="recibo_data['RutEmisor']"/>
+            <IdRespuesta t-out="recibo_data['IdRespuesta']"/>
+            <NroDetalles t-out="recibo_data['NroDetalles']"/>
+            <NmbContacto t-out="recibo_data['NmbContacto']"/>
+            <FonoContacto t-out="recibo_data['FonoContacto']"/>
+            <MailContacto t-out="recibo_data['MailContacto']"/>
+            <TmstFirmaResp t-out="recibo_data['TmstFirmaEnv']"/>
+        </Caratula>
+        <RecepcionEnvio>
+            <NmbEnvio t-out="recibo_data['NmbEnvio']"/>
+            <FchRecep t-out="recibo_data['FchRecep']"/>
+            <CodEnvio t-out="recibo_data['CodEnvio']"/>
+            <EnvioDTEID t-out="recibo_data['EnvioDTEID']"/>
+            <Digest t-out="recibo_data['Digest']"/>
+            <RutEmisor t-out="recibo_data['RutEmisor']"/>
+            <RutReceptor t-out="recibo_data['RutReceptor']"/>
+            <EstadoRecepEnv t-out="recibo_data['RecepEnvio']"/>
+            <RecepEnvGlosa t-out="recibo_data['RecepEnvioGlosa']"/>
+            <NroDTE t-out="recibo_data['NroDTE']"/>
+            <t t-foreach="recibo_data['all_dtes']" t-as="dte">
+                <RecepcionDTE>
+                    <TipoDTE t-out="dte['TipoDTE']"/>
+                    <Folio t-out="dte['Folio']"/>
+                    <FchEmis t-out="dte['FchEmis']"/>
+                    <RUTEmisor t-out="dte['RutEmisor']"/>
+                    <RUTRecep t-out="dte['RutReceptor']"/>
+                    <MntTotal t-out="dte['MntTotal']"/>
+                    <t t-if="dte['RutReceptor'] == recibo_data['RutReceptor']">
+                        <EstadoRecepDTE>0</EstadoRecepDTE>
+                        <RecepDTEGlosa>DTE Recibido Conforme</RecepDTEGlosa>
+                    </t>
+                    <t t-else="">
+                        <EstadoRecepDTE>3</EstadoRecepDTE>
+                        <RecepDTEGlosa>RUT Receptor no corresponde</RecepDTEGlosa>
+                    </t>
+                </RecepcionDTE>
+            </t>
+        </RecepcionEnvio>
+    </Resultado>
+</RespuestaDTE>
+        </template>
+
+        <!-- Template QWeb para generar XML de EnvioRecibos (Archivo 2: Recibo de Mercaderías - Ley 19.983) -->
+        <template id="recepcion_envio_template" name="EnvioRecibos Exchange Template">
+<EnvioRecibos xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioRecibos_v10.xsd">
+    <SetRecibos ID="SetRecibos">
+        <Caratula version="1.0">
+            <RutResponde t-out="recepcion_data['RutResponde']"/>
+            <RutRecibe t-out="recepcion_data['RutRecibe']"/>
+            <TmstFirmaEnv t-out="recepcion_data['TmstFirmaEnv']"/>
+        </Caratula>
+        <Recibo version="1.0">
+            <DocumentoRecibo ID="R01">
+                <TipoDoc t-out="recepcion_data['TipoDTE']"/>
+                <Folio t-out="recepcion_data['Folio']"/>
+                <FchEmis t-out="recepcion_data['FchEmis']"/>
+                <RUTEmisor t-out="recepcion_data['RutEmisor']"/>
+                <RUTRecep t-out="recepcion_data['RutReceptor']"/>
+                <MntTotal t-out="recepcion_data['MntTotal']"/>
+                <Recinto t-out="recepcion_data['Recinto']"/>
+                <RutFirma t-out="recepcion_data['RutFirma']"/>
+                <Declaracion>El acuse de recibo que se declara en este acto, de acuerdo a lo dispuesto en la letra b) del Art. 4, y la letra c) del Art. 5 de la Ley 19.983, acredita que la entrega de mercaderias o servicio(s) prestado(s) ha(n) sido recibido(s).</Declaracion>
+                <TmstFirmaRecibo t-out="recepcion_data['TmstFirmaRecibo']"/>
+            </DocumentoRecibo>
+        </Recibo>
+    </SetRecibos>
+</EnvioRecibos>
+        </template>
+
+        <!-- Template QWeb para generar XML de RespuestaDTE con ResultadoDTE (Archivo 3: Resultado Comercial) -->
+        <template id="resultado_dte_template" name="RespuestaDTE ResultadoDTE Exchange Template">
+<RespuestaDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://www.sii.cl/SiiDte RespuestaEnvioDTE_v10.xsd">
+    <Resultado ID="Resultado">
+        <Caratula version="1.0">
+            <RutResponde t-out="resultado_data['RutReceptor']"/>
+            <RutRecibe t-out="resultado_data['RutEmisor']"/>
+            <IdRespuesta t-out="resultado_data['IdRespuesta']"/>
+            <NroDetalles t-out="resultado_data['NroDetalles']"/>
+            <NmbContacto t-out="resultado_data['NmbContacto']"/>
+            <FonoContacto t-out="resultado_data['FonoContacto']"/>
+            <MailContacto t-out="resultado_data['MailContacto']"/>
+            <TmstFirmaResp t-out="resultado_data['TmstFirmaEnv']"/>
+        </Caratula>
+        <t t-foreach="resultado_data['all_dtes']" t-as="dte">
+            <ResultadoDTE>
+                <TipoDTE t-out="dte['TipoDTE']"/>
+                <Folio t-out="dte['Folio']"/>
+                <FchEmis t-out="dte['FchEmis']"/>
+                <RUTEmisor t-out="dte['RutEmisor']"/>
+                <RUTRecep t-out="dte['RutReceptor']"/>
+                <MntTotal t-out="dte['MntTotal']"/>
+                <CodEnvio>1</CodEnvio>
+                <t t-if="dte['RutReceptor'] == resultado_data['RutReceptor']">
+                    <EstadoDTE>0</EstadoDTE>
+                    <EstadoDTEGlosa>DTE Aceptado - Mercaderia Conforme</EstadoDTEGlosa>
+                </t>
+                <t t-else="">
+                    <EstadoDTE>2</EstadoDTE>
+                    <EstadoDTEGlosa>DTE Rechazado - RUT Receptor no corresponde</EstadoDTEGlosa>
+                </t>
+            </ResultadoDTE>
+        </t>
+    </Resultado>
+</RespuestaDTE>
         </template>
 
     </data>
