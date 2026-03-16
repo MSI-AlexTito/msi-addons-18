@@ -62,6 +62,20 @@
                   action="action_certification_book"
                   sequence="30"/>
 
+        <!-- Simulación -->
+        <menuitem id="menu_certification_simulation"
+                  name="Simulación"
+                  parent="menu_certification_root"
+                  action="action_certification_simulation"
+                  sequence="50"/>
+
+        <!-- Intercambio -->
+        <menuitem id="menu_certification_exchange"
+                  name="Intercambio"
+                  parent="menu_certification_root"
+                  action="action_certification_exchange"
+                  sequence="60"/>
+
         <!-- TODO: Uncomment when action_certification_sii_response is created -->
         <!--
         <menuitem id="menu_certification_sii_responses"
