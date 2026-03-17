@@ -1,0 +1,2671 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<EnvioDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte EnvioDTE_v10.xsd" version="1.0">
+    <SetDTE ID="SetDoc">
+        <Caratula version="1.0">
+            <RutEmisor>77626554-3</RutEmisor>
+            <RutEnvia>8530047-4</RutEnvia>
+            <RutReceptor>60803000-K</RutReceptor>
+            <FchResol>2026-03-16</FchResol>
+            <NroResol>0</NroResol>
+            <TmstFirmaEnv>2026-03-17T12:50:47</TmstFirmaEnv>
+            <SubTotDTE>
+                <TpoDTE>33</TpoDTE>
+                <NroDTE>16</NroDTE>
+            </SubTotDTE>
+            <SubTotDTE>
+                <TpoDTE>61</TpoDTE>
+                <NroDTE>4</NroDTE>
+            </SubTotDTE>
+        </Caratula>
+        <DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F17T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>17</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>18280624</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>3473318</IVA>
+                    <MntTotal>21753942</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>927863.000000</PrcItem>
+                <MontoItem>2783589</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Auditoría de Seguridad Informática</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>2725897.000000</PrcItem>
+                <MontoItem>13629485</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Licencia Software Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>373510.000000</PrcItem>
+                <MontoItem>1867550</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>17</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>21753942</MNT>
+                <IT1>Mantenimiento de Sistemas</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:50</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">gshZZtyJiUwXwMbPUduUpgnvaP/Gc4CbyU/Ve/TP6pbTyaS9RLKgXLl9IjlJBHm1wALJeXRn1QokEgd9ni0bwQ==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:50</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F17T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>oN9uj0WokFayi8sfypQq+Rdcs2U=</DigestValue></Reference></SignedInfo><SignatureValue>nFQm00+RXXrDx5MeSuYRBEKdWn6hFgJmIknSJXqbfKP7pgoG5bGIUGv37o8SQhsDMYN1KrtyXg0jZrOkfHwSfIaNoX+YEfZSMMT3A5Xic9cx1uOtYijn7bh7gp8qgyFlA2cSvug4gvd1jjSwOzHyNk9cVpn8A427kq3K7TA5ks6nv6htpbZI4IGHbkHxnrwaMyIge5D6zYM/b7PGVabX9mahj/6h+RqLoMTJ76uVcbZh3UeCX4cAfMKEzgjMt/WI5DKN/z5dih0P0l7f9V0FybuyyNaSc1mPoiXAz5JW17K2qMuQVR9zKSWfjifkTCexyznwX9w9Nauy7NJzNlShgQ==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F18T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>18</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>17737386</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>3370103</IVA>
+                    <MntTotal>21107489</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Hosting y Servicios Cloud</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>241625.000000</PrcItem>
+                <MontoItem>966500</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Desarrollo de Software a Medida</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1560360.000000</PrcItem>
+                <MontoItem>1560360</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1300176.000000</PrcItem>
+                <MontoItem>3900528</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Auditoría de Seguridad Informática</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>2560822.000000</PrcItem>
+                <MontoItem>7682466</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>5</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>906883.000000</PrcItem>
+                <MontoItem>3627532</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>18</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>21107489</MNT>
+                <IT1>Hosting y Servicios Cloud</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:50</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">yJ0nOMkUrA4I43VpcvjZVMrku3bbFXOVCKqZ43nFGM5AmOxWZSgWNYRslu46hkjvgN48zjv8gg+SJEv74m6tLA==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:50</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F18T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>kdWONVbRWA9snwhVUyJzhkR9Ml0=</DigestValue></Reference></SignedInfo><SignatureValue>w2feltMflCyMxzPRh0iAkGTn3Eo5WBQeP/IqyBaT5lG73GOs3bLYxbcwn9ZwE2e0YQJoI3SZiD4Vi5eVJ/JllxQRfxyu8phzcCpPFRUqMzSz8w7lu4yFEMyEyH/1yUNE5IP2T0D9ebMit53Ba/PNXKlkcxCODyrLTkYd8gmH9O3MUNQlKXbQEPS4IjLBhZ3mwdb11+LcIsBE1gsgnYv63ZSvmafIVfQfsWFiKeyrD3OhaRKOa7rktkn/2bnecLyhP/dEqPWjVx0N47/LsPTAU0rPCuJjU3nBY/F+S5aTaw8iQHPBZSUVMq9SQZkR2M8IcG7Vg+ACG6Sqwil0jqkldg==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F19T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>19</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>24960535</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>4742501</IVA>
+                    <MntTotal>29703036</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1402067.000000</PrcItem>
+                <MontoItem>7010335</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Desarrollo de Software a Medida</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>4487550.000000</PrcItem>
+                <MontoItem>17950200</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>19</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>29703036</MNT>
+                <IT1>Diseño y Desarrollo Web</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:50</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">jrrtNdnazPVzZMyFtPQ1UFPEBQio0jJuov3oGdO/RUUO0vCUo/KwKiSykL3wUjECjxl2IqwTplPBV9HXDoeukQ==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:50</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F19T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>x/4igHFdXT3O1vD72zUfgpPqiZg=</DigestValue></Reference></SignedInfo><SignatureValue>GDen3Fd8xfv0vQUugfa2GgYbTvhipJi7G+OOsuRzqMm5lDdKPpu6ofD4avSDFPBFmBD/FuMNOmjj2Lp5rgX5hFcgLU1d3Kh8n3v9ai5ILM6SwH//pf+66XFtEgsrkW480BGjxHFm7rm3IebonfRmys5Sz+KtRlTrmpV6gOzWipakl+pYUs1Mb+9NrNLP0P5EPFlVV4nYMmmWLG3RjW+ZOsmfHwfdGpc8DseOEXCxuRIURxGvYVYIBKd9u/1m05u5uD6DalfRy8zfeA1rajuhDXwR8LGik3/6TcQgMFCfqd4T6wBd9fl16GyJROestJxG8np0ngyY6m5dAq2MuYJg0A==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F20T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>20</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>27422715</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>5210315</IVA>
+                    <MntTotal>32633030</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Desarrollo de Software a Medida</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>4517528.000000</PrcItem>
+                <MontoItem>18070112</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1456265.000000</PrcItem>
+                <MontoItem>4368795</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Licencia Software Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1367267.000000</PrcItem>
+                <MontoItem>1367267</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Integración de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>965339.000000</PrcItem>
+                <MontoItem>2896017</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>5</NroLinDet>
+                <NmbItem>Hosting y Servicios Cloud</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>180131.000000</PrcItem>
+                <MontoItem>720524</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>20</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>32633030</MNT>
+                <IT1>Desarrollo de Software a Medida</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:51</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">OEJBzQFKyR7zK080sP4R5yLFqtC+/rc6dTrIeW4oIVpemwsQp2B+ch4y+Ih+fx8JdSimvCingCsOnj3lxP1Elg==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:51</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F20T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>+H7cVpU4LYOvmqaMj2BPKvmxBKE=</DigestValue></Reference></SignedInfo><SignatureValue>i2YpRM8I0ALqtlNm1lTX7rTjN0Upjsd1u/iiLXqnxXBgxcglwM836AkFnAvOLZf/WyafYU0k7hVzeg5U6GaRq1hgpzEv3RPa4x8O+MoeI6g9BuMjpYWwnrj4MFO9OSZjcQK7/dxtx0FO+++4KRbIb7iR4JJxTQMAj7sz483IKwfCpaqSUpgFJQj+yJrEZh8D843kiErg+nMHP/s+7E60AdWyhpQe9I3u2ZRc+xWy73RbPl46EwyAKCzcSBdUmfEoe+BccsaeTtHtGq2Kkc4Ag8z6Mo7e/SVvN+aaDiiwaDu5Ff4ln8YmJ1nTECk0eqJkMuNQ4O45svlHZUMIzpOzYA==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F21T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>21</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>19959843</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>3792370</IVA>
+                    <MntTotal>23752213</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1584814.000000</PrcItem>
+                <MontoItem>7924070</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Integración de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1228004.000000</PrcItem>
+                <MontoItem>6140020</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Auditoría de Seguridad Informática</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1151880.000000</PrcItem>
+                <MontoItem>4607520</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>429411.000000</PrcItem>
+                <MontoItem>1288233</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>21</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>23752213</MNT>
+                <IT1>Diseño y Desarrollo Web</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:51</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">BssxMtPHlCKdrwozOwgM4S9w1hBcwqgLItf6kYHzQq/MMVBOmNpp++fPYi32GNVH89FxkhcuTXiTWXuM1/rvLA==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:51</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F21T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>SGCwtAvcf9p49YCrel1hAvtAINw=</DigestValue></Reference></SignedInfo><SignatureValue>E3skK+VZkKnLsgmnPObebWGfZNEpZLGr+FkR5EruhWARXioYsI1lXs31S77qXEKU31THhd2gPUq2Xq1xHml+7i67W59mdPq1mk6WNfgtVioJh5wyKSeXhr80pay3kQvJ+3/2uwQ6+c5F4GaHWIVJvoh186G/qF61OxBW0PiTI8DJ7P8XnCwbXRHcU83EiQ1IxXeRhlalO74U8wajA90brJQC2fzURrhEvkOFVCZVYT8QwUKLWcshfgjImgSE4cXrIAY756SodjMxJ+8JJKIyxhEpuZr1It6izamxSD+DbpIRa272h9dKdxwC1dJ+pK4HuvL22ejqKth9o1FiNMZumw==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F22T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>22</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>26423399</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>5020445</IVA>
+                    <MntTotal>31443844</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>797879.000000</PrcItem>
+                <MontoItem>797879</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>271343.000000</PrcItem>
+                <MontoItem>1356715</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Auditoría de Seguridad Informática</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>2588501.000000</PrcItem>
+                <MontoItem>7765503</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1427548.000000</PrcItem>
+                <MontoItem>5710192</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>5</NroLinDet>
+                <NmbItem>Integración de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>2158622.000000</PrcItem>
+                <MontoItem>10793110</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>22</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>31443844</MNT>
+                <IT1>Mantenimiento de Sistemas</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:51</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">O8fC3IDR6jyWDGFmJO/91+I7J9yQLkrAxsMNn/bYJJBdyN6amj5z5uMih2quvSteNtkWQ/zLPlH9ZICQlV8QlQ==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:51</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F22T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>f5o/4spzHm4pnIR/wqokb8xBjew=</DigestValue></Reference></SignedInfo><SignatureValue>teVzWw8x7G8Th6LHEmOgxop1gVe3CTZffv8IiAe4r3Ez0g1+Kp5RPX1rWedSAPps/mZWXCaorzBiTVb1WIXUghB/KGthHlzJWf8Fu6F78bAax9GGGCa8xjCaPvySs7UH4jOI93nR18DZ3UEIvl8k67GlMYHw56nJiDdBYzeRFd6Oy0JY0HGBlKcz9/+QeVZzMh6boZr6KdPH6f1kEeXHjW+XvrvlBz9it5nbuXTygICVhomnaXmMNw+gqHCr5m4a+Nk9auNWfYFnL2G+jCCzPzGpx2ZdVPAbUBp7QVsTk0OUtS9IUxM1/nZAy7P/ysg7V7M3Y7dTGfcW3L0b7mmqNg==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F23T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>23</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>15939803</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>3028562</IVA>
+                    <MntTotal>18968365</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>728069.000000</PrcItem>
+                <MontoItem>2184207</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Desarrollo de Software a Medida</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>3438899.000000</PrcItem>
+                <MontoItem>13755596</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>23</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>18968365</MNT>
+                <IT1>Diseño y Desarrollo Web</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:51</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">SxaOZTeigRa4rITfdwOoBerDbGS6XQuiriFmOM4emt/Aq+lbvnOJqr2m73/pNeZz5fs3V/fmOccz0MSdVN9/jw==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:51</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F23T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>Pn0NeqTiDhVQDXXTuKviPSpIDFY=</DigestValue></Reference></SignedInfo><SignatureValue>CGQDi9R0WEaFutx4T9IRVR3NiRaXepta2JW0/uVw4lR0khc76mVOrOCHH0OzxlpmFVVY4TSADe/raFq6w9drrpjDyPwLyZ1BO+XbpRVlIlz33pNpdETPjo7qBvEjSW2XSwtTm+iQIjbQZejQl3t+7jT19iTYrQcmAV4F7qBjokgBpZJz4g0v2Ep1VZwtC12627G5J031CtL+WDL1Mor+zT5NpoLOCmikUWIdZIuVzhqOQNtkgN6hUPAz1r21n36NcFul+ONmII1gqbVXQpZJdK+1f3zfKntgiG8zIN/2kUSQp7HExKUuWmYr9BVcK2cjoDH8X1kZNbO0Mn9opy38kg==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F24T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>24</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>12003204</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>2280608</IVA>
+                    <MntTotal>14283812</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Licencia Software Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>2.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>829796.000000</PrcItem>
+                <MontoItem>1659592</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1843824.000000</PrcItem>
+                <MontoItem>9219120</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Capacitación y Entrenamiento</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>378010.000000</PrcItem>
+                <MontoItem>378010</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>746482.000000</PrcItem>
+                <MontoItem>746482</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>24</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>14283812</MNT>
+                <IT1>Licencia Software Empresarial</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:52</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">gg595LljDrmPre3OQqiLgfc83mTXoqRHLZwSdcGi94mx2knvV1M4u0nj8swfp+Kdwm/NpP6Ayc4v5GEwNNo9ig==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:52</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F24T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>fOjKRO1Kf7j7iKm8LLpz8z00JUY=</DigestValue></Reference></SignedInfo><SignatureValue>mPVUaq4pU4Rhx6kDt9ttj00tYMwdAZVZv9gA8XUdlYl4YwdfV283Bb8yicPUwSZuXynDUgh4MTVWT26NO9yQyEf7eAAY5yADi/fth1JN2ufS3uyIWjFjuNhLxbVoHKHxnHkzglYlQddoD5gUfcH7UMiIO40dlgahIhcS0ZnMzW0UhQ7yCPzrRXpekYx44j/vkSAMuvBUvJhJ/kirR/aOdQpfJ1aF8KPZfwQcx6GLeRsUlUntH5q1FpiF3ySkjfY7SxY3ynEeQSHEELIf0J9zxvBpR3zvib+/4fh55LDVmhkJ0sc/PsTVTkzyY69ce0Fs24oHKLF8M3BFARNc+5iDQg==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F25T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>25</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>31154955</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>5919441</IVA>
+                    <MntTotal>37074396</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1875764.000000</PrcItem>
+                <MontoItem>1875764</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Integración de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>2406322.000000</PrcItem>
+                <MontoItem>12031610</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Auditoría de Seguridad Informática</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>2051908.000000</PrcItem>
+                <MontoItem>10259540</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Licencia Software Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1463082.000000</PrcItem>
+                <MontoItem>5852328</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>5</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>378571.000000</PrcItem>
+                <MontoItem>1135713</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>25</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>37074396</MNT>
+                <IT1>Servicio de Consultoría Empresarial</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:52</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">YXQJFQsN8GtRlmaOLttdZ0wLpCK1yAbFGwpT82DzbtCXlgZSi1rWM0MdLHdIW/E3959w4kETJX5iWdth8WYS0A==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:52</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F25T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>eE9tX4v9tJTOFVHw2hBC17LcMFs=</DigestValue></Reference></SignedInfo><SignatureValue>Cx8zidnJ40SDDSYxjZ1xoFzZuAHWJlHO1HeMRzAZfPZ1UdV+0y2MdwKMx5vGtvSBa9KGovwmc9b6SgeDHx1AADvZ53yHHfkk3xTdnslUzhFm2M8fejND7POw6z3sX/H9SxAr6NjP1OGaI6dpOOAxtC13q9n96fZfIPTN54ro/0/6AqS1aGxpg6mN88ujYfyiDZSNNM1Ki4hMhXb46M4HVwPuzUwA/w5yjk5GLWh4sU3P9qY8/GTY/7kfb5M+wZlOVyoJ/nPb2mBA9qqa0pKjXdwkui0+iJSWDCMuYSGxwtD8UhZJuKtUgXfyTT2l/QkyxXbTzUfyc872Bbt+GvsmSQ==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F26T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>26</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>17263322</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>3280031</IVA>
+                    <MntTotal>20543353</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1431451.000000</PrcItem>
+                <MontoItem>1431451</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1471671.000000</PrcItem>
+                <MontoItem>7358355</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Integración de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1714993.000000</PrcItem>
+                <MontoItem>6859972</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Capacitación y Entrenamiento</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>403386.000000</PrcItem>
+                <MontoItem>1613544</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>26</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>20543353</MNT>
+                <IT1>Diseño y Desarrollo Web</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:52</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">UIS0TR9HZd4an4H8z65rugtx1Jturlrf0GsyIa7ZFiBG0PDpZWD6IeO3epFIjMwiN0VlUWrj9CNaq1+3xRZVzA==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:52</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F26T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>UMAFMHkidNFV43a/Mh5PIbBO1YY=</DigestValue></Reference></SignedInfo><SignatureValue>KKFz1HY+yBr4bBia1hsORIYoO9GrvYgphSk1w7B9zoNflX9nubggtM7H5/vs6CZZ/z1hg6LOAyoxYwvcMXylRMuWukl00R/E1WxFHKpYAXiQbYNcQmRc9mnKuFH3Nt93wSiewyNcMFbAkMdhbi5WV6OIQPZ7kjFE8Zb+PKdVEEL+48bafxPzv91yQbwOQ9y67iKy94a+443JPTQ1fC/POJ6ZoeBjCYysrGoQp8pH+XbYBDVZJYwSty/R22jhzSaIcdkYyMw1buqlcN0weH0wlAkM6OCTgGaMp/zFJEunUJHuoy+0CgtN54LLd/J4ujTJqdoTeBJWzrHFlGeSXfUGug==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F27T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>27</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>8300648</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>1577123</IVA>
+                    <MntTotal>9877771</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1370298.000000</PrcItem>
+                <MontoItem>5481192</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>704864.000000</PrcItem>
+                <MontoItem>2819456</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>27</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>9877771</MNT>
+                <IT1>Diseño y Desarrollo Web</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:53</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">BRwpxbpcAEU7PLBWG3Pkf1yTiQB8CLdYGN970ZQ9rzjEx0WJSHIfUuihkVQrR0j0VS65v95SRNaK5FIsaSHLZg==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:53</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F27T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>JPxUiy7tH6AedPGpXnue4ND2GkE=</DigestValue></Reference></SignedInfo><SignatureValue>cAXqrgX4Mndhmk9WdY9NbwLAd2CkdrmeY9F8OyoktzF51r7468y1m5HqYZMgDqWCWQYIhftuTxMwC7q1zBkNvLk6otvnjykGFf2hArUYdQFCxA65ulFe6fhe5rM6BvY05S4g4nBUySufqWwKykGyb9vEpKH4TWp9NTyoYlfXQ3ahkhVPgifjGZ0zeuO03gXKbTusyORAo/Lg5fh7mbc/8FJ8P6WIj4SHMOCn+vPGnqvxjfjjnBgEpT4JH9DGyGMQkks4Abs/GGuMys+uTi7SjBLg85YTUIC3mv7iG539SwmdCNmxMILHpuz1vJTjMZzggVWp+TZvrWyhSSBT+pkkKA==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F28T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>28</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>12497907</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>2374602</IVA>
+                    <MntTotal>14872509</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Licencia Software Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>2.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>787491.000000</PrcItem>
+                <MontoItem>1574982</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1604630.000000</PrcItem>
+                <MontoItem>6418520</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>2.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>229196.000000</PrcItem>
+                <MontoItem>458392</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Desarrollo de Software a Medida</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>4046013.000000</PrcItem>
+                <MontoItem>4046013</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>28</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>14872509</MNT>
+                <IT1>Licencia Software Empresarial</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>17</D>
+                            <H>28</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>05lmE7Wa5mP87zhKrW8V6oT8vFTyLyfIrlGRzwkcybjrdb7IxZgHVn6frESwdRCSNqHY/VDTvbHJh1hGMswZkw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">xH7hvgZz7Pu0ao7Qixy27RubINu+4ShJZm5HmFrmcqDbZGe+2fdXXsJMtgsY83CPoLK5lbDg7BAb2/0ccCvGaw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:53</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">s6udeYS/Ath/+1BvJwrF8lQ+/2AsNF/6d+OfZcObKBabjOZWUe/T0Dy5PAt0PUA1IJzw4nVuWn1tTfkE4o8E6g==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:53</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F28T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>KnqgPT+y3a8FuwuNGSmQ0mG+dSA=</DigestValue></Reference></SignedInfo><SignatureValue>oOdop9N2qbzyV3h1WFWR1/lelaG2DYYuB3erPR185IIDvQ28gP3ZWiIgJafVtiVlngT8/Plg43cbIyyW0Xox+tIjRUz0XnDM6Sg8p0EC7DZGNJq7Mmo4THqCYUbVjgdRzqRuoqynOnSvnvi+c6meo4HJwU0hrolx8P3UG8kEu+u4YJw3zpiwlIcofYU2ANEbO7C8aIyQHylvueEUejX3GqqGIRSzyKx2LH2U5gGfSZKW5QEitRbwKIi06s5+8zJDrk8FS1PBXqbmBfDl+NKay0FlLPpPuwjKy98gj16xGLVAI8kq+RC6c1fNL8c07isKheueXZ7wd1VlVBCd7FKR1Q==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F29T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>29</Folio>
+                    <FchEmis>2026-03-18</FchEmis>
+                    <FchVenc>2026-03-18</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>18448289</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>3505174</IVA>
+                    <MntTotal>21953463</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>894353.000000</PrcItem>
+                <MontoItem>3577412</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Desarrollo de Software a Medida</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>3330758.000000</PrcItem>
+                <MontoItem>13323032</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>2.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>383846.000000</PrcItem>
+                <MontoItem>767692</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Capacitación y Entrenamiento</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>260051.000000</PrcItem>
+                <MontoItem>780153</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>29</F>
+                <FE>2026-03-18</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>21953463</MNT>
+                <IT1>Mantenimiento de Sistemas</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>29</D>
+                            <H>32</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>wzVYaFix7N/QUHmNpAetOIVMudYuwTTZoGIM6HqGLlhXup0lZhSUbuO9V89rrMA04A+Kx9maQKrEGwFTF6cS0Q==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">h9PrHxfyXNkfsn2Ynt40Kx6KcxSSom8SBoqrwKpKDdtB6AyeYE2H5apTNpHPyA9w17exoMHvSFvbYvPK/HZuOw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:53</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">pwkoVADNbLBDd3D6WnmT1BsuTTqXsfrFjelaak/bkltTEEvOfbVmQuobEoo15ACNShBRWCeLtQ6mP4kqgYQW0A==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:53</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F29T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>Hjgy12uG260Ed5CT4tNZV40TGlk=</DigestValue></Reference></SignedInfo><SignatureValue>Kv12NobHzT7EFIpGRGDrbWt14cOgQQT3d0+60dTWL0uFopEEUDruntSj5Xxnf2rEdHRS5EPXcISiBRgr0HPci9XJ4TBdw3QH5WfoRDHJctoR7hDwu7cZVwqINbvP9ygpHgSWmmStQZR0YEAdynbVl6sjZqUUHFqEzUH1px4iFZY3AzhWbTRLvndFfcgTEGEcX4C7fALZm1Cmh8Cec3aRrUkTvTnBHKRRpb2HGuExD6VQMr0dmao4yBxauP8RCNquZer7XQP2ltz/M3IEwttEnt6mD+s+YMFTco+ZoV8tW/uke525icYz4icUgYEqDuYLZWnwLDNiAEvQl7B0wTaEHA==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F30T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>30</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>15137244</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>2876076</IVA>
+                    <MntTotal>18013320</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>2.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1152882.000000</PrcItem>
+                <MontoItem>2305764</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Auditoría de Seguridad Informática</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1063940.000000</PrcItem>
+                <MontoItem>4255760</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>835880.000000</PrcItem>
+                <MontoItem>4179400</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>879264.000000</PrcItem>
+                <MontoItem>4396320</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>30</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>18013320</MNT>
+                <IT1>Diseño y Desarrollo Web</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>29</D>
+                            <H>32</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>wzVYaFix7N/QUHmNpAetOIVMudYuwTTZoGIM6HqGLlhXup0lZhSUbuO9V89rrMA04A+Kx9maQKrEGwFTF6cS0Q==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">h9PrHxfyXNkfsn2Ynt40Kx6KcxSSom8SBoqrwKpKDdtB6AyeYE2H5apTNpHPyA9w17exoMHvSFvbYvPK/HZuOw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:53</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">t+zidAr8NhBzd0GvbWVLyOfcxFiPd6Os3pGH+ZsGdpQ0qKbUaSs7+pL8tvMnlbn/WRZKFKzJ1u9ALxZfjzbWTw==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:53</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F30T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>/8UrOGeRN3y6oLs5gCIExRCGaPA=</DigestValue></Reference></SignedInfo><SignatureValue>sj7aIZJgkj9qwn1oomvvvzb34dBuYrQlp7gHJ5tdLmrYlQfm9UE2LBbmaWJjGeQ1iDKhW2qKHOUMjE8xpVu06s4owiF+Gy5/JB8sz42F7Jke6I8kB8BPi+aur2DLB2Nw8RdyQ06Vo6Ick7/t6pxOE2dO4IfRXm2iO9LQlh9LoAXp7OiIhwEK4qZa7L3phbrgKkklYLk3Qef/DgAiGSwyd2U9Khuu2QZNJ7NYSVwSK/swRmKQu9sobRmtiH1pj4agpskFpfsJSpSHl8CvBZoS+eTcmnfomXrPEkZYrOHG4YD6FqCx4UwgYMrWNQWaDg2OFXeUMEEKOoncpv3ZfRmzgA==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F31T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>31</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>14255358</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>2708518</IVA>
+                    <MntTotal>16963876</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Mantenimiento de Sistemas</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>951253.000000</PrcItem>
+                <MontoItem>4756265</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1533791.000000</PrcItem>
+                <MontoItem>4601373</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Hosting y Servicios Cloud</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>491550.000000</PrcItem>
+                <MontoItem>491550</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>592240.000000</PrcItem>
+                <MontoItem>1776720</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>5</NroLinDet>
+                <NmbItem>Capacitación y Entrenamiento</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>5.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>525890.000000</PrcItem>
+                <MontoItem>2629450</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>31</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>16963876</MNT>
+                <IT1>Mantenimiento de Sistemas</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>29</D>
+                            <H>32</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>wzVYaFix7N/QUHmNpAetOIVMudYuwTTZoGIM6HqGLlhXup0lZhSUbuO9V89rrMA04A+Kx9maQKrEGwFTF6cS0Q==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">h9PrHxfyXNkfsn2Ynt40Kx6KcxSSom8SBoqrwKpKDdtB6AyeYE2H5apTNpHPyA9w17exoMHvSFvbYvPK/HZuOw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:54</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">bVR/DHCqxwS7Fs/QAYtCjTOmlZRmAM5q4AzaBtD1th58BxHpYryD9pGCut1HfANqIm57HUpbBU/+hYdnxnkRDw==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:54</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F31T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>WiPfeab1A/qJ3XSx8lwNDWczxOc=</DigestValue></Reference></SignedInfo><SignatureValue>lqEVhVEvJ8QWEZ2XvKODxVIWPQbRdRrjoNMnrBlkQYuveHuyJSRp/fcjuckiTI0spF5h5B+zIRieLg6CXEH5SiA9SSIFbH4PsAP4lmAW1SkbDwyvPLU46Zoww3qu8I4fYee3L0MX9kyzcmMHNwD949tamGhpUqI9QGVcJ27p0OeZ+LRYbcJHB++3IzWnigwxneIHhvE2dbttp5w917rhkBXpn6dTA9ibz7BgcYmutFWat5Y7Nuv7/Mri/PsW0DRVJjfEAvgZXQKBL9dd4ZndVMiUZRiTLmhkP7ambQp3bvd7YLVe0rYGo8CLd2h62LVgtURAHVZg151SJj+606ETyA==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F32T33">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>33</TipoDTE>
+                    <Folio>32</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>10369712</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>1970245</IVA>
+                    <MntTotal>12339957</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>Hosting y Servicios Cloud</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>3.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>150722.000000</PrcItem>
+                <MontoItem>452166</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>2</NroLinDet>
+                <NmbItem>Capacitación y Entrenamiento</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>381341.000000</PrcItem>
+                <MontoItem>381341</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>3</NroLinDet>
+                <NmbItem>Diseño y Desarrollo Web</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>4.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1866440.000000</PrcItem>
+                <MontoItem>7465760</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>4</NroLinDet>
+                <NmbItem>Servicio de Consultoría Empresarial</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>1437589.000000</PrcItem>
+                <MontoItem>1437589</MontoItem>
+            </Detalle>
+            <Detalle>
+                <NroLinDet>5</NroLinDet>
+                <NmbItem>Soporte Técnico Mensual</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>2.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>316428.000000</PrcItem>
+                <MontoItem>632856</MontoItem>
+            </Detalle>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>33</TD>
+                <F>32</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>12339957</MNT>
+                <IT1>Hosting y Servicios Cloud</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>33</TD>
+                        <RNG>
+                            <D>29</D>
+                            <H>32</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>wzVYaFix7N/QUHmNpAetOIVMudYuwTTZoGIM6HqGLlhXup0lZhSUbuO9V89rrMA04A+Kx9maQKrEGwFTF6cS0Q==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">h9PrHxfyXNkfsn2Ynt40Kx6KcxSSom8SBoqrwKpKDdtB6AyeYE2H5apTNpHPyA9w17exoMHvSFvbYvPK/HZuOw==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:54</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">oU7YVd00pStjzi7r+5DNRlYBpSCxYtq7kOseAyIVbqa/clFNyUCYy9EYi5qgQrxxjNRVXhN8WsjWqc+smfPXHQ==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:54</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F32T33"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>JyCuoDYJMC1P6xxBtwgQ1/z9afg=</DigestValue></Reference></SignedInfo><SignatureValue>XJtrivlFlxZs8p7hlbHhZG+qD15vfP62lX6KMTk9gSnnND2YPXwyDkHfIxpN/auBmrJ0xMTtIuF96RyQye7TEYQz8dyZXpj/6jq2qBc3MYxWM5vSzt1WJqZ3VbIhmSVkugCe/Qwb/UM4n4//LMUlTuxr/VK/ZgR+JWXB+UX1T6fWfW5++XlpXLQ3SP/4Tnp+J32+WL3qoxDFrj0cgyQoNT5hPJhu/Lht0ppV670hNBQ3M4lfnFDCwu47JBL3XjfCLojbZ5WOjjv/U9JYK+VXT4NPChKgqJf4qmveHg48CXZS6kqnm7OyEdf3dIJsZ2Z6+omTEZBQ3vWhIUE7CBZssw==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F4T61">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>61</TipoDTE>
+                    <Folio>4</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>11138768</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>2116365</IVA>
+                    <MntTotal>13255133</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>PRODUCTO EN MAL ESTADO</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>11138768.000000</PrcItem>
+                <MontoItem>11138768</MontoItem>
+            </Detalle>
+            <Referencia>
+                <NroLinRef>1</NroLinRef>
+                <TpoDocRef>33</TpoDocRef>
+                <FolioRef>25</FolioRef>
+                <FchRef>2026-03-18</FchRef>
+                <CodRef>3</CodRef>
+                <RazonRef>PRODUCTO EN MAL ESTADO</RazonRef>
+            </Referencia>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>61</TD>
+                <F>4</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>13255133</MNT>
+                <IT1>PRODUCTO EN MAL ESTADO</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>61</TD>
+                        <RNG>
+                            <D>4</D>
+                            <H>6</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>sHscpc3moDD7YIBjFysHaOZDwGG51dImFpCgf5dIkNAdhBVLgKlmrX1WGTC+kYDSh+ErXzQSQqe74TDDdhgCaw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">ZaXMKEGme8DQuEpPkNjkiXuAcBXgo0Ye0+us7wtKuTxmM+8NGmp9tYKskp0h8n4/7jCzFaNIplCs5ldE9tWSrA==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:54</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">WkDdrjV4SKFXSkoztjzdQLDDfKRPYptmPUf1lPEoRFnGKKsc8sAS5+qNXepJN2eS9gCbNNAoJq4UCiDhOIeM6w==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:54</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F4T61"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>vtgtau3O7F8XsvDZjgUHO8jZZHA=</DigestValue></Reference></SignedInfo><SignatureValue>pXBBek6nAYVPnBhUyD2ph58ZKzW8x2WgQFTScjM2Rkap+btT0A3miNs7gW1DyTeU1xLpCoaCIuhlwncUzDfWULPu5VqBCAGDJvomSiNA4XaWwv92uwMk6IAlkrdfC30jjT9SZBubAN1wZeETm5nAIfmwvc08yJMbgF2fHgt/gGnSyxI/9MmnhKQCFnvaNsq1D1wVraG7T2aN2/dgDZvw7eZrQ4PpslTkxEkBQYvRg4h+ew7EoEpccCI9S1Dr3403+vO1rTN8iPBTznvC3eCA9u8ERR/jPlQZXSuVBtG3UBcARz72X27T6f6i5UHGIQXufjjZPJBfTIbyvuoiVDqDzw==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F5T61">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>61</TipoDTE>
+                    <Folio>5</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>4702686</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>893510</IVA>
+                    <MntTotal>5596196</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>BONIFICACIÓN ESPECIAL</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>4702686.000000</PrcItem>
+                <MontoItem>4702686</MontoItem>
+            </Detalle>
+            <Referencia>
+                <NroLinRef>1</NroLinRef>
+                <TpoDocRef>33</TpoDocRef>
+                <FolioRef>29</FolioRef>
+                <FchRef>2026-03-18</FchRef>
+                <CodRef>3</CodRef>
+                <RazonRef>BONIFICACIÓN ESPECIAL</RazonRef>
+            </Referencia>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>61</TD>
+                <F>5</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>5596196</MNT>
+                <IT1>BONIFICACIÓN ESPECIAL</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>61</TD>
+                        <RNG>
+                            <D>4</D>
+                            <H>6</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>sHscpc3moDD7YIBjFysHaOZDwGG51dImFpCgf5dIkNAdhBVLgKlmrX1WGTC+kYDSh+ErXzQSQqe74TDDdhgCaw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">ZaXMKEGme8DQuEpPkNjkiXuAcBXgo0Ye0+us7wtKuTxmM+8NGmp9tYKskp0h8n4/7jCzFaNIplCs5ldE9tWSrA==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:54</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">poqtdk1RCbAiDfNr4kktFVS8cz8y3vj39ckV9Qxrd36o04JbyO7mDECUfW289z5gOC7mDG6SMCh4md9nfZz7/Q==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:54</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F5T61"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>rRN5yEQ6asbRKIW5GFq4bQHK8jQ=</DigestValue></Reference></SignedInfo><SignatureValue>ebFvW1RaDGygt5kQhasGq008dvIPudoFdDcZKAUUMXGjhlR57ZI/LV4FgQUJcm85625J9H99kTwQx1PqNQnOgIgwc9bn0RYgbC/T+oKGPzwnmuSoOYr7BKvOWPR9XYzLZXs4beloYjGmkcft0vygFqB5wwTHtYd3NDsxrudAgVq2FaTGDyovDSnmeaD632p9hzhPeBbibQfPM8t18a92WCjv9k6NF285O+/xWzVhQ0Z7gzUs8X0B48AOY2q5UBrV47blOGlZkWnYp+dHuV9D/Ugyt9KeEZJSyBDGSfdkr5lmrCspa0Nnj2TT61QVEgwsgkkf4Yz4QJGqQgwOovOv/A==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F6T61">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>61</TipoDTE>
+                    <Folio>6</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>8992980</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>1708666</IVA>
+                    <MntTotal>10701646</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>DESCUENTO COMERCIAL</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>8992980.000000</PrcItem>
+                <MontoItem>8992980</MontoItem>
+            </Detalle>
+            <Referencia>
+                <NroLinRef>1</NroLinRef>
+                <TpoDocRef>33</TpoDocRef>
+                <FolioRef>20</FolioRef>
+                <FchRef>2026-03-18</FchRef>
+                <CodRef>3</CodRef>
+                <RazonRef>DESCUENTO COMERCIAL</RazonRef>
+            </Referencia>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>61</TD>
+                <F>6</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>10701646</MNT>
+                <IT1>DESCUENTO COMERCIAL</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>61</TD>
+                        <RNG>
+                            <D>4</D>
+                            <H>6</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>sHscpc3moDD7YIBjFysHaOZDwGG51dImFpCgf5dIkNAdhBVLgKlmrX1WGTC+kYDSh+ErXzQSQqe74TDDdhgCaw==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">ZaXMKEGme8DQuEpPkNjkiXuAcBXgo0Ye0+us7wtKuTxmM+8NGmp9tYKskp0h8n4/7jCzFaNIplCs5ldE9tWSrA==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:55</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">WH5Dv0XbB2x5C/ogcsjng19G7JUe12da/FTsDRtthSv7XYw5HDFnQpey77FO2RZ15R6npf8whNIRJ/nk6yuvOQ==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:55</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F6T61"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>TgPxlkix1u/eJMOeUcmND2LFW2Q=</DigestValue></Reference></SignedInfo><SignatureValue>ffowBoidU8u9wZLCvaXxVpuy15rcy3JTqVpnF7dtuDDBL+SfQocAkB2ct35nioao8SF87X5M8OUi6Gxv8lCwwcFzugUCtRbhllQDBcWdF6GGY3NittLykT+8sMyAyqRXsv+M9GM42BD5Rem2FLQQqcGv2glLARyDsuWlWBZH0UGGu422UdgdHT7SAmbqghha51u/bEl8k1IE3EKsCiBXuAIW3V0OW92wAuWfFJvSnJ2cC4MCl4u/2RmzBFD9CarvvDW0TU1LZ9UO2eHT/pomZmJzmI2Me2N5Kr1qrQGAT3kssFDAOkLH7JCTx2TxB/2kZihwsabDzd8J62GjOrST4Q==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE><DTE xmlns="http://www.sii.cl/SiiDte" version="1.0">
+            <Documento ID="F7T61">
+            <Encabezado>
+                <IdDoc>
+                    <TipoDTE>61</TipoDTE>
+                    <Folio>7</Folio>
+                    <FchEmis>2026-03-17</FchEmis>
+                    <FchVenc>2026-03-17</FchVenc>
+                </IdDoc>
+                <Emisor>
+                    <RUTEmisor>77626554-3</RUTEmisor>
+                    <RznSoc>MAESTRANZA FM SPA</RznSoc>
+                    <GiroEmis>FABRICACION, REPARACION ESTRUCTURAS METALICAS, REPARACION DE MAQ Y EQ.</GiroEmis>
+                    <CorreoEmisor>alex.tito@facoro.cl</CorreoEmisor>
+                    <Acteco>259900</Acteco>
+                    <DirOrigen>CAMINO NOVICIADO N° 1102</DirOrigen>
+                    <CmnaOrigen>Pudahuel</CmnaOrigen>
+                </Emisor>
+                <Receptor>
+                    <RUTRecep>60803000-K</RUTRecep>
+                    <RznSocRecep>Servicio de Impuestos Internos</RznSocRecep>
+                    <GiroRecep>Administración Publica</GiroRecep>
+                    <DirRecep>Teatinos 120</DirRecep>
+                    <CmnaRecep>Santiago</CmnaRecep>
+                </Receptor>
+                <Totales>
+                    <MntNeto>11275015</MntNeto>
+                    <TasaIVA>19.00</TasaIVA>
+                    <IVA>2142252</IVA>
+                    <MntTotal>13417267</MntTotal>
+                </Totales>
+            </Encabezado>
+            <Detalle>
+                <NroLinDet>1</NroLinDet>
+                <NmbItem>CORRECCIÓN DE MONTO FACTURADO</NmbItem>
+                <DscItem></DscItem>
+                <QtyItem>1.000000</QtyItem>
+                <UnmdItem>UN</UnmdItem>
+                <PrcItem>11275015.000000</PrcItem>
+                <MontoItem>11275015</MontoItem>
+            </Detalle>
+            <Referencia>
+                <NroLinRef>1</NroLinRef>
+                <TpoDocRef>33</TpoDocRef>
+                <FolioRef>22</FolioRef>
+                <FchRef>2026-03-17</FchRef>
+                <CodRef>3</CodRef>
+                <RazonRef>CORRECCIÓN DE MONTO FACTURADO</RazonRef>
+            </Referencia>
+            <TED version="1.0">
+            <DD>
+                <RE>77626554-3</RE>
+                <TD>61</TD>
+                <F>7</F>
+                <FE>2026-03-17</FE>
+                <RR>60803000-K</RR>
+                <RSR>Servicio de Impuestos Internos</RSR>
+                <MNT>13417267</MNT>
+                <IT1>CORRECCIÓN DE MONTO FACTURADO</IT1>
+                <CAF version="1.0">
+                    <DA>
+                        <RE>77626554-3</RE>
+                        <RS>MAESTRANZA FM SPA</RS>
+                        <TD>61</TD>
+                        <RNG>
+                            <D>7</D>
+                            <H>7</H>
+                        </RNG>
+                        <FA>2026-03-17</FA>
+                        <RSAPK>
+                            <M>8FE44hGMrdm7CrE8BU4fgd0brmzYlY7BfwQUql8YSq07SrBhVl6NPYtQcEoUPa/0D58pok4BkzKEXf0UHQlVtQ==</M>
+                            <E>Aw==</E>
+                        </RSAPK>
+                        <IDK>100</IDK>
+                    </DA>
+                    <FRMA algoritmo="SHA1withRSA">dGB9NucDvpLYzRQjm++jyV8SAM7m7+3bEHF7tyqrYfTAKa1FJfYNxdKA4PrK+lzmf4pEPaz47Ek4Dx4HE886rA==</FRMA>
+                </CAF>
+                <TSTED>2026-03-17T15:49:55</TSTED>
+            </DD>
+                <FRMT algoritmo="SHA1withRSA">DphRYqIK4bRxP3TZLtDhEINLq5l4YR0hwxPni+W4rVBhux5lfxOH5iZiOCE4k+fMuf2pwApYAxIkkdPenPuRGw==</FRMT>
+            </TED><TmstFirma>2026-03-17T15:49:55</TmstFirma>
+            </Documento>
+        <Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#F7T61"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>igKMlKyVKoAAeGoVRhC9qjRqivE=</DigestValue></Reference></SignedInfo><SignatureValue>Gy+iWBVs2fJkieKREwiUEVJH2Av2WYpw/2LVxosJce7/EYqXy5jrIh+dSzkyjH88zXnwmilmLeuRNpkZ3dS6JlxKmFSh7AU64vBpAIucnajQLxYiVrQdaLPZ3Oor596CkSGpCAccQHSBYnGW/xm2nueVHKL+rcMpUcrfHgtT5rvwuhWK57iFjNJVn37jtSYY4sUgCmkUZkHZ4zLrEb35KR4/yj9e+jrnhuBrFJuqySyq8Ywq1HEiUSH8WvgeIUKAFiOPMMzUra/sRgf0lI/5PknP+8EnwrLPbixP+N1nukUA3jZwteoiNb/mjUtfj9EE4uH0PCrR1QTJb8+tv/Bb1A==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></DTE>
+    </SetDTE>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#SetDoc"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>PAG6Ddw3E7NVLLsZkKDnj5JLa1c=</DigestValue></Reference></SignedInfo><SignatureValue>lmUhDcUfJgXWGtrG88TVLKi7Kfm3XUlGv48ownONuk378Oqwa6jxcHuzJIM4YJLoZ/i4DVDl+ZX+f3x2r47pbzwEfLYjnmJLZA96a8at12h0IUv4i28HQH+Q71a0+byrFE61d82k94r4ztNV9dBe8j9CTKIW7evulcrGer5ZWI6f2lb5Ka//0li5gkmFFhQkwSE3W9gbVkNfho8PW3gkh8ScN+Ft3mbA3Z+USjNsy7fRiRbKYrt699e4TIHpq2DHcm3x5rh/pOWZ5tKscZaMvy2tVRWF9qviMoSD10+0P+F/kMqfhOjjxWYZWDUbivr+ENFYrkEc4FTIBu3QFTs2+w==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></EnvioDTE>

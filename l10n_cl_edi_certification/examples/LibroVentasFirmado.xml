@@ -1,0 +1,167 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<LibroCompraVenta xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte LibroCV_v10.xsd" version="1.0">
+    <EnvioLibro ID="SetDoc">
+        <Caratula>
+            <RutEmisorLibro>77626554-3</RutEmisorLibro>
+            <RutEnvia>8530047-4</RutEnvia>
+            <PeriodoTributario>2026-03</PeriodoTributario>
+            <FchResol>2026-03-16</FchResol>
+            <NroResol>0</NroResol>
+            <TipoOperacion>VENTA</TipoOperacion>
+            <TipoLibro>ESPECIAL</TipoLibro>
+            <TipoEnvio>TOTAL</TipoEnvio>
+            <FolioNotificacion>1</FolioNotificacion>
+        </Caratula>
+        <ResumenPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>33</TpoDoc>
+                <TotDoc>4</TotDoc>
+                <TotMntExe>48902</TotMntExe>
+                <TotMntNeto>10835410</TotMntNeto>
+                <TotMntIVA>2058728</TotMntIVA>
+                <TotMntTotal>12943040</TotMntTotal>
+            </TotalesPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>56</TpoDoc>
+                <TotDoc>1</TotDoc>
+                <TotMntExe>0</TotMntExe>
+                <TotMntNeto>0</TotMntNeto>
+                <TotMntIVA>0</TotMntIVA>
+                <TotMntTotal>0</TotMntTotal>
+            </TotalesPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>61</TpoDoc>
+                <TotDoc>3</TotDoc>
+                <TotMntExe>35246</TotMntExe>
+                <TotMntNeto>4247246</TotMntNeto>
+                <TotMntIVA>806977</TotMntIVA>
+                <TotMntTotal>5089469</TotMntTotal>
+            </TotalesPeriodo>
+        </ResumenPeriodo>
+        <Detalle>
+            <TpoDoc>56</TpoDoc>
+            <NroDoc>1</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntNeto>0</MntNeto>
+            <MntTotal>0</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>61</TpoDoc>
+            <NroDoc>3</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntExe>35246</MntExe>
+            <MntNeto>1281326</MntNeto>
+            <MntIVA>243452</MntIVA>
+            <MntTotal>1560024</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>61</TpoDoc>
+            <NroDoc>2</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntNeto>2965920</MntNeto>
+            <MntIVA>563525</MntIVA>
+            <MntTotal>3529445</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>61</TpoDoc>
+            <NroDoc>1</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntNeto>0</MntNeto>
+            <MntTotal>0</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>33</TpoDoc>
+            <NroDoc>16</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntExe>13656</MntExe>
+            <MntNeto>2586751</MntNeto>
+            <MntIVA>491483</MntIVA>
+            <MntTotal>3091890</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>33</TpoDoc>
+            <NroDoc>15</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntExe>35246</MntExe>
+            <MntNeto>1281326</MntNeto>
+            <MntIVA>243452</MntIVA>
+            <MntTotal>1560024</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>33</TpoDoc>
+            <NroDoc>14</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntNeto>6047011</MntNeto>
+            <MntIVA>1148932</MntIVA>
+            <MntTotal>7195943</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>33</TpoDoc>
+            <NroDoc>13</NroDoc>
+            <TasaImp>0.19</TasaImp>
+            <FchDoc>2026-03-17</FchDoc>
+            <RUTDoc>77626554-3</RUTDoc>
+            <RznSoc>MAESTRANZA FM SPA</RznSoc>
+            <MntNeto>920322</MntNeto>
+            <MntIVA>174861</MntIVA>
+            <MntTotal>1095183</MntTotal>
+        </Detalle>
+        <TmstFirma>2026-03-17T11:14:02</TmstFirma>
+    </EnvioLibro>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#SetDoc"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>Rw+0THltlEsiAE8wTfv4uMDummI=</DigestValue></Reference></SignedInfo><SignatureValue>DchG2bj5fPCu/Bkr8j8jfqIyGZdU1KR3rMWO23VBk7Y2yQi3Srb3Ac9c8mWA520wnpnNulytTpFTLGsHhcYL22EXw8TXJF2cOof10I4bBn8TtEKk/L5N2YKzPfrtftX9q49mI96xBdZZDZlsLe84jklyxCQzIg5PM2GscX8P2fxNO+1F0t0fH2B4sT/pOen3RykWsmPOJkYjhoTSca0eC6KUlMGlG8wppUApBP096k1rm8OnXN/jhxmJ4X+xI3eenGRXg19t7dmDeU0W3R5rABuIkCnZO8aEGMMkNm+evpqIAEt4WZsGn7z9Apl+xx6zMBk+f8FZwiUPSzuQBtzXuw==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature>
+</LibroCompraVenta>

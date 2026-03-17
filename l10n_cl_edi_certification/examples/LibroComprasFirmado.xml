@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+<LibroCompraVenta xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xsi:schemaLocation="http://www.sii.cl/SiiDte LibroCV_v10.xsd" version="1.0">
+    <EnvioLibro ID="SetDoc">
+        <Caratula>
+            <RutEmisorLibro>77626554-3</RutEmisorLibro>
+            <RutEnvia>8530047-4</RutEnvia>
+            <PeriodoTributario>2026-03</PeriodoTributario>
+            <FchResol>2026-03-16</FchResol>
+            <NroResol>0</NroResol>
+            <TipoOperacion>COMPRA</TipoOperacion>
+            <TipoLibro>ESPECIAL</TipoLibro>
+            <TipoEnvio>TOTAL</TipoEnvio>
+            <FolioNotificacion>2</FolioNotificacion>
+        </Caratula>
+        <ResumenPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>30</TpoDoc>
+                <TotDoc>2</TotDoc>
+                <TotMntExe>0</TotMntExe>
+                <TotMntNeto>71305</TotMntNeto>
+                <TotMntIVA>7843</TotMntIVA>
+                <TotOpIVAUsoComun>1</TotOpIVAUsoComun>
+                <TotIVAUsoComun>5705</TotIVAUsoComun>
+                <FctProp>0.6</FctProp>
+                <TotCredIVAUsoComun>3423</TotCredIVAUsoComun>
+                <TotMntTotal>84853</TotMntTotal>
+            </TotalesPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>33</TpoDoc>
+                <TotDoc>2</TotDoc>
+                <TotMntExe>9963</TotMntExe>
+                <TotMntNeto>20965</TotMntNeto>
+                <TotMntIVA>1828</TotMntIVA>
+                <TotIVANoRec>
+                    <CodIVANoRec>4</CodIVANoRec>
+                    <TotOpIVANoRec>1</TotOpIVANoRec>
+                    <TotMntIVANoRec>2156</TotMntIVANoRec>
+                </TotIVANoRec>
+                <TotMntTotal>34912</TotMntTotal>
+            </TotalesPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>46</TpoDoc>
+                <TotDoc>1</TotDoc>
+                <TotMntExe>0</TotMntExe>
+                <TotMntNeto>10236</TotMntNeto>
+                <TotMntIVA>1945</TotMntIVA>
+                    <TotOtrosImp>
+                        <CodImp>15</CodImp>
+                        <TotMntImp>1945</TotMntImp>
+                    </TotOtrosImp>
+                <TotOpIVARetTotal>1</TotOpIVARetTotal>
+                <TotIVARetTotal>1945</TotIVARetTotal>
+                <TotMntTotal>10236</TotMntTotal>
+            </TotalesPeriodo>
+            <TotalesPeriodo>
+                <TpoDoc>60</TpoDoc>
+                <TotDoc>2</TotDoc>
+                <TotMntExe>0</TotMntExe>
+                <TotMntNeto>10184</TotMntNeto>
+                <TotMntIVA>1935</TotMntIVA>
+                <TotMntTotal>12119</TotMntTotal>
+            </TotalesPeriodo>
+        </ResumenPeriodo>
+        <Detalle>
+            <TpoDoc>30</TpoDoc>
+            <NroDoc>234</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntNeto>41279</MntNeto>
+            <MntIVA>7843</MntIVA>
+            <MntTotal>49122</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>33</TpoDoc>
+            <NroDoc>32</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntExe>9963</MntExe>
+            <MntNeto>9620</MntNeto>
+            <MntIVA>1828</MntIVA>
+            <MntTotal>21411</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>30</TpoDoc>
+            <NroDoc>781</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntNeto>30026</MntNeto>
+            <IVAUsoComun>5705</IVAUsoComun>
+            <MntTotal>35731</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>60</TpoDoc>
+            <NroDoc>451</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntNeto>2850</MntNeto>
+            <MntIVA>542</MntIVA>
+            <MntTotal>3392</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>33</TpoDoc>
+            <NroDoc>67</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntNeto>11345</MntNeto>
+            <IVANoRec>
+                <CodIVANoRec>4</CodIVANoRec>
+                <MntIVANoRec>2156</MntIVANoRec>
+            </IVANoRec>
+            <MntTotal>13501</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>46</TpoDoc>
+            <NroDoc>9</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntNeto>10236</MntNeto>
+            <MntIVA>1945</MntIVA>
+                <OtrosImp>
+                    <CodImp>15</CodImp>
+                    <TasaImp>19</TasaImp>
+                    <MntImp>1945</MntImp>
+                </OtrosImp>
+            <IVARetTotal>1945</IVARetTotal>
+            <MntTotal>10236</MntTotal>
+        </Detalle>
+        <Detalle>
+            <TpoDoc>60</TpoDoc>
+            <NroDoc>211</NroDoc>
+            <TasaImp>19</TasaImp>
+            <FchDoc>2026-03-16</FchDoc>
+            <RUTDoc>17096073-4</RUTDoc>
+            <RznSoc>Razón Social Proveedor</RznSoc>
+            <MntNeto>7334</MntNeto>
+            <MntIVA>1393</MntIVA>
+            <MntTotal>8727</MntTotal>
+        </Detalle>
+        <TmstFirma>2026-03-17T11:26:23</TmstFirma>
+    </EnvioLibro>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#SetDoc"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>ZWGWO932DE33FhrvPrQb+wwvsBI=</DigestValue></Reference></SignedInfo><SignatureValue>sBooo/iiod60o8XTOJqj2KfD9HNAcR3YDz/67pAq3Pa1wetPsBi9d3RpPoA0P06j7V09yUGS9MbBJvZkGKYYnhfFWtgK7GythV2Qsvfc2T/hFXXUrAtf1MgZmp67E9XoFG+6ve60S4i4FUIWKDcn7azXEkSX5kAMp7UNJdtX2d4Z6sFb++/eQcYKlpgnFFu/Rpiq+PaeGHLuhhF+/oNufiGTfI6Il1y6Cn/+B2aTgNIPdB+XD77O8A1DDbi13/NHwA+0ADxuFepmGpaESJEuqxxsdMwkoNyga/dNKicI9JwfcDDvw7c2Afed273VPPDt3jET2izBoL409f0s8Z0FZQ==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature>
+</LibroCompraVenta>

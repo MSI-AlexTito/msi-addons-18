@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="ISO-8859-1" ?>
+
+<RespuestaDTE xmlns="http://www.sii.cl/SiiDte" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" version="1.0" xsi:schemaLocation="http://www.sii.cl/SiiDte RespuestaEnvioDTE_v10.xsd">
+    <Resultado ID="Resultado">
+        <Caratula version="1.0">
+            <RutResponde>77626554-3</RutResponde>
+            <RutRecibe>88888888-8</RutRecibe>
+            <IdRespuesta>1</IdRespuesta>
+            <NroDetalles>2</NroDetalles>
+            <NmbContacto>Sistema Certificacion</NmbContacto>
+            <FonoContacto>+56900000000</FonoContacto>
+            <MailContacto>alex.tito@facoro.cl</MailContacto>
+            <TmstFirmaResp>2026-03-17T15:57:20</TmstFirmaResp>
+        </Caratula>
+            <ResultadoDTE>
+                <TipoDTE>33</TipoDTE>
+                <Folio>52268</Folio>
+                <FchEmis>2026-03-17</FchEmis>
+                <RUTEmisor>88888888-8</RUTEmisor>
+                <RUTRecep>77626554-3</RUTRecep>
+                <MntTotal>5471</MntTotal>
+                <CodEnvio>1</CodEnvio>
+                    <EstadoDTE>0</EstadoDTE>
+                    <EstadoDTEGlosa>DTE Aceptado - Mercaderia Conforme</EstadoDTEGlosa>
+            </ResultadoDTE>
+            <ResultadoDTE>
+                <TipoDTE>33</TipoDTE>
+                <Folio>52269</Folio>
+                <FchEmis>2013-06-21</FchEmis>
+                <RUTEmisor>88888888-8</RUTEmisor>
+                <RUTRecep>69507000-4</RUTRecep>
+                <MntTotal>7851</MntTotal>
+                <CodEnvio>1</CodEnvio>
+                    <EstadoDTE>2</EstadoDTE>
+                    <EstadoDTEGlosa>DTE Rechazado - RUT Receptor no corresponde</EstadoDTEGlosa>
+            </ResultadoDTE>
+    </Resultado>
+<Signature xmlns="http://www.w3.org/2000/09/xmldsig#"><SignedInfo xmlns="http://www.w3.org/2000/09/xmldsig#" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"><CanonicalizationMethod Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></CanonicalizationMethod><SignatureMethod Algorithm="http://www.w3.org/2000/09/xmldsig#rsa-sha1"></SignatureMethod><Reference URI="#Resultado"><Transforms><Transform Algorithm="http://www.w3.org/TR/2001/REC-xml-c14n-20010315"></Transform></Transforms><DigestMethod Algorithm="http://www.w3.org/2000/09/xmldsig#sha1"></DigestMethod><DigestValue>K+F3r8K4qb7Q7XEzctMLBAjn88c=</DigestValue></Reference></SignedInfo><SignatureValue>ggOZ7e66twIvb3iQOxD5qiz622Za3UbShjK/6E5gWj5zV9NP5HkBC/foDDDkv/AIlLQxAJ4OrZG1p0HO6Us1KKYn3LxdQ3vbKb0al9AVgygS4wt9G8aNg9LjKPRe19BCaLKDynRyIcrmMkTUtgX8/mOg8VsjxSrMc5QG9fRW0z3US/NQEfRiW3ywG8sfXF5hBVlMDGq0Ci/xQ5gN8HxuP6LsNlUE31eMw9VdhWKENTQmaCl3w92IuPwCWWoyKYkSgJ27Ru8/TLtyZq2yNalO+X4vVmsC3snKfV6eOqMnnLNWXepxvShfGnkGml1b8jmF8xfJdh6xWApu6hIBv9Pztg==</SignatureValue><KeyInfo><KeyValue><RSAKeyValue><Modulus>xYL6+L9/BEzCGpd/AFWMjvNJfhSdwjnJWnMi14la7JmBajoPzjhQNisp2+2zVy0NCNE8gsGuKDNjqcqKbSDfMW433w0DJ2YHteB6GQlaLTLzzeGoa9idwfAQ7KKORL717Wupb5Jt1wIClNMfT6S9MqsXE8Q6h/cRzs2Kzpo0UUw0tMu3dh3C3xrOO5jQ1boyikomOIUOhCyqiWkvl5Bo6fYdsO0ymQe8rQ0eHN7k7Ha+vCtrARO2pMLWUrKXkwyLKLaSl/4P4vuju5O+J4yL2GOSrZdvJR8W5dJVQF3F5y1ROHvM8MOdvzAfddDEzN4LGs3fiF+YVEh6nUZsl7IdTQ==</Modulus><Exponent>AQAB</Exponent></RSAKeyValue></KeyValue><X509Data><X509Certificate>
+MIIGTjCCBTagAwIBAgIINrMgBzqejUMwDQYJKoZIhvcNAQELBQAwga8xCzAJBgNV
+BAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5MDcGA1UECwwwVGVybXMgb2Yg
+dXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJkb3RlcmNlcm9zMSswKQYDVQQD
+DCJFLVNpZ24gQ2xhc3MgMiBGaXJtYSBUcmlidXRhcmlhIENBMSIwIAYJKoZIhvcN
+AQkBFhNlLXNpZ25AZXNpZ24tbGEuY29tMB4XDTIzMTAyNTE1NTAwMFoXDTI2MTAy
+NDE1NTAwMFowga4xCzAJBgNVBAYTAkNMMRQwEgYDVQQKDAtFLVNpZ24gUy5BLjE5
+MDcGA1UECwwwVGVybXMgb2YgdXNlIGF0IHd3dy5lc2lnbi1sYS5jb20vYWN1ZXJk
+b3RlcmNlcm9zMSMwIQYDVQQDDBpKQVZJRVIgUk9EUklHVUVaIFJPRFJJR1VFWjEp
+MCcGCSqGSIb3DQEJARYaamF2aWVyLnJvZHJpZ3VlekBmYWNvcm8uY2wwggEiMA0G
+CSqGSIb3DQEBAQUAA4IBDwAwggEKAoIBAQDFgvr4v38ETMIal38AVYyO80l+FJ3C
+OclacyLXiVrsmYFqOg/OOFA2Kynb7bNXLQ0I0TyCwa4oM2OpyoptIN8xbjffDQMn
+Zge14HoZCVotMvPN4ahr2J3B8BDsoo5EvvXta6lvkm3XAgKU0x9PpL0yqxcTxDqH
+9xHOzYrOmjRRTDS0y7d2HcLfGs47mNDVujKKSiY4hQ6ELKqJaS+XkGjp9h2w7TKZ
+B7ytDR4c3uTsdr68K2sBE7akwtZSspeTDIsotpKX/g/i+6O7k74njIvYY5Ktl28l
+Hxbl0lVAXcXnLVE4e8zww52/MB910MTM3gsazd+IX5hUSHqdRmyXsh1NAgMBAAGj
+ggJrMIICZzCBgAYIKwYBBQUHAQEEdDByMEoGCCsGAQUFBzAChj5odHRwOi8vcGtp
+LmVzaWduLWxhLmNvbS9jYWNlcnRzL3BraUNsYXNzMkZpcm1hVHJpYnV0YXJpYUNB
+LmNydDAkBggrBgEFBQcwAYYYaHR0cDovL29jc3AuZXNpZ24tbGEuY29tMB0GA1Ud
+DgQWBBS5Qeo8MxgSSkbJ0+sn+EY1urS16jAMBgNVHRMBAf8EAjAAMB8GA1UdIwQY
+MBaAFPlK+sLHbsLnEpxXRTWEGm0o6UqkMIHIBgNVHSAEgcAwgb0wgboGDCsGAQQB
+gspqAQQBAjCBqTB+BggrBgEFBQcCAjByHnAAQwBlAHIAdABpAGYAaQBjAGEAZABv
+ACAAcABhAHIAYQAgAHUAcwBvACAAVAByAGkAYgB1AHQAYQByAGkAbwAsACAAQwBv
+AG0AZQByAGMAaQBvACwAIABQAGEAZwBvAHMAIAB5ACAATwB0AHIAbwBzMCcGCCsG
+AQUFBwIBFhtodHRwOi8vd3d3LmVzaWduLWxhLmNvbS9jcHMwUQYDVR0fBEowSDBG
+oESgQoZAaHR0cDovL3BraS5lc2lnbi1sYS5jb20vY3JsL3BraUNsYXNzMkZpcm1h
+VHJpYnV0YXJpYS9lbmR1c2VyLmNybDAOBgNVHQ8BAf8EBAMCBaAwHQYDVR0lBBYw
+FAYIKwYBBQUHAwIGCCsGAQUFBwMEMCIGA1UdEQQbMBmgFwYIKwYBBAHBAQGgCxYJ
+ODUzMDA0Ny00MCMGA1UdEgQcMBqgGAYIKwYBBAHBAQKgDBYKOTk1NTE3NDAtSzAN
+BgkqhkiG9w0BAQsFAAOCAQEADpIfuyDBHQ4SBXgrhOD7JsMsT4HOxI5qrIsgbwD8
+CvGFVfa+M8rt//ej8RSijluqjeDed5f6U2WJroLEsnXocuXn9rvekhPe/ftVtBau
+9FB6HbEm11HTu7vsFbLnR3VrzpYEyTbU4tf5ZXNw+l0pLQTBHNKirqN80mjxyW1G
+OgescK+b3BNGmKG1MPUrtWPZB07kKF1yXP95Vz5eNEXMs7NbNTXBWNodeGpWCJcT
+7uWkUDhOFterbieVVqIpDTa1940neyusR2DBSGUEShGU0b8phPhNwg4YI3374wXT
+e5DaR3Fx0R64Z5rNsN3Dpn+vNKeguyWNn68VTUzZdiP5EA==</X509Certificate></X509Data></KeyInfo></Signature></RespuestaDTE>

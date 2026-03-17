@@ -1,0 +1,132 @@
+INDICACIONES GENERALES:
+
+Se debe adjuntar ejemplar tributario y cedible de los documentos: Factura Electrónica, Factura No Afecta o Exenta Electrónica, Guía de Despacho Electrónica y Factura de Compra Electrónica.
+
+Para consultar los datos del contribuyente, como el giro, razón social, direcciones y sucursales, Dirección Regional o Unidad debe ingresar en la opción "Mi SII" de la página del SII.
+
+Además se les recomienda no utilizar abreviaciones en los giros y no agregar textos que informen arreglos de contrato con los clientes.
+
+
+SET BASICO - NUMERO DE ATENCION: 4737990
+
+IMPORTANTE: Considerar que los descuentos por línea o globales deben ser indicados en las representaciones impresas. Además, señalar las cifras con separador de miles con ".".
+
+
+CASO 4737990-1
+==============
+DOCUMENTO	FACTURA ELECTRONICA
+
+ITEM			CANTIDAD	PRECIO UNITARIO
+Cajón AFECTO		    165		   3289
+Relleno AFECTO		     69		   5473
+
+
+CASO 4737990-2
+==============
+DOCUMENTO	FACTURA ELECTRONICA
+
+ITEM			CANTIDAD	PRECIO UNITARIO		DESCUENTO ITEM
+Pañuelo AFECTO		    718		   5565			      9%
+ITEM 2 AFECTO		    661		   4617			     21%
+
+
+CASO 4737990-3
+==============
+DOCUMENTO	FACTURA ELECTRONICA
+
+ITEM			CANTIDAD	PRECIO UNITARIO
+Pintura B&W AFECTO	     59		   6518
+ITEM 2 AFECTO		    229		   3916
+ITEM 3 SERVICIO EXENTO	      1		  35246
+
+
+CASO 4737990-4
+==============
+DOCUMENTO	FACTURA ELECTRONICA
+
+ITEM			CANTIDAD	PRECIO UNITARIO
+ITEM 1 AFECTO		    388		   5586
+ITEM 2 AFECTO		    164		   6750
+ITEM 3 SERVICIO EXENTO	      2		   6828
+
+DESCUENTO GLOBAL ITEMES AFECTOS		     21%
+
+
+CASO 4737990-5
+==============
+DOCUMENTO		NOTA DE CREDITO ELECTRONICA
+REFERENCIA		FACTURA ELECTRONICA CORRESPONDIENTE A CASO 4737990-1
+RAZON REFERENCIA	CORRIGE GIRO DEL RECEPTOR
+
+
+CASO 4737990-6
+==============
+DOCUMENTO		NOTA DE CREDITO ELECTRONICA
+REFERENCIA		FACTURA  ELECTRONICA CORRESPONDIENTE A CASO 4737990-2
+RAZON REFERENCIA	DEVOLUCION DE MERCADERIAS
+
+ITEM			CANTIDAD
+Pañuelo AFECTO		    263
+ITEM 2 AFECTO		    448
+
+
+CASO 4737990-7
+==============
+DOCUMENTO		NOTA DE CREDITO ELECTRONICA
+REFERENCIA		FACTURA ELECTRONICA CORRESPONDIENTE A CASO 4737990-3
+RAZON REFERENCIA	ANULA FACTURA
+
+
+CASO 4737990-8
+==============
+DOCUMENTO		NOTA DE DEBITO ELECTRONICA
+REFERENCIA		NOTA DE CREDITO ELECTRONICA CORRESPONDIENTE A CASO 4737990-5
+RAZON REFERENCIA	ANULA NOTA DE CREDITO ELECTRONICA
+--------------------------------------------------------------------------------
+SET LIBRO DE VENTAS - NUMERO DE ATENCION: 4737991
+
+CONSTRUYA EL LIBRO DE VENTAS CON LOS DOCUMENTOS CON QUE GENERO
+EL SET BASICO O EL SET DE FACTURA EXENTA, SEGUN CORRESPONDA.
+SI OBTUVO AMBOS SET, UTILICE LOS DOCUMENTOS DEL SET BASICO PARA
+CONSTRUIR EL LIBRO DE VENTAS.
+--------------------------------------------------------------------------------
+SET LIBRO DE COMPRAS - NUMERO DE ATENCION: 4737992
+ 
+==========================================================================
+TIPO DOCUMENTO				FOLIO
+OBSERVACIONES
+MONTO EXENTO	MONTO AFECTO
+==========================================================================
+FACTURA					234
+FACTURA DEL GIRO CON DERECHO A CREDITO
+		  41279
+
+FACTURA ELECTRONICA 			 32
+FACTURA DEL GIRO CON DERECHO A CREDITO
+   9963		   9620
+
+FACTURA					781
+FACTURA CON IVA USO COMUN
+		  30026
+
+NOTA DE CREDITO				451
+NOTA DE CREDITO POR DESCUENTO A FACTURA 234
+		   2850
+
+FACTURA ELECTRONICA			 67
+ENTREGA GRATUITA DEL PROVEEDOR
+		  11345
+
+FACTURA DE COMPRA ELECTRONICA		  9
+COMPRA CON RETENCION TOTAL DEL IVA
+		  10236
+
+NOTA DE CREDITO				211
+NOTA DE CREDITO POR DESCUENTO FACTURA ELECTRONICA 32
+		   7334
+==========================================================================
+
+OBSERVACIONES GENERALES
+-----------------------
+EN FACTURA CON IVA USO COMUN CONSIDERE QUE EL FACTOR DE PROPORCIONALIDAD 
+DEL IVA ES DE 0.60
