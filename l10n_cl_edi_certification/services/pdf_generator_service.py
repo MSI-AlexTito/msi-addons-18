@@ -248,17 +248,27 @@ class PDFGeneratorService(models.AbstractModel):
             ted_for_barcode = re.sub(
                 r'<TmstFirma>.*?</TmstFirma>',
                 '',
-                ted_xml
+                ted_xml,
+                flags=re.DOTALL,
             )
 
+            # Compactar: eliminar whitespace entre tags para reducir tamaño
+            # El PDF417 tiene límite de 928 codewords — la indentación lo excede
+            ted_for_barcode = re.sub(r'>\s+<', '><', ted_for_barcode)
+            ted_for_barcode = ted_for_barcode.strip()
+
+            # CRÍTICO: Codificar como ISO-8859-1 bytes antes de generar el barcode.
+            # La firma FRMT se calculó sobre dd_clean.encode('ISO-8859-1').
+            # Si se pasa un string, pdf417gen usa UTF-8 internamente, cambiando los
+            # bytes de caracteres como 'ó' (UTF-8: 0xC3 0xB3 vs ISO-8859-1: 0xF3)
+            # → la verificación de firma falla en el SII.
+            ted_bytes = ted_for_barcode.encode('ISO-8859-1', errors='replace')
+
             # Generar código de barras PDF417
-            # Parámetros según módulo enterprise:
-            # - security_level=5
-            # - columns=13
             barcode = pdf417gen.encode(
-                ted_for_barcode,
+                ted_bytes,
                 columns=13,
-                security_level=5
+                security_level=2,
             )
 
             # Convertir a imagen PIL

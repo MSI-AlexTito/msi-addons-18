@@ -47,6 +47,19 @@ class DteGeneratorService(models.AbstractModel):
         # Generar código de barras PDF417
         barcode_image = self._generate_barcode(ted_xml)
 
+        import json as _json
+
+        # Serializar detalle para visualización en PDF
+        detalle_items = [{
+            'nombre': item.get('NmbItem', ''),
+            'cantidad': item.get('QtyItem', 1),
+            'precio': item.get('PrcItem', 0),
+            'total': item.get('MontoItem', 0),
+        } for item in dte_data['Detalle']]
+
+        totales = dte_data['Encabezado']['Totales']
+        receptor = dte_data['Encabezado']['Receptor']
+
         # Crear registro de documento generado
         # IMPORTANTE: Codificar como ISO-8859-1 para coincidir con la declaración XML
         document = self.env['l10n_cl_edi.certification.generated.document'].create({
@@ -56,8 +69,10 @@ class DteGeneratorService(models.AbstractModel):
             'folio': folio,
             'issue_date': fields.Date.context_today(self),
             'emission_date': fields.Datetime.now(),
-            'receiver_rut': case.project_id.client_info_id.rut or '60803000-K',  # SII default
-            'receiver_name': case.project_id.client_info_id.social_reason or 'SII',
+            'receiver_rut': receptor['RUTRecep'],
+            'receiver_name': receptor['RznSocRecep'],
+            'receiver_address': receptor.get('DirRecep', ''),
+            'receiver_giro': receptor.get('GiroRecep', ''),
             'xml_dte_file': base64.b64encode(dte_xml.encode('ISO-8859-1')),
             'ted_xml': ted_xml,
             'barcode_image': barcode_image,
@@ -65,6 +80,11 @@ class DteGeneratorService(models.AbstractModel):
             'subtotal_exempt': case.subtotal_exempt,
             'tax_amount': case.tax_amount,
             'total_amount': case.total_amount,
+            'mnt_neto': totales.get('MntNeto', 0),
+            'mnt_exento': totales.get('MntExe', 0),
+            'mnt_iva': totales.get('IVA', 0),
+            'mnt_total': totales.get('MntTotal', 0),
+            'detalle_json': _json.dumps(detalle_items, ensure_ascii=False),
             'state': 'generated',
         })
 

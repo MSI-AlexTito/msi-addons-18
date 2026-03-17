@@ -112,9 +112,8 @@
         # 'wizards/certification_project_wizard_views.xml',
         # 'wizards/certification_generate_wizard_views.xml',
 
-        # TODO: Create report file
         # Reports
-        # 'report/certification_project_report.xml',
+        'report/certification_dte_report_template.xml',
     ],
     'demo': [
         # TODO: Create demo file

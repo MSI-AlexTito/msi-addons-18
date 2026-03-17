@@ -172,12 +172,22 @@ class CertificationGeneratedDocument(models.Model):
 
     # PDF Impreso
     pdf_file = fields.Binary(
-        string='PDF Impreso',
+        string='PDF Tributario',
         attachment=True,
-        help='PDF impreso del documento con timbre TED'
+        help='PDF impreso del documento con timbre TED (Copia Tributaria)'
     )
     pdf_filename = fields.Char(
         string='Nombre PDF',
+        compute='_compute_filenames',
+        store=True
+    )
+    pdf_cedible_file = fields.Binary(
+        string='PDF Cedible',
+        attachment=True,
+        help='PDF Copia Cedible (solo Factura Electrónica tipo 33)'
+    )
+    pdf_cedible_filename = fields.Char(
+        string='Nombre PDF Cedible',
         compute='_compute_filenames',
         store=True
     )
@@ -259,11 +269,13 @@ class CertificationGeneratedDocument(models.Model):
                 base_name = f"DTE_{doc.document_type_code}_{doc.folio}"
                 doc.xml_dte_filename = f"{base_name}.xml"
                 doc.xml_dte_signed_filename = f"{base_name}_signed.xml"
-                doc.pdf_filename = f"{base_name}.pdf"
+                doc.pdf_filename = f"{base_name}_tributaria.pdf"
+                doc.pdf_cedible_filename = f"{base_name}_cedible.pdf"
             else:
                 doc.xml_dte_filename = "DTE.xml"
                 doc.xml_dte_signed_filename = "DTE_signed.xml"
-                doc.pdf_filename = "DTE.pdf"
+                doc.pdf_filename = "DTE_tributaria.pdf"
+                doc.pdf_cedible_filename = "DTE_cedible.pdf"
 
     # Métodos de Acción
     def action_validate(self):
@@ -368,41 +380,116 @@ class CertificationGeneratedDocument(models.Model):
 
         return True
 
-    def action_generate_ted(self):
-        """Genera el TED (Timbre Electrónico) y su código de barras PDF417"""
-        for doc in self:
-            print(f'\n[TED] Procesando documento: {doc.complete_name} (ID: {doc.id})')
-            print(f'  - Proyecto: {doc.project_id.name if doc.project_id else "N/A"}')
-            print(f'  - Estado: {doc.state}')
-            print(f'  - Tiene XML firmado: {bool(doc.xml_dte_signed)}')
-            print(f'  - Ya tiene TED: {bool(doc.ted_xml)}')
-            print(f'  - Ya tiene código de barras: {bool(doc.barcode_image)}')
+    def _populate_fields_from_xml(self):
+        """
+        Extrae montos y detalle del XML firmado y los guarda en los campos del documento.
+        Necesario para documentos creados antes de que se almacenaran estos campos.
+        """
+        import re
+        import json
+        from lxml import etree
 
+        for doc in self:
+            xml_source = doc.xml_dte_signed or doc.xml_dte_file
+            if not xml_source:
+                continue
+
+            try:
+                xml_bytes = base64.b64decode(xml_source)
+                xml_content = xml_bytes.decode('ISO-8859-1')
+
+                # Quitar namespace para facilitar xpath
+                xml_clean = re.sub(r' xmlns[^"]*"[^"]*"', '', xml_content)
+                root = etree.fromstring(xml_clean.encode('ISO-8859-1'))
+
+                vals = {}
+
+                # Extraer Totales
+                totales = root.find('.//Totales')
+                if totales is not None:
+                    def _int(tag):
+                        n = totales.find(tag)
+                        return int(n.text) if n is not None and n.text else 0
+
+                    vals['mnt_neto'] = _int('MntNeto')
+                    vals['mnt_exento'] = _int('MntExe')
+                    vals['mnt_iva'] = _int('IVA')
+                    vals['mnt_total'] = _int('MntTotal')
+
+                # Extraer Detalle
+                items = []
+                for det in root.findall('.//Detalle'):
+                    def _txt(tag):
+                        n = det.find(tag)
+                        return n.text.strip() if n is not None and n.text else ''
+
+                    def _num(tag):
+                        n = det.find(tag)
+                        try:
+                            return float(n.text) if n is not None and n.text else 0
+                        except Exception:
+                            return 0
+
+                    items.append({
+                        'nombre': _txt('NmbItem'),
+                        'cantidad': _num('QtyItem') or 1,
+                        'precio': _num('PrcItem'),
+                        'total': _num('MontoItem'),
+                    })
+
+                if items:
+                    vals['detalle_json'] = json.dumps(items, ensure_ascii=False)
+
+                if vals:
+                    doc.write(vals)
+
+            except Exception as e:
+                _logger.warning('No se pudo extraer datos del XML para doc %s: %s', doc.id, e)
+
+    def action_generate_ted(self):
+        """
+        Genera el TED (Timbre Electrónico) extrayéndolo del XML firmado.
+
+        El TED debe ser el que está embebido en el XML firmado — no se genera
+        uno nuevo, ya que cualquier TED nuevo tendría un TSTED distinto y su
+        firma FRMT no coincidiría con la del XML, lo que el SII rechaza.
+        También repobla montos y detalle desde el XML si están vacíos.
+        """
+        import re
+
+        for doc in self:
             if not doc.xml_dte_signed:
-                print(f'  ✗ ERROR: No tiene XML firmado')
                 raise UserError(_('Debe firmar el documento antes de generar el TED.'))
 
-            if doc.ted_xml and doc.barcode_image:
-                print(f'  ℹ️  Ya tiene TED y código de barras - REGENERANDO...')
+            # Repoblar detalle desde el XML si falta (documentos legacy)
+            if not doc.detalle_json:
+                doc._populate_fields_from_xml()
 
-            print(f'  → Generando TED XML...')
-            # Generar TED XML
+            # Extraer el TED directamente del XML firmado (fuente autoritativa).
+            # El barcode debe contener exactamente el mismo TED que está en el XML.
+            xml_content = base64.b64decode(doc.xml_dte_signed).decode('ISO-8859-1')
+
+            ted_match = re.search(
+                r'(<TED[^>]*>.*?</TED>)\s*<TmstFirma>(.*?)</TmstFirma>',
+                xml_content,
+                re.DOTALL,
+            )
+            if not ted_match:
+                raise UserError(_(
+                    'No se encontró el bloque <TED> en el XML firmado del documento %s.\n'
+                    'El XML firmado no tiene un timbre electrónico embebido.'
+                ) % doc.complete_name)
+
+            ted_xml = ted_match.group(1) + '<TmstFirma>' + ted_match.group(2) + '</TmstFirma>'
+
+            # Generar código de barras PDF417 del TED extraído
             pdf_service = self.env['l10n_cl_edi.pdf.generator.service']
-            ted_xml = pdf_service.generate_ted_xml(doc)
-            print(f'  → TED XML generado ({len(ted_xml)} caracteres)')
-
-            print(f'  → Generando código de barras PDF417...')
-            # Generar código de barras PDF417
             barcode_data = pdf_service.generate_ted_barcode(ted_xml)
-            print(f'  → Código de barras generado ({len(barcode_data)} bytes)')
 
-            # Guardar TED y código de barras
-            print(f'  → Guardando TED y código de barras...')
             doc.write({
                 'ted_xml': ted_xml,
                 'barcode_image': base64.b64encode(barcode_data),
             })
-            print(f'  ✓ TED guardado exitosamente')
 
             doc.message_post(body=_('TED generado exitosamente.'))
 
@@ -416,38 +503,76 @@ class CertificationGeneratedDocument(models.Model):
             }
         }
 
+    def _format_rut(self, rut):
+        """Formatea un RUT chileno con puntos: 77626554-3 → 77.626.554-3"""
+        if not rut:
+            return ''
+        rut = rut.replace('.', '').strip()
+        if '-' not in rut:
+            return rut
+        digits, dv = rut.rsplit('-', 1)
+        formatted = ''
+        for i, c in enumerate(reversed(digits)):
+            if i > 0 and i % 3 == 0:
+                formatted = '.' + formatted
+            formatted = c + formatted
+        return formatted + '-' + dv.upper()
+
+    def _get_detalle_items(self):
+        """Retorna la lista de items del detalle para el template QWeb."""
+        import json
+        if not self.detalle_json:
+            return []
+        try:
+            items = json.loads(self.detalle_json) if isinstance(self.detalle_json, str) else self.detalle_json
+            return items if isinstance(items, list) else []
+        except Exception:
+            return []
+
     def action_generate_pdf(self):
-        """Genera el PDF impreso del documento con timbre TED"""
+        """
+        Genera el PDF impreso del documento.
+        Si faltan datos (detalle, montos, TED), los genera automáticamente
+        a partir del XML firmado antes de crear el PDF.
+        """
         self.ensure_one()
 
-        print(f'\n[PDF] Procesando documento: {self.complete_name} (ID: {self.id})')
-        print(f'  - Proyecto: {self.project_id.name if self.project_id else "N/A"}')
-        print(f'  - Estado: {self.state}')
-        print(f'  - Tiene TED: {bool(self.ted_xml)}')
-        print(f'  - Tiene barcode: {bool(self.barcode_image)}')
-        print(f'  - Ya tiene PDF: {bool(self.pdf_file)}')
+        if not self.xml_dte_signed:
+            raise UserError(_('Debe firmar el documento antes de generar el PDF.'))
 
-        if not self.ted_xml or not self.barcode_image:
-            print(f'  ✗ ERROR: Falta TED o código de barras')
-            raise UserError(_(
-                'Debe generar el TED primero.\n'
-                'Use el botón "Generar TED" antes de generar el PDF.'
-            ))
+        # Paso 1: Poblar montos y detalle desde el XML si faltan
+        if not self.detalle_json:
+            self._populate_fields_from_xml()
 
-        # Generar PDF
-        print(f'  → Generando PDF impreso...')
-        pdf_service = self.env['l10n_cl_edi.pdf.generator.service']
-        pdf_data = pdf_service.generate_printed_pdf(self)
-        print(f'  → PDF generado ({len(pdf_data)} bytes)')
+        # Paso 2: Generar/regenerar TED desde el XML firmado
+        self.action_generate_ted()
 
-        # Guardar PDF
-        print(f'  → Guardando PDF...')
-        self.write({
-            'pdf_file': base64.b64encode(pdf_data),
-        })
-        print(f'  ✓ PDF guardado exitosamente')
+        # Paso 3: Generar PDF Tributario usando el reporte QWeb
+        pdf_content, _mime = self.env['ir.actions.report'].with_context(
+            dte_copy_type='tributaria'
+        )._render_qweb_pdf(
+            'l10n_cl_edi_certification.certification_dte_document',
+            [self.id]
+        )
 
-        self.message_post(body=_('PDF impreso generado exitosamente.'))
+        vals = {'pdf_file': base64.b64encode(pdf_content)}
+
+        # Paso 4: Para Factura Electrónica tipo 33, generar también Copia Cedible
+        if self.document_type_code == '33':
+            cedible_content, _mime = self.env['ir.actions.report'].with_context(
+                dte_copy_type='cedible'
+            )._render_qweb_pdf(
+                'l10n_cl_edi_certification.certification_dte_document',
+                [self.id]
+            )
+            vals['pdf_cedible_file'] = base64.b64encode(cedible_content)
+
+        self.write(vals)
+
+        msg = _('PDF impreso generado exitosamente.')
+        if self.document_type_code == '33':
+            msg = _('PDF Tributario y Copia Cedible generados exitosamente.')
+        self.message_post(body=msg)
 
         return {
             'type': 'ir.actions.client',
@@ -474,6 +599,27 @@ class CertificationGeneratedDocument(models.Model):
 
         if not attachment:
             raise UserError(_('No se encontró el archivo PDF.'))
+
+        return {
+            'type': 'ir.actions.act_url',
+            'url': f'/web/content/{attachment.id}?download=true',
+            'target': 'self',
+        }
+
+    def action_download_pdf_cedible(self):
+        """Descarga la Copia Cedible (solo Factura tipo 33)"""
+        self.ensure_one()
+        if not self.pdf_cedible_file:
+            raise UserError(_('No hay Copia Cedible generada. Solo disponible para Factura Electrónica (tipo 33).'))
+
+        attachment = self.env['ir.attachment'].search([
+            ('res_model', '=', self._name),
+            ('res_id', '=', self.id),
+            ('res_field', '=', 'pdf_cedible_file'),
+        ], limit=1)
+
+        if not attachment:
+            raise UserError(_('No se encontró el archivo PDF Cedible.'))
 
         return {
             'type': 'ir.actions.act_url',

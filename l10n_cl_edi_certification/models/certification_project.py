@@ -525,16 +525,17 @@ class CertificationProject(models.Model):
 
     def action_bulk_generate_pdf(self):
         """
-        Genera PDFs impresos para todos los documentos con TED que no tienen PDF.
-        Útil para la última etapa de certificación donde se requieren PDFs impresos.
+        Genera (o regenera forzosamente) PDFs para todos los documentos firmados.
+        - Todos los documentos: PDF Tributario
+        - Facturas tipo 33: también PDF Cedible (Ley 19.983)
+        Incluye auto-generación de TED y repoblado de montos/detalle desde el XML firmado.
         """
         self.ensure_one()
 
-        # Buscar documentos con TED sin PDF
+        # Todos los documentos con XML firmado, sin excepción (fuerza regeneración)
         documents = self.env['l10n_cl_edi.certification.generated.document'].search([
             ('project_id', '=', self.id),
-            ('ted_xml', '!=', False),
-            ('pdf_file', '=', False),
+            ('xml_dte_signed', '!=', False),
         ])
 
         if not documents:
@@ -543,37 +544,37 @@ class CertificationProject(models.Model):
                 'tag': 'display_notification',
                 'params': {
                     'title': _('Sin documentos'),
-                    'message': _('No hay documentos con TED pendientes de generar PDF.'),
+                    'message': _('No hay documentos firmados para generar PDF.'),
                     'type': 'warning',
                 }
             }
 
-        # Generar PDF para cada documento
         success_count = 0
-        error_count = 0
+        cedible_count = 0
         errors = []
 
         for doc in documents:
             try:
                 doc.action_generate_pdf()
                 success_count += 1
+                if doc.document_type_code == '33':
+                    cedible_count += 1
             except Exception as e:
-                error_count += 1
-                error_msg = str(e)
-                errors.append(f'{doc.complete_name}: {error_msg}')
+                errors.append(f'{doc.complete_name}: {str(e)}')
 
-        # Mensaje de resultado
-        message = _(
-            'PDF generado exitosamente para %d documentos.%s'
-        ) % (success_count, '\n\nErrores:\n' + '\n'.join(errors) if errors else '')
+        lines = [_('%d PDFs Tributarios generados.') % success_count]
+        if cedible_count:
+            lines.append(_('%d PDFs Cedibles generados (Factura tipo 33).') % cedible_count)
+        if errors:
+            lines.append(_('\nErrores:\n') + '\n'.join(errors))
 
         return {
             'type': 'ir.actions.client',
             'tag': 'display_notification',
             'params': {
                 'title': _('PDFs Generados'),
-                'message': message,
-                'type': 'success' if error_count == 0 else 'warning',
-                'sticky': True if error_count > 0 else False,
+                'message': '\n'.join(lines),
+                'type': 'success' if not errors else 'warning',
+                'sticky': bool(errors),
             }
         }

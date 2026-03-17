@@ -1,0 +1,231 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!-- Acción de reporte para documentos generados de certificación -->
+    <record id="action_certification_dte_report" model="ir.actions.report">
+        <field name="name">DTE Certificación</field>
+        <field name="model">l10n_cl_edi.certification.generated.document</field>
+        <field name="report_type">qweb-pdf</field>
+        <field name="report_name">l10n_cl_edi_certification.certification_dte_document</field>
+        <field name="print_report_name">'DTE_%s_%s' % (object.document_type_code, object.folio)</field>
+        <field name="paperformat_id" ref="base.paperformat_euro"/>
+    </record>
+
+    <!-- Template principal del DTE certificación (similar a l10n_cl.report_invoice_document) -->
+    <template id="certification_dte_document">
+        <t t-call="web.html_container">
+            <t t-foreach="docs" t-as="o">
+                <t t-call="web.external_layout">
+                    <t t-set="o" t-value="o"/>
+                    <t t-set="copy_type" t-value="o.env.context.get('dte_copy_type', 'tributaria')"/>
+                    <div class="page">
+
+                        <!-- ===== ENCABEZADO: Emisor + Recuadro tipo documento ===== -->
+                        <div class="row mb-3">
+                            <!-- Columna izquierda: Datos del emisor -->
+                            <div class="col-8">
+                                <strong>
+                                    <span t-out="o.project_id.client_info_id.social_reason or ''"/>
+                                </strong>
+                                <br/>
+                                <span class="fst-italic" t-out="o.project_id.client_info_id.activity_description or ''"/>
+                                <br/>
+                                <t t-out="', '.join(filter(None, [
+                                    o.project_id.client_info_id.address,
+                                    o.project_id.client_info_id.city
+                                ]))"/>
+                            </div>
+                            <!-- Columna derecha: Recuadro RUT / Tipo / Número (estilo SII) -->
+                            <div class="col-4">
+                                <div class="border border-3 border-dark text-center p-2">
+                                    <strong>
+                                        RUT: <span t-out="o._format_rut(o.project_id.client_info_id.rut)"/>
+                                        <br/>
+                                        <span class="text-uppercase" t-out="o.document_type_id.name or ''"/>
+                                        <br/>
+                                        N°: <span t-out="o.folio"/>
+                                    </strong>
+                                </div>
+                                <t t-if="copy_type == 'cedible'">
+                                    <div class="border border-2 border-dark text-center mt-1 p-1 bg-warning">
+                                        <strong class="text-uppercase">CEDIBLE</strong>
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <div class="border border-2 border-dark text-center mt-1 p-1">
+                                        <strong class="text-uppercase">TRIBUTARIA</strong>
+                                    </div>
+                                </t>
+                            </div>
+                        </div>
+
+                        <!-- ===== INFORMACIÓN DEL RECEPTOR ===== -->
+                        <div class="row mb-3">
+                            <div class="col-6">
+                                <strong>Fecha:</strong>
+                                <span t-out="o.issue_date.strftime('%d/%m/%Y') if o.issue_date else ''"/>
+                                <br/>
+                                <strong>Señor(es):</strong>
+                                <span t-out="o.receiver_name or ''"/>
+                                <br/>
+                                <strong>RUT:</strong>
+                                <span t-out="o._format_rut(o.receiver_rut)"/>
+                                <br/>
+                                <strong>Dirección:</strong>
+                                <t t-out="', '.join(filter(None, [o.receiver_address, o.receiver_comuna]))"/>
+                            </div>
+                            <div class="col-6">
+                                <strong>Giro:</strong>
+                                <span t-out="o.receiver_giro or ''"/>
+                            </div>
+                        </div>
+
+                        <!-- ===== REFERENCIA (para NC/ND) ===== -->
+                        <t t-if="o.reference_folio">
+                            <div class="row mb-2">
+                                <div class="col-12">
+                                    <table class="table table-sm table-bordered small">
+                                        <thead class="table-dark">
+                                            <tr>
+                                                <th>Tipo Doc. Ref.</th>
+                                                <th>Folio Ref.</th>
+                                                <th>Fecha Ref.</th>
+                                                <th>Razón</th>
+                                            </tr>
+                                        </thead>
+                                        <tbody>
+                                            <tr>
+                                                <td t-out="o.reference_doc_type or ''"/>
+                                                <td t-out="o.reference_folio or ''"/>
+                                                <td t-out="o.reference_date.strftime('%d/%m/%Y') if o.reference_date else ''"/>
+                                                <td t-out="o.reference_reason or ''"/>
+                                            </tr>
+                                        </tbody>
+                                    </table>
+                                </div>
+                            </div>
+                        </t>
+
+                        <!-- ===== DETALLE DE ITEMS ===== -->
+                        <t t-set="detalle_items" t-value="o._get_detalle_items()"/>
+                        <table class="table table-sm o_main_table">
+                            <thead style="background-color: #1f4788; color: white;">
+                                <tr>
+                                    <th class="text-center" style="width:5%">N°</th>
+                                    <th style="width:45%">Descripción</th>
+                                    <th class="text-center" style="width:10%">Cantidad</th>
+                                    <th class="text-end" style="width:20%">Precio Unit.</th>
+                                    <th class="text-end" style="width:20%">Total</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <t t-foreach="detalle_items" t-as="item">
+                                    <tr>
+                                        <td class="text-center" t-out="item_index + 1"/>
+                                        <td t-out="item.get('nombre') or item.get('description') or 'Item'"/>
+                                        <td class="text-center" t-out="item.get('cantidad') or item.get('quantity') or 1"/>
+                                        <td class="text-end" t-out="'{:,.0f}'.format(item.get('precio') or item.get('price') or 0).replace(',', '.')"/>
+                                        <td class="text-end" t-out="'{:,.0f}'.format(item.get('total') or item.get('amount') or 0).replace(',', '.')"/>
+                                    </tr>
+                                </t>
+                                <t t-if="not detalle_items">
+                                    <tr>
+                                        <td class="text-center">1</td>
+                                        <td>Ver DTE</td>
+                                        <td class="text-center">1</td>
+                                        <td class="text-end" t-out="'{:,.0f}'.format(o.mnt_total or 0).replace(',', '.')"/>
+                                        <td class="text-end" t-out="'{:,.0f}'.format(o.mnt_total or 0).replace(',', '.')"/>
+                                    </tr>
+                                </t>
+                            </tbody>
+                        </table>
+
+                        <!-- ===== TOTALES ===== -->
+                        <div class="row">
+                            <div class="col-6"/>
+                            <div class="col-6">
+                                <table class="table table-sm">
+                                    <t t-if="o.mnt_neto and o.mnt_neto != 0">
+                                        <tr>
+                                            <td class="text-end"><strong>Monto Neto:</strong></td>
+                                            <td class="text-end" t-out="'{:,.0f}'.format(o.mnt_neto).replace(',', '.')"/>
+                                        </tr>
+                                    </t>
+                                    <t t-if="o.mnt_exento and o.mnt_exento != 0">
+                                        <tr>
+                                            <td class="text-end"><strong>Monto Exento:</strong></td>
+                                            <td class="text-end" t-out="'{:,.0f}'.format(o.mnt_exento).replace(',', '.')"/>
+                                        </tr>
+                                    </t>
+                                    <t t-if="o.mnt_iva and o.mnt_iva != 0">
+                                        <tr>
+                                            <td class="text-end">
+                                                <strong>IVA (<t t-out="o.iva_percent or 19"/>%):</strong>
+                                            </td>
+                                            <td class="text-end" t-out="'{:,.0f}'.format(o.mnt_iva).replace(',', '.')"/>
+                                        </tr>
+                                    </t>
+                                    <tr class="border-top border-dark">
+                                        <td class="text-end"><strong>TOTAL:</strong></td>
+                                        <td class="text-end">
+                                            <strong t-out="'{:,.0f}'.format(o.mnt_total or 0).replace(',', '.')"/>
+                                        </td>
+                                    </tr>
+                                </table>
+                            </div>
+                        </div>
+
+                        <!-- ===== TIMBRE ELECTRÓNICO SII ===== -->
+                        <div class="row mt-4" id="right-elements">
+                            <div class="col-6">
+                                <t t-if="copy_type == 'cedible'">
+                                    <!-- Acuse de Recibo Cedible - Ley 19.983 -->
+                                    <div class="border border-dark p-2" style="font-size:9px;">
+                                        <strong>ACUSE DE RECIBO</strong><br/>
+                                        El acuse de recibo que se declara en este acto, de acuerdo a lo dispuesto en la letra b) del Art. 4°, y la letra c) del Art. 5° de la Ley 19.983, acredita que la entrega de mercaderías o servicio(s) prestado(s) ha(n) sido recibido(s).<br/><br/>
+                                        Nombre: ________________________________<br/>
+                                        RUT: ________________________________<br/>
+                                        Fecha: ________________________________<br/>
+                                        Firma: ________________________________
+                                    </div>
+                                </t>
+                                <t t-else="">
+                                    <!-- Acuse de recibo estándar -->
+                                    <div class="border border-dark p-3 text-center" style="height: 80px;">
+                                        <small>
+                                            <strong>Acuse de Recibo</strong><br/>
+                                            Nombre: ________________<br/>
+                                            RUT: ________________<br/>
+                                            Fecha: ________________
+                                        </small>
+                                    </div>
+                                </t>
+                            </div>
+                            <div name="stamp" class="col-6 text-center">
+                                <t t-if="o.barcode_image">
+                                    <img class="img-fluid"
+                                         t-attf-src="data:image/png;base64,{{o.barcode_image.decode() if isinstance(o.barcode_image, bytes) else o.barcode_image}}"
+                                         style="max-height: 90px;"/>
+                                    <p class="text-center small mt-1">
+                                        <strong>Timbre Electrónico SII</strong><br/>
+                                        Resolución N°:
+                                        <span t-out="o.project_id.client_info_id.dte_resolution_number or 0"/>
+                                        de Fecha:
+                                        <span t-out="o.project_id.client_info_id.dte_resolution_date.strftime('%d/%m/%Y') if o.project_id.client_info_id.dte_resolution_date else ''"/>
+                                        <br/>
+                                        Verifique documento en www.sii.cl
+                                    </p>
+                                </t>
+                                <t t-else="">
+                                    <p class="text-muted small">Sin timbre electrónico</p>
+                                </t>
+                            </div>
+                        </div>
+
+                    </div>
+                </t>
+            </t>
+        </t>
+    </template>
+
+</odoo>
