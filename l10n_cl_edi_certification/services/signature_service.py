@@ -215,7 +215,8 @@ class SignatureService(models.AbstractModel):
                 signed_xml = self._sign_xmlsec_direct(
                     xml_without_declaration,
                     cert_temp,
-                    doc_id
+                    doc_id,
+                    xml_type
                 )
 
             print('\n✅ FIRMA COMPLETADA')
@@ -541,7 +542,7 @@ class SignatureService(models.AbstractModel):
             traceback.print_exc()
             raise UserError(_('Error al firmar EnvioRecibos: %s') % str(e))
 
-    def _sign_xmlsec_direct(self, xml_content, digital_signature, uri):
+    def _sign_xmlsec_direct(self, xml_content, digital_signature, uri, xml_type='env'):
         """
         Firma un XML usando el mismo método que _sign_libro().
 
@@ -551,6 +552,7 @@ class SignatureService(models.AbstractModel):
             xml_content (str): XML sin firmar (sin declaración XML)
             digital_signature: Objeto certificate.certificate
             uri (str): URI de referencia (ej: 'Resultado', 'SetRecibos', 'SetDoc')
+            xml_type (str): Tipo de documento: 'doc' para DTE individual, 'env' para sobre
 
         Returns:
             str: XML firmado
@@ -583,14 +585,26 @@ class SignatureService(models.AbstractModel):
                 raise UserError(_('No se encontró el nodo con ID="%s" para firmar') % uri)
 
             # 4. Calcular digest del nodo
+            # Usar el mismo enfoque que Odoo Enterprise _sign_full_xml:
+            # serializar el nodo y re-parsear como standalone para eliminar
+            # namespace declarations heredadas del padre (ej: xmlns:xsi de <EnvioDTE>)
+            # que no pertenecen al nodo en sí y alterarían el DigestValue.
+            target_node_bytes = etree.tostring(target_node)
+            target_node_standalone = etree.fromstring(target_node_bytes)
             node_digest = base64.b64encode(
-                hashlib.sha1(etree.tostring(target_node, method='c14n')).digest()
+                hashlib.sha1(etree.tostring(target_node_standalone, method='c14n')).digest()
             ).decode()
 
             print(f'     ✓ Digest calculado: {node_digest[:20]}...')
 
             # 5. Crear SignedInfo usando template
-            signed_info = self.env['ir.qweb']._render('l10n_cl_edi.signed_info_template_with_xsi', {
+            # Para DTE individual (doc), usar template SIN xsi (igual que Odoo Enterprise)
+            # Para EnvioDTE y otros (env), usar template CON xsi
+            if xml_type in ['doc', 'recep', 'token']:
+                signed_info_template_name = 'l10n_cl_edi.signed_info_template'
+            else:
+                signed_info_template_name = 'l10n_cl_edi.signed_info_template_with_xsi'
+            signed_info = self.env['ir.qweb']._render(signed_info_template_name, {
                 'uri': '#{}'.format(uri),
                 'digest_value': node_digest,
             })
@@ -647,7 +661,8 @@ class SignatureService(models.AbstractModel):
             tag_to_replace = Markup('</{}>'.format(root_tag))
 
             # Insertar firma antes del cierre del elemento raíz
-            full_doc = digest_value.replace(tag_to_replace, signature + '\n' + tag_to_replace)
+            # Sin \n entre firma y tag de cierre (igual que Odoo Enterprise _l10n_cl_append_sig)
+            full_doc = digest_value.replace(tag_to_replace, signature + tag_to_replace)
 
             print(f'     ✓ Firma insertada en el XML')
 

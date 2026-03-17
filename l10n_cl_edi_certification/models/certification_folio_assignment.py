@@ -113,12 +113,15 @@ class CertificationFolioAssignment(models.Model):
             else:
                 record.complete_name = _('Nueva Asignación')
 
-    @api.depends('folio_start', 'project_id.generated_document_ids.folio', 'project_id.generated_document_ids.document_type_id')
+    @api.depends('folio_start', 'folio_end', 'project_id.generated_document_ids.folio', 'project_id.generated_document_ids.document_type_id')
     def _compute_folio_next(self):
         for assignment in self:
-            # Buscar el folio máximo usado para este tipo de documento
+            # Buscar el folio máximo usado DENTRO DEL RANGO de esta asignación
+            # (puede haber múltiples asignaciones del mismo tipo con rangos distintos)
             documents = assignment.project_id.generated_document_ids.filtered(
-                lambda d: d.document_type_id == assignment.document_type_id and d.folio
+                lambda d: d.document_type_id == assignment.document_type_id
+                    and d.folio
+                    and assignment.folio_start <= d.folio <= assignment.folio_end
             )
 
             if documents:
@@ -372,4 +375,53 @@ class CertificationFolioAssignment(models.Model):
                 ('document_type_id', '=', self.document_type_id.id)
             ],
             'view_mode': 'list,form',
+        }
+
+    def action_reset_folios(self):
+        """
+        Elimina todos los documentos generados de este tipo en el proyecto,
+        reseteando folio_next a folio_start.
+        También regresa los casos correspondientes a borrador.
+        """
+        self.ensure_one()
+
+        # Buscar documentos generados para este tipo
+        documents = self.project_id.generated_document_ids.filtered(
+            lambda d: d.document_type_id == self.document_type_id
+        )
+
+        if not documents:
+            raise UserError(_('No hay documentos generados para resetear.'))
+
+        count = len(documents)
+
+        # Limpiar la referencia en los casos antes de eliminar los documentos
+        cases_with_doc = self.project_id.certification_case_ids.filtered(
+            lambda c: c.generated_document_id and c.generated_document_id in documents
+        )
+        for case in cases_with_doc:
+            case.write({
+                'generated_document_id': False,
+                'folio_assigned': False,
+                'state': 'draft',
+            })
+
+        # Eliminar los documentos
+        documents.unlink()
+
+        # Forzar recomputa de folio_next y estadísticas (store=True no siempre recalcula inmediatamente)
+        self._compute_folio_next()
+        self._compute_folios_stats()
+
+        return {
+            'type': 'ir.actions.client',
+            'tag': 'display_notification',
+            'params': {
+                'title': _('Folios Reseteados'),
+                'message': _(
+                    '%d documento(s) eliminados. El próximo folio vuelve a %d.'
+                ) % (count, self.folio_start),
+                'type': 'success',
+                'sticky': False,
+            }
         }

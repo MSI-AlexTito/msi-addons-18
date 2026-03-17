@@ -141,6 +141,20 @@ class DteGeneratorService(models.AbstractModel):
         })
 
         # Línea 2+: Referencias adicionales (para NC/ND)
+        # NC/ND SIEMPRE deben tener una referencia a un DTE tributario (REF-3-415)
+        doc_type_code = case.document_type_code
+        if doc_type_code in ['56', '61']:
+            if not case.reference_case_id:
+                raise UserError(_(
+                    'El caso %s (tipo %s) no tiene "Caso de Referencia" configurado. '
+                    'Las Notas de Crédito/Débito deben referenciar la factura original.'
+                ) % (case.name, doc_type_code))
+            if not case.reference_case_id.generated_document_id:
+                raise UserError(_(
+                    'El caso de referencia "%s" no tiene documento generado. '
+                    'Genere primero la factura antes de generar la NC/ND "%s".'
+                ) % (case.reference_case_id.name, case.name))
+
         if case.reference_case_id and case.reference_case_id.generated_document_id:
             ref_doc = case.reference_case_id.generated_document_id
 
@@ -271,6 +285,18 @@ class DteGeneratorService(models.AbstractModel):
         now_santiago = datetime.now(santiago_tz)
         tmst_firma = now_santiago.strftime('%Y-%m-%dT%H:%M:%S')  # SIN timezone
 
+        # Log de referencias generadas
+        _logger.info('[DTE] Caso %s (tipo %s) - Referencias generadas: %d',
+            case.name, case.document_type_code, len(referencias))
+        for ref in referencias:
+            _logger.info('[DTE]   Ref %d: TpoDocRef=%s FolioRef=%s RazonRef=%s CodRef=%s',
+                ref['NroLinRef'],
+                ref.get('TpoDocRef', '-'),
+                ref.get('FolioRef', '-'),
+                ref.get('RazonRef', '-'),
+                ref.get('CodRef', '-'),
+            )
+
         return {
             'Encabezado': {
                 'IdDoc': id_doc,
@@ -280,7 +306,7 @@ class DteGeneratorService(models.AbstractModel):
             },
             'Detalle': detalle,
             'DscRcgGlobal': desc_rcg_global if desc_rcg_global else False,
-            'Referencia': referencias if referencias else False,
+            'Referencias': referencias if referencias else False,
             'TmstFirma': tmst_firma,
         }
 
@@ -289,6 +315,12 @@ class DteGeneratorService(models.AbstractModel):
         Genera el XML del DTE usando template QWeb.
         """
         from markupsafe import Markup
+
+        # Log para verificar que Referencias llega al template
+        refs = dte_data.get('Referencias') or []
+        case_label = getattr(case, 'name', None) or getattr(case, 'display_name', None) or str(case.id)
+        _logger.info('[DTE] Generando XML para caso %s - Referencias en dte_data: %d',
+            case_label, len(refs) if refs else 0)
 
         # Renderizar el template
         template = 'l10n_cl_edi_certification.dte_certification_template'
@@ -305,14 +337,16 @@ class DteGeneratorService(models.AbstractModel):
         if isinstance(xml_str, Markup):
             xml_str = str(xml_str)
 
-        # Nota: No es necesario agregar la declaración XML aquí porque el método _sign_full_xml
-        # de Enterprise ya lo hace automáticamente cuando se firma el documento
+        # TmstFirma debe estar INMEDIATAMENTE después de </TED> sin whitespace (requerido por SII)
+        import re
+        xml_str = re.sub(r'</TED>\s*<TmstFirma>', '</TED><TmstFirma>', xml_str)
 
-        # Verificar si el XML contiene elementos Detalle
-        if '<Detalle>' not in xml_str:
-            print("❌ ERROR: XML NO contiene elementos <Detalle>")
-            print("Primeros 1000 caracteres del XML:")
-            print(xml_str[:1000])
+        # Verificar presencia de Referencias en el XML generado
+        ref_count = xml_str.count('<Referencia>')
+        _logger.info('[DTE] XML generado para caso %s - bloques <Referencia> encontrados: %d',
+            case_label, ref_count)
+        if ref_count == 0 and refs:
+            _logger.warning('[DTE] ADVERTENCIA: se esperaban %d referencias pero no se encontraron en el XML', len(refs))
 
         return xml_str
 

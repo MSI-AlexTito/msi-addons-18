@@ -3,6 +3,8 @@ from odoo import models, _
 from odoo.exceptions import UserError
 from datetime import timedelta
 import random
+import logging
+_logger = logging.getLogger(__name__)
 
 class SimulationGeneratorService(models.AbstractModel):
     """
@@ -146,6 +148,10 @@ class SimulationGeneratorService(models.AbstractModel):
 
     def _generate_credit_notes(self, simulation, client, facturas):
         """Genera notas de crédito (tipo 61) que referencian facturas"""
+        if not simulation.credit_notes_count:
+            _logger.info('[Simulación] credit_notes_count=0, omitiendo generación de NC')
+            return []
+
         DocumentType = self.env['l10n_latam.document.type']
         GeneratedDoc = self.env['l10n_cl_edi.certification.generated.document']
 
@@ -237,6 +243,10 @@ class SimulationGeneratorService(models.AbstractModel):
 
     def _generate_debit_notes(self, simulation, client, facturas):
         """Genera notas de débito (tipo 56) que referencian facturas"""
+        if not simulation.debit_notes_count:
+            _logger.info('[Simulación] debit_notes_count=0, omitiendo generación de ND')
+            return []
+
         DocumentType = self.env['l10n_latam.document.type']
         GeneratedDoc = self.env['l10n_cl_edi.certification.generated.document']
 
@@ -354,35 +364,57 @@ class SimulationGeneratorService(models.AbstractModel):
         }
 
     def _get_next_folio(self, project, doc_type):
-        """Obtiene el siguiente folio disponible para un tipo de documento"""
-        # Buscar asignación de folios
+        """Obtiene el siguiente folio disponible para un tipo de documento.
+        Soporta múltiples CAFs del mismo tipo con rangos secuenciales."""
         FolioAssignment = self.env['l10n_cl_edi.certification.folio.assignment']
-        assignment = FolioAssignment.search([
+        assignments = FolioAssignment.search([
             ('project_id', '=', project.id),
-            ('document_type_id', '=', doc_type.id)
-        ], limit=1)
+            ('document_type_id', '=', doc_type.id),
+        ], order='folio_start asc')
 
-        if not assignment:
+        _logger.info('[Folio] Buscando folio para tipo=%s (code=%s), proyecto=%s',
+                     doc_type.name, doc_type.code, project.id)
+        _logger.info('[Folio] CAFs encontrados: %d → %s',
+                     len(assignments),
+                     [(a.folio_start, a.folio_end) for a in assignments])
+
+        if not assignments:
             raise UserError(_('No hay asignación de folios para el tipo de documento %s.') % doc_type.name)
 
-        # Buscar el último folio usado
-        GeneratedDoc = self.env['l10n_cl_edi.certification.generated.document']
-        last_doc = GeneratedDoc.search([
+        # Determinar el próximo folio global (último usado + 1)
+        last_doc = self.env['l10n_cl_edi.certification.generated.document'].search([
             ('project_id', '=', project.id),
-            ('document_type_id', '=', doc_type.id)
+            ('document_type_id', '=', doc_type.id),
         ], order='folio desc', limit=1)
 
-        if last_doc:
-            next_folio = last_doc.folio + 1
-        else:
-            next_folio = assignment.folio_from
+        next_folio = last_doc.folio + 1 if last_doc else assignments[0].folio_start
+        _logger.info('[Folio] Último folio usado: %s → próximo candidato: %d',
+                     last_doc.folio if last_doc else 'ninguno', next_folio)
 
-        # Verificar que no exceda el rango
-        if next_folio > assignment.folio_to:
-            raise UserError(_('Se agotaron los folios para el tipo de documento %s. Rango: %d - %d') %
-                          (doc_type.name, assignment.folio_from, assignment.folio_to))
+        # Buscar el CAF que cubre ese folio
+        covering = assignments.filtered(
+            lambda a: a.folio_start <= next_folio <= a.folio_end
+        )
+        if covering:
+            _logger.info('[Folio] CAF que cubre folio %d: rango %d-%d',
+                         next_folio, covering[0].folio_start, covering[0].folio_end)
+            return next_folio
 
-        return next_folio
+        # Si no hay CAF que cubra el folio, buscar el primer CAF con folios disponibles
+        for assignment in assignments:
+            if next_folio <= assignment.folio_end:
+                folio = max(next_folio, assignment.folio_start)
+                _logger.info('[Folio] Saltando al inicio del siguiente CAF: %d (rango %d-%d)',
+                             folio, assignment.folio_start, assignment.folio_end)
+                return folio
+
+        _logger.warning('[Folio] Sin folios disponibles para tipo=%s. Rangos: %s',
+                        doc_type.code,
+                        [(a.folio_start, a.folio_end) for a in assignments])
+        raise UserError(_(
+            'Se agotaron todos los folios para el tipo de documento %s.\n'
+            'Rangos disponibles: %s'
+        ) % (doc_type.name, ', '.join('%d-%d' % (a.folio_start, a.folio_end) for a in assignments)))
 
     def _generate_xml_for_document(self, document, simulation):
         """

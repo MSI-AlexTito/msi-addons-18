@@ -151,10 +151,13 @@ class EnvelopeService(models.AbstractModel):
         if isinstance(xml_str, Markup):
             xml_str = str(xml_str)
 
+        # Eliminar líneas en blanco dobles generadas por tags <t t-foreach> de QWeb
+        import re
+        xml_str = re.sub(r'\n[ \t]*\n[ \t]*\n', '\n\n', xml_str)
+
         # IMPORTANTE: QWeb/lxml pueden reordenar los atributos xmlns alfabéticamente.
         # Necesitamos asegurar que xmlns venga ANTES de xmlns:xsi (como en Enterprise).
         # Este reemplazo se hace ANTES de firmar, por lo que no afecta la firma.
-        import re
         xml_str = re.sub(
             r'<EnvioDTE\s+xmlns:xsi="([^"]+)"\s+xmlns="([^"]+)"',
             r'<EnvioDTE xmlns="\2" xmlns:xsi="\1"',
@@ -164,7 +167,7 @@ class EnvelopeService(models.AbstractModel):
         # Nota: No es necesario agregar la declaración XML aquí porque el método _sign_full_xml
         # de Enterprise ya lo hace automáticamente
 
-        return xml_str
+        return xml_str.lstrip()
 
     @api.model
     def normalize_envelope(self, envelope):

@@ -74,13 +74,16 @@ class BookGeneratorService(models.AbstractModel):
 
             # Configuración del libro
             'TipoOperacion': 'COMPRA' if book.book_type == 'purchase' else 'VENTA',
-            'TipoLibro': 'MENSUAL',  # MENSUAL para libros normales (ESPECIAL requiere FolioNotificacion)
+            'TipoLibro': 'ESPECIAL',  # Siempre ESPECIAL para set de pruebas (ventas y compras)
             'TipoEnvio': 'TOTAL',  # TOTAL, PARCIAL, FINAL, AJUSTE
         }
 
-        # FolioNotificacion: Solo para libros de COMPRAS ESPECIALES
-        if book.book_type == 'purchase' and book.folio_notificacion:
-            caratula['FolioNotificacion'] = book.folio_notificacion
+        # FolioNotificacion: Obligatorio para libros ESPECIALES (ventas y compras)
+        # El valor ya fue incrementado en action_generate_book antes de llamar aquí
+        if not book.folio_notificacion:
+            raise UserError(_('No se pudo determinar el FolioNotificacion para el libro.'))
+        caratula['FolioNotificacion'] = book.folio_notificacion
+        _logger.info('[Libro] FolioNotificacion=%s', book.folio_notificacion)
 
         # Preparar ResumenPeriodo (agrupado por tipo de documento)
         resumen = self._prepare_resumen_periodo(book)
@@ -265,10 +268,8 @@ class BookGeneratorService(models.AbstractModel):
                 'MntTotal': int(line.mnt_total),
             }
 
-            # TasaImp: Tasa de IVA cuando el documento tiene IVA
-            # El SII requiere este campo en certificación aunque sea opcional en el esquema XSD
-            if line.mnt_iva and line.mnt_iva > 0:
-                detalle['TasaImp'] = 19  # Tasa IVA en Chile
+            # TasaImp: Tasa de IVA (19%). Se incluye en todos los docs afectos aunque MntIVA sea 0.
+            detalle['TasaImp'] = 19
 
             # Campos específicos de LIBRO DE COMPRAS
             if book.book_type == 'purchase':

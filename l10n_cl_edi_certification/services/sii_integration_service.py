@@ -18,8 +18,19 @@ class SiiIntegrationService(models.AbstractModel):
     _inherit = 'l10n_cl.edi.util'  # Heredar utilidades de Enterprise
 
     def _log_xml_pretty(self, xml_data, label):
-        """Helper para loggear XML de forma legible"""
-        pass
+        """Helper para loggear partes relevantes del XML en el logger de Odoo"""
+        try:
+            if not xml_data:
+                _logger.info('[SII] %s: (vacío)', label)
+                return
+            xml_str = xml_data if isinstance(xml_data, str) else xml_data.decode('utf-8', errors='replace')
+            # Mostrar solo los primeros 2000 caracteres para no saturar el log
+            preview = xml_str[:2000]
+            _logger.info('[SII] %s (%d chars):\n%s%s',
+                label, len(xml_str), preview,
+                '\n... (truncado)' if len(xml_str) > 2000 else '')
+        except Exception as e:
+            _logger.warning('[SII] Error al loggear XML "%s": %s', label, e)
 
     def message_post(self, **kwargs):
         """
@@ -60,9 +71,7 @@ class SiiIntegrationService(models.AbstractModel):
             return token
 
         except Exception as e:
-            print(f'\n❌ Error en autenticación SII: {str(e)}')
-            import traceback
-            traceback.print_exc()
+            _logger.error('[SII] Error en autenticación: %s', str(e), exc_info=True)
             raise UserError(_('Error al autenticar con SII: %s') % str(e))
 
     def _get_certificate(self, client_info, company_id):
@@ -125,8 +134,8 @@ class SiiIntegrationService(models.AbstractModel):
             # Preparar XML (ISO-8859-1 encoding requerido por SII)
             xml_content = base64.b64decode(envelope.envelope_xml_signed).decode('ISO-8859-1')
 
-            # LOG: Mostrar el XML completo del sobre firmado
-            self._log_xml_pretty(xml_content, f'XML ENVIODTE FIRMADO COMPLETO - {envelope.name}')
+            _logger.info('[SII] Enviando sobre "%s" al SII (modo: %s, %d chars)', envelope.name, mode, len(xml_content))
+            self._log_xml_pretty(xml_content, f'XML EnvioDTE - {envelope.name}')
 
             # ============================================================================
             # 🛑 MODO DEBUG: VERIFICAR XML ANTES DE ENVIAR
@@ -173,18 +182,14 @@ class SiiIntegrationService(models.AbstractModel):
             if not response:
                 raise UserError(_('No se obtuvo respuesta del SII'))
 
-            # LOG: Mostrar respuesta del SII
-            self._log_xml_pretty(response, 'RESPUESTA SII - ENVÍO DE SOBRE')
-
-            # Extraer Track ID de la respuesta
+            self._log_xml_pretty(response, 'Respuesta SII - envío sobre')
             track_id = self._extract_track_id(response)
+            _logger.info('[SII] Sobre "%s" enviado. Track ID: %s', envelope.name, track_id)
 
             return track_id, response
 
         except Exception as e:
-            print(f'\n❌ ERROR AL ENVIAR SOBRE AL SII: {str(e)}')
-            import traceback
-            print(traceback.format_exc())
+            _logger.error('[SII] Error al enviar sobre "%s": %s', envelope.name, str(e), exc_info=True)
             raise UserError(_('Error al enviar al SII: %s') % str(e))
 
     def _extract_track_id(self, response_xml):
@@ -206,8 +211,7 @@ class SiiIntegrationService(models.AbstractModel):
             raise UserError(_('No se pudo obtener Track ID de la respuesta del SII'))
 
         except Exception as e:
-            print(f'❌ Error extrayendo Track ID: {str(e)}')
-            # Retornar un ID temporal si falla
+            _logger.warning('[SII] Error extrayendo Track ID: %s', str(e))
             import uuid
             return str(uuid.uuid4())[:10]
 
@@ -246,18 +250,14 @@ class SiiIntegrationService(models.AbstractModel):
             if not response:
                 raise UserError(_('No se obtuvo respuesta del SII al consultar estado'))
 
-            # LOG: Mostrar respuesta del SII
-            self._log_xml_pretty(response, f'RESPUESTA SII - CONSULTA DE ESTADO (Track: {track_id})')
-
-            # Parsear respuesta para obtener estado
+            self._log_xml_pretty(response, f'Respuesta SII - estado Track {track_id}')
             status = self._parse_status_response(response)
+            _logger.info('[SII] Estado Track ID %s: %s', track_id, status)
 
             return status, response
 
         except Exception as e:
-            print(f'\n❌ ERROR AL CONSULTAR ESTADO EN SII - Track ID: {track_id} - Error: {str(e)}')
-            import traceback
-            print(traceback.format_exc())
+            _logger.error('[SII] Error al consultar estado Track ID %s: %s', track_id, str(e), exc_info=True)
             raise UserError(_('Error al consultar estado: %s') % str(e))
 
     @api.model
@@ -341,9 +341,7 @@ class SiiIntegrationService(models.AbstractModel):
             return track_id, response
 
         except Exception as e:
-            print(f'\n❌ ERROR AL ENVIAR LIBRO AL SII - Libro: {book.name} - Error: {str(e)}')
-            import traceback
-            print(traceback.format_exc())
+            _logger.error('[SII] Error al enviar libro "%s": %s', book.name, str(e), exc_info=True)
             raise UserError(_('Error al enviar libro al SII: %s') % str(e))
 
     def _parse_status_response(self, response_xml):
@@ -430,5 +428,5 @@ class SiiIntegrationService(models.AbstractModel):
             return 'validating'
 
         except Exception as e:
-            print(f'❌ Error parseando respuesta de estado: {str(e)}')
+            _logger.warning('[SII] Error parseando respuesta de estado: %s', str(e))
             return 'validating'

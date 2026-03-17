@@ -166,6 +166,11 @@ class CertificationBook(models.Model):
                 raise UserError(_('Debe agregar al menos una línea al libro.'))
 
             try:
+                # Incrementar folio_notificacion ANTES de generar (numeración secuencial desde 1)
+                # TipoLibro=ESPECIAL requiere FolioNotificacion tanto para compras como para ventas
+                # El generador leerá book.folio_notificacion ya con el valor actualizado
+                book.folio_notificacion = (book.folio_notificacion or 0) + 1
+
                 # Llamar al servicio de generación de libro
                 book_service = self.env['l10n_cl_edi.book.generator.service'].sudo()
                 book_xml = book_service.generate_book_xml(book)

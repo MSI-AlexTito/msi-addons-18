@@ -166,6 +166,7 @@
             <TipoOperacion>VENTA</TipoOperacion>
             <TipoLibro t-out="book_data['Caratula']['TipoLibro']"/>
             <TipoEnvio t-out="book_data['Caratula']['TipoEnvio']"/>
+            <FolioNotificacion t-if="book_data['Caratula'].get('FolioNotificacion')" t-out="book_data['Caratula']['FolioNotificacion']"/>
         </Caratula>
         <ResumenPeriodo>
             <t t-foreach="book_data['ResumenPeriodo']" t-as="resumen_item">
@@ -188,7 +189,7 @@
             <RUTDoc t-out="detalle['RUTDoc']"/>
             <RznSoc t-out="detalle['RznSoc']"/>
             <MntExe t-if="detalle.get('MntExe')" t-out="detalle['MntExe']"/>
-            <MntNeto t-if="detalle.get('MntNeto')" t-out="detalle['MntNeto']"/>
+            <MntNeto t-out="detalle.get('MntNeto', 0)"/>
             <MntIVA t-if="detalle.get('MntIVA')" t-out="detalle['MntIVA']"/>
             <MntTotal t-out="detalle['MntTotal']"/>
         </Detalle>
@@ -257,8 +258,8 @@
             <RUTDoc t-out="detalle['RUTDoc']"/>
             <RznSoc t-out="detalle['RznSoc']"/>
             <MntExe t-if="detalle.get('MntExe')" t-out="detalle['MntExe']"/>
-            <MntNeto t-if="detalle.get('MntNeto')" t-out="detalle['MntNeto']"/>
-            <MntIVA t-out="detalle.get('MntIVA', 0)"/>
+            <MntNeto t-out="detalle.get('MntNeto', 0)"/>
+            <MntIVA t-if="detalle.get('MntIVA')" t-out="detalle['MntIVA']"/>
             <t t-if="detalle.get('IVANoRec')">
             <IVANoRec>
                 <CodIVANoRec t-out="detalle['IVANoRec']['CodIVANoRec']"/>

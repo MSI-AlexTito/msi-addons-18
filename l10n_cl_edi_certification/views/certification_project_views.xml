@@ -193,6 +193,7 @@
                                         <field name="folios_used"/>
                                         <field name="folios_available"/>
                                         <field name="usage_percentage" widget="progressbar"/>
+                                        <button name="action_reset_folios" type="object" string="Resetear" icon="fa-refresh" title="Eliminar documentos generados y volver al folio inicial"/>
                                     </list>
                                 </field>
                             </page>
