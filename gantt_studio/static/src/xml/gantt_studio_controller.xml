@@ -65,11 +65,28 @@
                 title="Export to MS Project XML 2003">
             <i class="fa fa-file-code-o"/> MSP XML
         </button>
+
+        <!-- Sprint 3.9 — Export to Excel (xlsx) -->
+        <button class="btn btn-sm btn-light"
+                t-att-disabled="state.exportingXlsx"
+                t-on-click="() => this.exportXlsx()"
+                title="Export to Excel (xlsx)">
+            <i t-att-class="state.exportingXlsx ? 'fa fa-circle-o-notch fa-spin' : 'fa fa-file-excel-o'"/>
+            <span class="ms-1" t-esc="state.exportingXlsx ? 'Exporting…' : 'Excel'"/>
+        </button>
+
+        <!-- Sprint 3.10 — Dark mode toggle -->
+        <button class="btn btn-sm"
+                t-att-class="state.darkMode ? 'btn-dark' : 'btn-light'"
+                t-on-click="() => this.toggleDarkMode()"
+                title="Toggle dark mode">
+            <i t-att-class="state.darkMode ? 'fa fa-sun-o' : 'fa fa-moon-o'"/>
+        </button>
     </div>
 </t>
 
 <t t-name="gantt_studio.Controller">
-    <Layout className="'o_gantt_studio_view h-100'" display="props.display">
+    <Layout t-att-className="viewClass" display="props.display">
         <t t-set-slot="layout-buttons">
             <t t-call="gantt_studio.Buttons"/>
         </t>

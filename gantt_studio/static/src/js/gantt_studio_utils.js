@@ -201,6 +201,8 @@ export function parseGanttStudioArch(arch, ParserCls) {
     // Many2one (ej. project_id). El renderer crea filas resumen sintéticas
     // por valor único, con envelope de sus records.
     const portfolioField = root.getAttribute("portfolio_field") || null;
+    // Sprint 3.11 — Popup editor: clicking a bar opens the form in a dialog.
+    const popupEditor = root.getAttribute("popup_editor") === "true";
 
     // decoration-<suffix>="<python expr>" — Bootstrap-style conditional
     // styling, identical pattern to Odoo's tree/list views. We collect them
@@ -246,6 +248,7 @@ export function parseGanttStudioArch(arch, ParserCls) {
         parentField,
         resourceField,
         portfolioField,
+        popupEditor,
     };
 }
 

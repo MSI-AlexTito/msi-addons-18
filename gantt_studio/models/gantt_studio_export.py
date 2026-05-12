@@ -1,26 +1,26 @@
-"""Export to MS Project XML 2003 schema (Sprint 3.6).
+"""Export engine: MS Project XML 2003 (Sprint 3.6) + Excel xlsx (Sprint 3.9).
 
-Generates a MS Project compatible XML document for the records visible
-in a Gantt Studio view. Includes:
-  * Tasks (UID, ID, Name, Start, Finish, Duration, OutlineLevel, WBS)
-  * Predecessor links (FS/SS/FF/SF + lag days)
-  * Resources (basic Name + UID)
-  * Assignments (TaskUID → ResourceUID)
+Modelo-agnóstico — recibe res_model + record_ids + field names y trabaja
+sobre eso sin tocar el schema del modelo destino.
 
-Modelo-agnóstico, igual que el resto del core gantt_studio. Recibe
-`res_model + record_ids + field names` y trabaja sobre eso.
+MS Project XML
+--------------
+- Tasks con UID/ID/Name/Start/Finish/Duration/OutlineLevel/WBS
+- Predecessor links (FS/SS/FF/SF + lag)
+- Resources + Assignments
+- Limitación: Calendar no exportado (MS Project asume "Standard").
 
-Limitaciones conocidas
-----------------------
-- WBS code: deriva de outline position (1, 1.1, 1.2, 2, 2.1...). MS
-  Project lo acepta pero algunos importadores prefieren codes custom.
-- Calendar: no exportado todavía (MS Project asume "Standard" si falta).
-- Earned value / cost / base calendar: omitidos (MVP).
-
-El consumidor del XML típico es MS Project Desktop "File > Open" que
-acepta XML 2003 schema directamente.
+Excel (xlsx) — Sprint 3.9
+--------------------------
+- Hoja "Tasks": WBS | Nombre | Inicio | Fin | Duración (d) | Recursos |
+  Predecesores | Avance %
+- Hoja "Dependencies": Pred WBS | Sucesor WBS | Tipo | Lag (d)
+- Usa xlsxwriter vía dependencia report_xlsx (maneja chars especiales).
+- Devuelve base64; el cliente OWL descarga sin round-trip de ir.actions.report.
 """
-from datetime import datetime, timedelta
+import base64
+from datetime import datetime
+from io import BytesIO
 from xml.dom.minidom import getDOMImplementation
 
 from odoo import api, models
@@ -265,6 +265,173 @@ class GanttStudioExport(models.AbstractModel):
             el(ass_el, "Units", "1.0")
 
         return doc.toprettyxml(indent="  ")
+
+    # ─── Sprint 3.9 — Excel Export ───────────────────────────────────
+
+    @api.model
+    def export_xlsx(self, res_model, record_ids,
+                    date_start_field, date_stop_field,
+                    name_field="name", parent_field=None,
+                    resource_field=None, progress_field=None,
+                    project_name="Gantt Studio"):
+        """Generate an Excel workbook for the visible records and return
+        the result as a base64-encoded string so the OWL client can
+        download it directly without going through ir.actions.report.
+
+        Columns: WBS | Name | Start | Finish | Duration (d) |
+                 Resources | Predecessors | Progress %
+
+        Depends on ``report_xlsx`` (OCA) which guarantees xlsxwriter is
+        installed and handles special-character sanitisation for us.
+        """
+        import xlsxwriter  # guaranteed by report_xlsx dependency
+
+        if not record_ids:
+            return False
+
+        Model = self.env[res_model]
+        records = Model.browse(record_ids).exists()
+        if not records:
+            return False
+
+        output = BytesIO()
+        workbook = xlsxwriter.Workbook(output, {"in_memory": True})
+
+        # ── Formats ──────────────────────────────────────────────────
+        hdr = workbook.add_format({
+            "bold": True, "bg_color": "#1e40af", "font_color": "white",
+            "border": 1, "text_wrap": True, "valign": "vcenter",
+            "align": "center",
+        })
+        date_fmt = workbook.add_format({"num_format": "dd/mm/yyyy", "border": 1})
+        num_fmt  = workbook.add_format({"num_format": "0.0", "border": 1})
+        cell_fmt = workbook.add_format({"border": 1})
+        par_fmt  = workbook.add_format({
+            "bold": True, "bg_color": "#f3f4f6", "border": 1,
+        })
+
+        # ── Tasks sheet ───────────────────────────────────────────────
+        ws = workbook.add_worksheet("Tasks")
+        cols = ["WBS", "Nombre", "Inicio", "Fin",
+                "Duración (d)", "Recursos", "Predecesores", "Avance %"]
+        widths = [8, 42, 12, 12, 12, 28, 22, 10]
+        for i, (c, w) in enumerate(zip(cols, widths)):
+            ws.set_column(i, i, w)
+            ws.write(0, i, c, hdr)
+        ws.freeze_panes(1, 0)
+        ws.set_row(0, 24)
+
+        # ── WBS calculation ───────────────────────────────────────────
+        in_set = set(r.id for r in records)
+        depth_by_id = {}
+        wbs_by_id   = {}
+        children_of = {}
+
+        if parent_field and parent_field in Model._fields:
+            roots = []
+            for rec in records:
+                pid = rec[parent_field]
+                pid_val = pid.id if pid and hasattr(pid, "id") else None
+                if not pid_val or pid_val not in in_set:
+                    roots.append(rec.id)
+                else:
+                    children_of.setdefault(pid_val, []).append(rec.id)
+
+            def _assign(rid, depth, code):
+                depth_by_id[rid] = depth
+                wbs_by_id[rid] = code
+                for j, ch in enumerate(children_of.get(rid, []), start=1):
+                    _assign(ch, depth + 1, f"{code}.{j}")
+
+            for k, rid in enumerate(roots, start=1):
+                _assign(rid, 0, str(k))
+        else:
+            for k, rec in enumerate(records, start=1):
+                depth_by_id[rec.id] = 0
+                wbs_by_id[rec.id]   = str(k)
+
+        # ── Predecessors map ──────────────────────────────────────────
+        deps_by_succ = {}
+        dep_rows = []
+        all_deps = self.env["gantt.studio.dependency"].search([
+            ("res_model", "=", res_model),
+            ("successor_id",   "in", list(in_set)),
+            ("predecessor_id", "in", list(in_set)),
+        ])
+        for d in all_deps:
+            pred_wbs = wbs_by_id.get(d.predecessor_id, "?")
+            succ_wbs = wbs_by_id.get(d.successor_id,   "?")
+            lag_str = (
+                f"+{d.lag_days}d" if d.lag_days and d.lag_days > 0 else
+                f"{d.lag_days}d" if d.lag_days and d.lag_days < 0 else ""
+            )
+            label = f"{pred_wbs}{d.dep_type}{lag_str}"
+            deps_by_succ.setdefault(d.successor_id, []).append(label)
+            dep_rows.append((pred_wbs, succ_wbs, d.dep_type, d.lag_days or 0))
+
+        # ── Resource field descriptor ─────────────────────────────────
+        rf_desc = Model._fields.get(resource_field) if resource_field else None
+
+        # ── Write rows ────────────────────────────────────────────────
+        for row_i, rec in enumerate(records, start=1):
+            depth    = depth_by_id.get(rec.id, 0)
+            wbs      = wbs_by_id.get(rec.id, str(row_i))
+            is_par   = bool(children_of.get(rec.id))
+            fmt      = par_fmt if is_par else cell_fmt
+
+            ds = _to_dt(rec[date_start_field]) if rec[date_start_field] else None
+            de = _to_dt(rec[date_stop_field])  if rec[date_stop_field]  else None
+            dur_d = round((de - ds).total_seconds() / 86400, 1) if ds and de else None
+
+            # Resources
+            resources = ""
+            if rf_desc and resource_field and rec[resource_field]:
+                v = rec[resource_field]
+                if rf_desc.type == "many2one":
+                    resources = v.display_name or ""
+                else:
+                    resources = ", ".join(r.display_name for r in v if r.display_name)
+
+            preds   = ", ".join(deps_by_succ.get(rec.id, []))
+            indent  = "  " * depth
+            name    = indent + (rec[name_field] or f"#{rec.id}")
+            progress = ""
+            if progress_field and progress_field in Model._fields:
+                progress = rec[progress_field] or 0
+
+            ws.write(row_i, 0, wbs,  fmt)
+            ws.write(row_i, 1, name, fmt)
+            if ds:
+                ws.write_datetime(row_i, 2, ds, date_fmt)
+            if de:
+                ws.write_datetime(row_i, 3, de, date_fmt)
+            if dur_d is not None:
+                ws.write_number(row_i, 4, dur_d, num_fmt)
+            ws.write(row_i, 5, resources, fmt)
+            ws.write(row_i, 6, preds,     fmt)
+            if progress != "":
+                ws.write_number(row_i, 7, float(progress), num_fmt)
+            else:
+                ws.write(row_i, 7, "", fmt)
+
+        # ── Dependencies sheet ────────────────────────────────────────
+        if dep_rows:
+            ws2 = workbook.add_worksheet("Dependencias")
+            dep_cols = ["Pred WBS", "Sucesor WBS", "Tipo", "Lag (d)"]
+            dep_widths = [12, 12, 8, 10]
+            for i, (c, w) in enumerate(zip(dep_cols, dep_widths)):
+                ws2.set_column(i, i, w)
+                ws2.write(0, i, c, hdr)
+            ws2.freeze_panes(1, 0)
+            for row_i, (pw, sw, dt, lag) in enumerate(dep_rows, start=1):
+                ws2.write(row_i, 0, pw,  cell_fmt)
+                ws2.write(row_i, 1, sw,  cell_fmt)
+                ws2.write(row_i, 2, dt,  cell_fmt)
+                ws2.write_number(row_i, 3, lag, num_fmt)
+
+        workbook.close()
+        output.seek(0)
+        return base64.b64encode(output.read()).decode()
 
     def _build_empty_xml(self, project_name):
         """Mínimo válido para que MS Project no rechace el archivo."""

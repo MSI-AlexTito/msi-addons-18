@@ -51,7 +51,7 @@ core's own polymorphic tables addressed by ``(res_model, record_id)``.
     "website": "https://www.msi.cl",
     "license": "LGPL-3",
     "category": "Productivity",
-    "depends": ["web"],
+    "depends": ["web", "report_xlsx"],
     "data": [
         "security/ir.model.access.csv",
     ],

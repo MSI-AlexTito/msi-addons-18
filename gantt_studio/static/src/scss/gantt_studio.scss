@@ -559,3 +559,115 @@
     stroke-width: 2.5;
     animation: gantt-critical-pulse 1.6s ease-in-out infinite;
 }
+
+// ── Sprint 3.10: Dark mode ─────────────────────────────────────────
+// Se activa añadiendo la clase `.o_gantt_studio_dark` al root de la vista
+// (el mismo div que lleva `.o_gantt_studio_view`). No interfiere con el
+// tema Odoo global; solo afecta al canvas del Gantt Studio.
+
+.o_gantt_studio_dark {
+    background: #0f172a;
+
+    // Left panel
+    .o_gs_left {
+        background: #1e293b;
+        border-right-color: #334155;
+    }
+    .o_gs_left_header {
+        background: #0f172a;
+        border-bottom-color: #334155;
+        color: #94a3b8;
+    }
+    .o_gs_left_row {
+        color: #e2e8f0;
+        border-bottom-color: #1e293b;
+
+        &.o_gs_group_row {
+            background: #1e293b;
+            color: #f1f5f9;
+        }
+    }
+    .o_gs_left_row_parent {
+        background: linear-gradient(to right, #1e293b 0%, #0f172a 100%);
+    }
+
+    // SVG canvas: header + grid
+    .o_gs_header_bg    { fill: #0f172a; }
+    .o_gs_grid_line    { stroke: #1e293b; }
+    .o_gs_header_label { fill: #64748b; }
+    .o_gs_row_sep      { stroke: #1e293b; }
+
+    // Today line — rojo brillante sobre fondo oscuro
+    .o_gs_today { stroke: #f87171; }
+
+    // Row background (renderer draws <rect> per row — overriden via fill)
+    // SVG rects for rows: no class, color via CSS variables would need JS.
+    // Instead we use a subtle overlay via .o_gs_inner background.
+    .o_gs_inner { background: #0f172a; }
+    .o_gs_renderer { background: #0f172a; }
+    &.o_gantt_studio_renderer { background: #0f172a; }
+
+    // Bars: oscurecemos ligeramente el fondo del bar_group
+    .o_gs_bar_label { fill: #f1f5f9; }
+    .o_gs_bar_label.o_gs_bar_label_outside {
+        fill: #f1f5f9;
+        stroke: rgba(15, 23, 42, 0.85);
+    }
+    .o_gs_bar_summary_label {
+        fill: #f1f5f9;
+        stroke: rgba(15, 23, 42, 0.85);
+    }
+
+    // Arrows
+    .o_gs_arrow_line { stroke: #475569; }
+    .o_gs_arrow_head { fill: #475569; }
+
+    // Dependency ghost line
+    .o_gs_dep_ghost_line { stroke: #60a5fa; }
+
+    // Dep handle
+    .o_gs_dep_handle { fill: #3b82f6; stroke: #1e293b; }
+
+    // Popover
+    .o_gs_dep_popover {
+        background: #1e293b;
+        border-color: #334155;
+        color: #e2e8f0;
+        .o_gs_dep_popover_title { color: #f1f5f9; }
+        .o_gs_dep_popover_body {
+            color: #cbd5e1;
+            label { color: #94a3b8; }
+            select, input[type="number"] {
+                background: #0f172a;
+                border-color: #334155;
+                color: #e2e8f0;
+            }
+        }
+    }
+
+    // Histograma
+    .o_gs_resource_histogram {
+        background: #1e293b;
+        border-top-color: #334155;
+        border-bottom-color: #334155;
+    }
+    .o_gs_resource_histogram_header { color: #94a3b8; }
+    .o_gs_resource_label { color: #e2e8f0; }
+    .o_gs_resource_cell { background: #334155; }
+
+    // Chevron
+    .o_gs_chevron { color: #475569; }
+    .o_gs_chevron:hover { color: #e2e8f0; }
+
+    // Inline edit
+    .o_gs_inline_edit_input {
+        background: rgba(15, 23, 42, 0.95);
+        color: #f1f5f9;
+        border-color: #3b82f6;
+    }
+
+    // Resize handle hover — visible sobre fondo oscuro
+    .o_gs_bar_group:hover .o_gs_bar_resize_handle {
+        fill: rgba(255, 255, 255, 0.12);
+    }
+}

@@ -34,16 +34,14 @@ export class GanttStudioController extends Component {
             scale: this.archInfo.defaultScale,
             criticalPathEnabled: false,
             exportingPdf: false,
+            exportingXlsx: false,
             // Sprint 3.1.C.4 — date picker / hotkeys.
-            // `goToDateRequest` is a Date|null that the renderer watches
-            // via onWillUpdateProps. Each time we want to scroll the
-            // gantt, we assign a NEW Date object (object identity changes
-            // even if the same calendar date is picked twice → re-scroll).
             goToDateRequest: null,
-            // Mirror of the picker's input value (yyyy-mm-dd).
             datePickerInput: this._todayIso(),
             // Sprint 3.4 — toggle del histograma de carga de recursos.
             resourceHistogramEnabled: false,
+            // Sprint 3.10 — Dark mode toggle.
+            darkMode: false,
         });
 
         useSubEnv({
@@ -174,7 +172,8 @@ export class GanttStudioController extends Component {
             res_model: this.props.resModel,
             res_id: record.id,
             views: [[this.archInfo.formViewId || false, "form"]],
-            target: "current",
+            // Sprint 3.11: popup_editor="true" abre el formulario en diálogo.
+            target: this.archInfo.popupEditor ? "new" : "current",
         });
     }
 
@@ -365,6 +364,79 @@ export class GanttStudioController extends Component {
         } finally {
             this.state.exportingPdf = false;
         }
+    }
+
+    /**
+     * Sprint 3.9 — Export Excel (xlsx).
+     * Llama al AbstractModel `gantt.studio.export` que usa xlsxwriter
+     * (garantizado por la dep report_xlsx) y devuelve base64. El client
+     * decodifica y dispara la descarga sin ir.actions.report.
+     */
+    async exportXlsx() {
+        if (this.state.exportingXlsx) return;
+        this.state.exportingXlsx = true;
+        const ds = this.archInfo.dateStart;
+        const de = this.archInfo.dateStop;
+        const recordIds = this.model.records.map((r) => r.id);
+        if (!recordIds.length) {
+            this.notification.add(_t("No records to export."), { type: "warning" });
+            this.state.exportingXlsx = false;
+            return;
+        }
+        try {
+            const b64 = await this.orm.call(
+                "gantt.studio.export",
+                "export_xlsx",
+                [],
+                {
+                    res_model: this.props.resModel,
+                    record_ids: recordIds,
+                    date_start_field: ds,
+                    date_stop_field: de,
+                    name_field: "name",
+                    parent_field: this.archInfo.parentField || null,
+                    resource_field: this.archInfo.resourceField || null,
+                    progress_field: this.archInfo.progress || null,
+                    project_name: `Gantt Studio — ${this.props.resModel}`,
+                },
+            );
+            if (!b64) {
+                this.notification.add(_t("No data to export."), { type: "warning" });
+                return;
+            }
+            const raw = atob(b64);
+            const bytes = new Uint8Array(raw.length);
+            for (let i = 0; i < raw.length; i++) bytes[i] = raw.charCodeAt(i);
+            const blob = new Blob(
+                [bytes],
+                { type: "application/vnd.openxmlformats-officedocument.spreadsheetml.sheet" },
+            );
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const ts = new Date().toISOString().slice(0, 10);
+            a.download = `gantt_studio_${this.props.resModel.replace(/\./g, "_")}_${ts}.xlsx`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            this.notification.add(_t("Excel file downloaded."), { type: "success" });
+        } catch (e) {
+            console.error("[gantt_studio] xlsx export failed:", e);
+            this.notification.add(_t("Could not export to Excel."), { type: "danger" });
+        } finally {
+            this.state.exportingXlsx = false;
+        }
+    }
+
+    /** Sprint 3.10 — Toggle dark mode (adds CSS class to view root). */
+    toggleDarkMode() {
+        this.state.darkMode = !this.state.darkMode;
+    }
+
+    /** Clase CSS del root de la vista — incluye dark mode si está activo. */
+    get viewClass() {
+        return "o_gantt_studio_view h-100" + (this.state.darkMode ? " o_gantt_studio_dark" : "");
     }
 
     get scales() { return SCALES; }
