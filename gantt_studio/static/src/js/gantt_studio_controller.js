@@ -76,10 +76,16 @@ export class GanttStudioController extends Component {
 
         // Sprint 3.1.C.4 — keyboard shortcuts (skipped when typing in
         // inputs / textareas, courtesy of the hotkey service's defaults).
+        // Importante: el hotkey service de Odoo solo acepta a-z / 0-9 /
+        // NAV keys. `+`, `-` y `=` no están en la whitelist (de hecho
+        // `+` es el SEPARADOR entre modifier y tecla). Por eso usamos
+        // letras semánticas en lugar de los signos clásicos:
+        //   t = Today
+        //   i = zoom In
+        //   o = zoom Out
         useHotkey("t", () => this.goToToday(), {});
-        useHotkey("+", () => this.zoomIn(), {});
-        useHotkey("=", () => this.zoomIn(), {});  // unshifted "+" on US layouts
-        useHotkey("-", () => this.zoomOut(), {});
+        useHotkey("i", () => this.zoomIn(), {});
+        useHotkey("o", () => this.zoomOut(), {});
     }
 
     /** Returns the local date in `YYYY-MM-DD` form (input[type=date] value). */

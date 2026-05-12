@@ -17,7 +17,7 @@
         <div class="btn-group" role="group">
             <button class="btn btn-sm btn-light"
                     t-on-click="() => this.goToToday()"
-                    title="Saltar a hoy (atajo: T)">
+                    title="Saltar a hoy (atajo: T) — Zoom In: I, Zoom Out: O">
                 <i class="fa fa-bullseye"/> Hoy
             </button>
             <input type="date"
