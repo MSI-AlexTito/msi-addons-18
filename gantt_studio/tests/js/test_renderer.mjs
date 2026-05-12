@@ -1,0 +1,398 @@
+// Pure-JS test for the renderer's state machine: dirty flags, layout,
+// virtual-grid slicing, arrow geometry, edge cases.
+//
+// The OWL Component is NOT instantiated. We construct instances via
+// `Object.create(GanttStudioRenderer.prototype)` and exercise the methods
+// (_diffProps, _beforeRender, _sliceVisibleRows) directly. OWL hooks and
+// @web/core/virtual_grid_hook are stubbed so the import resolves under Node.
+
+import fs from "node:fs";
+import path from "node:path";
+import os from "node:os";
+import { fileURLToPath } from "node:url";
+
+const __dirname = path.dirname(fileURLToPath(import.meta.url));
+const SRC_DIR = path.resolve(__dirname, "../../static/src/js");
+const RENDERER = path.join(SRC_DIR, "gantt_studio_renderer.js");
+const UTILS = path.join(SRC_DIR, "gantt_studio_utils.js");
+
+// 1. Temp dir that simulates the Odoo asset bundle
+const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "gs_renderer_"));
+
+// 2. Stub @odoo/owl
+const owlStubPath = path.join(tmpDir, "node_modules", "@odoo", "owl");
+fs.mkdirSync(owlStubPath, { recursive: true });
+fs.writeFileSync(path.join(owlStubPath, "package.json"),
+    JSON.stringify({ name: "@odoo/owl", main: "index.mjs", type: "module" }));
+fs.writeFileSync(path.join(owlStubPath, "index.mjs"), `
+export class Component { constructor() {} }
+export function useRef() { return { el: null }; }
+export function useState(s) { return s; }
+export function onMounted() {}
+export function onWillUnmount() {}
+export function onWillRender() {}
+export function onWillUpdateProps() {}
+`);
+
+// 3. Stub @web/core/virtual_grid_hook
+const vghPath = path.join(tmpDir, "node_modules", "@web", "core");
+fs.mkdirSync(vghPath, { recursive: true });
+fs.writeFileSync(path.join(tmpDir, "node_modules", "@web", "package.json"),
+    JSON.stringify({ name: "@web", type: "module" }));
+fs.writeFileSync(path.join(vghPath, "virtual_grid_hook.js"), `
+export function useVirtualGrid() {
+    let _idx = undefined;
+    return {
+        get rowsIndexes() { return _idx; },
+        get columnsIndexes() { return undefined; },
+        setRowsHeights(h) {
+            if (!h.length) { _idx = []; return; }
+            _idx = [0, Math.min(9, h.length - 1)];
+        },
+        setColumnsWidths() {},
+    };
+}
+`);
+
+// 4. Copy source files and rewrite imports
+fs.cpSync(RENDERER, path.join(tmpDir, "gantt_studio_renderer.js"));
+fs.cpSync(UTILS, path.join(tmpDir, "gantt_studio_utils.js"));
+for (const f of ["gantt_studio_renderer.js", "gantt_studio_utils.js"]) {
+    const p = path.join(tmpDir, f);
+    let s = fs.readFileSync(p, "utf-8").replace(/\/\*\*\s*@odoo-module\s*\*\*\//, "");
+    s = s.replaceAll('"./gantt_studio_utils"', '"./gantt_studio_utils.js"');
+    s = s.replaceAll('"@web/core/virtual_grid_hook"', '"@web/core/virtual_grid_hook.js"');
+    fs.writeFileSync(p.replace(/\.js$/, ".mjs"), s);
+}
+
+// 5. Import
+process.chdir(tmpDir);
+const mod = await import(path.join(tmpDir, "gantt_studio_renderer.mjs"));
+const { GanttStudioRenderer } = mod;
+
+let pass = 0, fail = 0;
+function ok(name, cond, extra) {
+    if (cond) { console.log("  OK  " + name); pass++; }
+    else { console.log("  FAIL " + name + (extra ? " :: " + extra : "")); fail++; }
+}
+function section(s) { console.log("=".repeat(70)); console.log(s); }
+
+// Helper: build a renderer instance without OWL setup.
+function makeRenderer(props, virtualWindow = [0, 9]) {
+    const r = Object.create(GanttStudioRenderer.prototype);
+    r.props = props;
+    r.state = { dragId: null, dragDx: 0 };
+    r.rootRef = { el: null };
+    r._dirtyRange = true;
+    r._dirtyLayout = true;
+    r._dirtyArrows = true;
+    let _idx = undefined;
+    let _heights = [];
+    r.virtualGrid = {
+        get rowsIndexes() { return _idx; },
+        setRowsHeights(h) {
+            _heights = h;
+            if (!h.length) { _idx = []; return; }
+            _idx = [
+                Math.min(virtualWindow[0], h.length - 1),
+                Math.min(virtualWindow[1], h.length - 1),
+            ];
+        },
+        __setVisibleRange(s, e) { _idx = [s, e]; },
+    };
+    return r;
+}
+
+const archInfo = {
+    dateStart: "ds", dateStop: "de", defaultScale: "week",
+    defaultGroupBy: null, colorField: null, barText: "name",
+    progress: null, fieldsToFetch: [],
+    showDependencies: true, showCriticalPath: true,
+    autoReschedule: true, baselineSupport: true,
+};
+
+const records30 = Array.from({ length: 30 }, (_, i) => ({
+    id: i + 1,
+    name: `Task ${i + 1}`,
+    display_name: `Task ${i + 1}`,
+    ds: `2026-05-${String((i % 28) + 1).padStart(2, "0")}`,
+    de: `2026-05-${String(Math.min(28, (i % 28) + 3)).padStart(2, "0")}`,
+}));
+
+const baseProps = {
+    archInfo,
+    resModel: "test.model",
+    fields: {},
+    records: records30,
+    dependencies: [
+        { id: 100, predecessor_id: 1, successor_id: 2, dep_type: "FS", lag_days: 0 },
+        { id: 101, predecessor_id: 2, successor_id: 3, dep_type: "SS", lag_days: 1 },
+        { id: 102, predecessor_id: 3, successor_id: 4, dep_type: "FF", lag_days: 0 },
+        { id: 103, predecessor_id: 4, successor_id: 5, dep_type: "SF", lag_days: 0 },
+    ],
+    baselineLines: [],
+    baselineId: false,
+    criticalRecordIds: new Set([1, 2]),
+    criticalDependencyIds: new Set([100]),
+    scale: "week",
+    criticalPathEnabled: true,
+    onBarClick: () => {},
+    onBarDrop: () => {},
+};
+
+// ─── [1] First render computes everything ──────────────────────────────
+section("[1] First render: _beforeRender populates derived state");
+const r = makeRenderer(baseProps);
+r._beforeRender();
+ok("dateRange computed",       !!r.dateRange?.start && !!r.dateRange?.end);
+ok("headerTicks is array",     Array.isArray(r.headerTicks) && r.headerTicks.length > 0);
+ok("viewportWidth > 800",      r.viewportWidth >= 800);
+ok("allRows.length=30",        r.allRows.length === 30);
+ok("totalHeight > header",     r.totalHeight > 40);
+ok("totalHeight = header + 30×36",
+   r.totalHeight === 40 + 30 * 36,
+   `got ${r.totalHeight}`);
+ok("barGeoById has 30 entries", r.barGeoById.size === 30);
+ok("arrows length=4 (one per dep)", r.arrows.length === 4);
+ok("FS arrow (id 100) is critical", r.arrows.find((a) => a.id === 100)?.critical === true);
+ok("SS arrow (id 101) is NOT critical", r.arrows.find((a) => a.id === 101)?.critical === false);
+ok("all 4 dep types produce paths", r.arrows.every((a) => a.d.length > 0));
+ok("all 4 dep types produce arrow heads", r.arrows.every((a) => a.head.length > 0));
+ok("dirty flags cleared", !r._dirtyRange && !r._dirtyLayout && !r._dirtyArrows);
+
+// ─── [2] Virtualization ────────────────────────────────────────────────
+section("[2] Virtualization slices rows to virtualGrid range");
+ok("visibleRows.length matches virtual window",
+   r.visibleRows.length === 10,
+   `expected 10 got ${r.visibleRows.length}`);
+ok("first visibleRow has rowIdx=0", r.visibleRows[0].rowIdx === 0);
+
+r.virtualGrid.__setVisibleRange(5, 14);
+r._beforeRender();
+ok("after scrolling to 5-14: first rowIdx=5", r.visibleRows[0].rowIdx === 5);
+ok("after scrolling: 10 visible", r.visibleRows.length === 10);
+
+r.virtualGrid.__setVisibleRange(20, 29);
+r._beforeRender();
+ok("scroll to end: last rowIdx=29",
+   r.visibleRows.at(-1).rowIdx === 29,
+   `got ${r.visibleRows.at(-1).rowIdx}`);
+
+// ─── [3] Dirty flags matrix ────────────────────────────────────────────
+section("[3] _diffProps dirty flag matrix");
+const tests = [
+    {
+        name: "no change → no flags",
+        mutate: (p) => ({ ...p }),
+        expect: { range: false, layout: false, arrows: false },
+    },
+    {
+        name: "scale change → all dirty",
+        mutate: (p) => ({ ...p, scale: "day" }),
+        expect: { range: true, layout: true, arrows: true },
+    },
+    {
+        name: "records change → all dirty",
+        mutate: (p) => ({ ...p, records: p.records.slice(0, 5) }),
+        expect: { range: true, layout: true, arrows: true },
+    },
+    {
+        name: "deps change → arrows only",
+        mutate: (p) => ({ ...p, dependencies: [] }),
+        expect: { range: false, layout: false, arrows: true },
+    },
+    {
+        name: "criticalDependencyIds change → arrows only",
+        mutate: (p) => ({ ...p, criticalDependencyIds: new Set([101]) }),
+        expect: { range: false, layout: false, arrows: true },
+    },
+    {
+        name: "criticalRecordIds change → layout+arrows",
+        mutate: (p) => ({ ...p, criticalRecordIds: new Set([5, 6]) }),
+        expect: { range: false, layout: true, arrows: true },
+    },
+    {
+        name: "baselineLines change → layout+arrows",
+        mutate: (p) => ({ ...p, baselineLines: [{record_id: 1, date_start: "2026-05-01", date_stop: "2026-05-02"}] }),
+        expect: { range: false, layout: true, arrows: true },
+    },
+    {
+        name: "criticalPathEnabled toggle → layout+arrows",
+        mutate: (p) => ({ ...p, criticalPathEnabled: !p.criticalPathEnabled }),
+        expect: { range: false, layout: true, arrows: true },
+    },
+    {
+        name: "archInfo identity change → all dirty",
+        mutate: (p) => ({ ...p, archInfo: { ...p.archInfo } }),
+        expect: { range: true, layout: true, arrows: true },
+    },
+];
+for (const t of tests) {
+    const rt = makeRenderer(baseProps);
+    rt._beforeRender();
+    rt._diffProps(t.mutate(baseProps));
+    ok(t.name, rt._dirtyRange === t.expect.range
+            && rt._dirtyLayout === t.expect.layout
+            && rt._dirtyArrows === t.expect.arrows,
+       `got R=${rt._dirtyRange} L=${rt._dirtyLayout} A=${rt._dirtyArrows}`);
+}
+
+// ─── [4] Row keys are stable ──────────────────────────────────────────
+section("[4] Stable keys");
+const rk = makeRenderer(baseProps);
+rk._beforeRender();
+const keys = rk.allRows.slice(0, 5).map((row) => row.key);
+ok("keys are 'bar_<id>'",
+   JSON.stringify(keys) === JSON.stringify(["bar_1","bar_2","bar_3","bar_4","bar_5"]));
+
+// With grouping
+const grouped = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, defaultGroupBy: "name" },  // group by name (each unique)
+    records: records30.slice(0, 3),
+});
+grouped._beforeRender();
+const groupKeys = grouped.allRows.filter((r) => r.type === "group").map((r) => r.key);
+ok("group keys are 'group_<key>'",
+   groupKeys.every((k) => k.startsWith("group_")),
+   `got ${JSON.stringify(groupKeys)}`);
+
+// ─── [5] Layout: bar geometry for first record ──────────────────────────
+section("[5] Bar geometry");
+const rgeo = makeRenderer(baseProps);
+rgeo._beforeRender();
+const firstBar = rgeo.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+ok("bar has x", typeof firstBar.x === "number");
+ok("bar has y >= header", firstBar.y >= 40);
+ok("bar has width >= 4 (min)", firstBar.width >= 4);
+ok("bar has color (hex)", /^#[0-9a-f]{6}$/i.test(firstBar.color));
+ok("bar has label", firstBar.label === "Task 1");
+ok("bar has critical=true", firstBar.critical === true);
+ok("bar from criticalRecordIds reflects", firstBar.critical);
+
+// ─── [6] Records without dates are skipped ─────────────────────────────
+section("[6] Edge: record without dates");
+const rND = makeRenderer({
+    ...baseProps,
+    records: [
+        { id: 1, name: "ok", display_name: "ok", ds: "2026-05-01", de: "2026-05-02" },
+        { id: 2, name: "missing start", display_name: "x", ds: null, de: "2026-05-05" },
+        { id: 3, name: "missing stop", display_name: "y", ds: "2026-05-01", de: null },
+    ],
+});
+rND._beforeRender();
+const bars = rND.allRows.filter((row) => row.type === "bar");
+ok("only 1 bar (ones with dates skipped)",
+   bars.length === 1, `got ${bars.length}`);
+ok("the kept bar has id=1", bars[0].record.id === 1);
+
+// ─── [7] Arrows skip when an endpoint is missing ──────────────────────
+section("[7] Arrows: missing endpoint");
+const rDanglingDep = makeRenderer({
+    ...baseProps,
+    records: records30.slice(0, 5),
+    dependencies: [
+        { id: 200, predecessor_id: 1, successor_id: 2, dep_type: "FS", lag_days: 0 },
+        { id: 201, predecessor_id: 1, successor_id: 9999, dep_type: "FS", lag_days: 0 }, // succ missing
+    ],
+});
+rDanglingDep._beforeRender();
+ok("dangling deps are silently skipped",
+   rDanglingDep.arrows.length === 1,
+   `got ${rDanglingDep.arrows.length}`);
+ok("the surviving arrow is 200", rDanglingDep.arrows[0].id === 200);
+
+// ─── [8] Empty records ────────────────────────────────────────────────
+section("[8] Edge: empty records");
+const rE = makeRenderer({ ...baseProps, records: [], dependencies: [] });
+rE._beforeRender();
+ok("allRows empty", rE.allRows.length === 0);
+ok("totalHeight=header", rE.totalHeight === 40);
+ok("visibleRows empty", rE.visibleRows.length === 0);
+ok("arrows empty", rE.arrows.length === 0);
+
+// ─── [9] Today line ───────────────────────────────────────────────────
+section("[9] Today line position");
+const rT = makeRenderer({
+    ...baseProps,
+    // Records around today so the today line is within range
+    records: [{
+        id: 1, name: "t", display_name: "t",
+        ds: new Date(Date.now() - 5 * 86400000).toISOString().slice(0, 10),
+        de: new Date(Date.now() + 5 * 86400000).toISOString().slice(0, 10),
+    }],
+});
+rT._beforeRender();
+ok("todayLineX is a number when today ∈ range",
+   typeof rT.todayLineX === "number",
+   `got ${rT.todayLineX}`);
+
+// ─── [10] criticalRecordIds reflected in bars ─────────────────────────
+section("[10] Critical highlight in bar.critical");
+const rC = makeRenderer({
+    ...baseProps,
+    criticalRecordIds: new Set([1, 3, 5]),
+});
+rC._beforeRender();
+const c1 = rC.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+const c2 = rC.allRows.find((row) => row.type === "bar" && row.record.id === 2);
+ok("id=1 is critical", c1.critical === true);
+ok("id=2 is NOT critical", c2.critical === false);
+
+// ─── [11] Color field is applied ──────────────────────────────────────
+section("[11] colorField");
+const rCol = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, colorField: "name" },
+});
+rCol._beforeRender();
+const bar1 = rCol.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+const bar2 = rCol.allRows.find((row) => row.type === "bar" && row.record.id === 2);
+ok("bars have different colors (name differs)", bar1.color !== bar2.color);
+
+// ─── [12] Progress field ──────────────────────────────────────────────
+section("[12] progress field");
+const rP = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, progress: "p" },
+    records: [
+        { id: 1, name: "x", display_name: "x", ds: "2026-05-01", de: "2026-05-05", p: 50 },
+        { id: 2, name: "y", display_name: "y", ds: "2026-05-01", de: "2026-05-05", p: 150 },  // clamp
+        { id: 3, name: "z", display_name: "z", ds: "2026-05-01", de: "2026-05-05", p: -10 },  // clamp
+        { id: 4, name: "w", display_name: "w", ds: "2026-05-01", de: "2026-05-05", p: null },
+    ],
+});
+rP._beforeRender();
+const bs = rP.allRows.filter((row) => row.type === "bar");
+ok("progress=50 stays 50",         bs.find((b) => b.record.id === 1).progress === 50);
+ok("progress=150 clamped to 100",  bs.find((b) => b.record.id === 2).progress === 100);
+ok("progress=-10 clamped to 0",    bs.find((b) => b.record.id === 3).progress === 0);
+ok("progress=null → 0",            bs.find((b) => b.record.id === 4).progress === 0);
+
+// No progress arch → progress is null
+const rNoP = makeRenderer(baseProps);
+rNoP._beforeRender();
+ok("no progress arch → bar.progress null",
+   rNoP.allRows.find((row) => row.type === "bar")?.progress === null);
+
+// ─── [13] Baseline ghost ──────────────────────────────────────────────
+section("[13] Baseline ghost");
+const rB = makeRenderer({
+    ...baseProps,
+    baselineLines: [{
+        record_id: 1,
+        date_start: "2026-05-15",
+        date_stop:  "2026-05-20",
+    }],
+});
+rB._beforeRender();
+const barB1 = rB.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+ok("bar 1 has ghost",       !!barB1.ghost);
+ok("ghost has x & width",   typeof barB1.ghost.x === "number" && barB1.ghost.width >= 4);
+const barB2 = rB.allRows.find((row) => row.type === "bar" && row.record.id === 2);
+ok("bar 2 (no baseline) has no ghost", barB2.ghost === null);
+
+// ─── Summary ───────────────────────────────────────────────────────────
+section(`RESULT: ${pass} passed, ${fail} failed`);
+fs.rmSync(tmpDir, { recursive: true, force: true });
+process.exit(fail > 0 ? 1 : 0);
