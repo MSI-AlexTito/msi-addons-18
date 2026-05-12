@@ -117,6 +117,10 @@ export class GanttStudioController extends Component {
             resModel: this.props.resModel,
             fields: this.props.fields,
             records: this.model.records,
+            // Bug fix: el groupBy del search panel debe llegar al renderer.
+            // Antes, el renderer agrupaba SIEMPRE por `archInfo.defaultGroupBy`,
+            // ignorando la elección del usuario en el menú "Agrupar por".
+            groupBy: this.model.groupBy,
             dependencies: this.model.dependencies,
             baselineLines: this.model.baselineLines,
             baselineId: this.model.baselineId,

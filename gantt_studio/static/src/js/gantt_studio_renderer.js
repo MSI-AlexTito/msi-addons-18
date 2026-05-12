@@ -64,6 +64,7 @@ export class GanttStudioRenderer extends Component {
         resModel: String,
         fields: Object,
         records: Array,
+        groupBy: { type: Array, optional: true },
         dependencies: { type: Array, optional: true },
         baselineLines: { type: Array, optional: true },
         baselineId: { type: [Number, Boolean], optional: true },
@@ -76,6 +77,7 @@ export class GanttStudioRenderer extends Component {
         onBarDrop: Function,
     };
     static defaultProps = {
+        groupBy: [],
         dependencies: [],
         baselineLines: [],
         baselineId: false,
@@ -118,8 +120,29 @@ export class GanttStudioRenderer extends Component {
             if (this.rootRef.el) {
                 this.rootRef.el.scrollLeft = Math.max(0, px - 200);
             }
+            // P1 hardening: Shift+wheel = horizontal scroll (paid Gantt UX).
+            // Touch: shift no aplica, los swipes horizontales ya funcionan.
+            this._wheelHandler = (ev) => {
+                if (!ev.shiftKey || !this.rootRef.el) return;
+                ev.preventDefault();
+                this.rootRef.el.scrollLeft += ev.deltaY;
+            };
+            this.rootRef.el?.addEventListener("wheel", this._wheelHandler, { passive: false });
+            // P1 hardening: Escape cancela drag.
+            this._escHandler = (ev) => {
+                if (ev.key === "Escape" && this._dragSeed) this._endDrag();
+            };
+            document.addEventListener("keydown", this._escHandler);
         });
-        onWillUnmount(() => this._endDrag());
+        onWillUnmount(() => {
+            this._endDrag();
+            if (this._wheelHandler && this.rootRef.el) {
+                this.rootRef.el.removeEventListener("wheel", this._wheelHandler);
+            }
+            if (this._escHandler) {
+                document.removeEventListener("keydown", this._escHandler);
+            }
+        });
     }
 
     // ─────────────────────────────────────────────────────────────────
@@ -150,6 +173,13 @@ export class GanttStudioRenderer extends Component {
         // builds a new array). That can affect the date range AND geometry.
         if (next.records !== prev.records) {
             this._dirtyRange = true;
+            this._dirtyLayout = true;
+            this._dirtyArrows = true;
+        }
+        // Live groupBy from the search panel → layout must regroup rows.
+        // The model recreates this array reference on every load() so a
+        // reference compare is enough.
+        if (next.groupBy !== prev.groupBy) {
             this._dirtyLayout = true;
             this._dirtyArrows = true;
         }
@@ -192,6 +222,12 @@ export class GanttStudioRenderer extends Component {
                 this._dateToPx(this.dateRange.end, this.dateRange.start),
             );
             this._dirtyRange = false;
+            // Bug fix: si hay un scroll pendiente a una fecha fuera del
+            // rango de los records, extendemos el rango para incluirla
+            // ANTES de calcular el layout.
+            if (this._pendingScrollTo) {
+                this._expandRangeToInclude(this._pendingScrollTo);
+            }
         }
         if (this._dirtyLayout) {
             const { rows, barGeoById } = this._computeLayout();
@@ -219,7 +255,13 @@ export class GanttStudioRenderer extends Component {
             const dt = this._pendingScrollTo;
             this._pendingScrollTo = null;
             // Defer to next frame so the DOM has the new viewportWidth.
-            requestAnimationFrame(() => this._scrollToDate(dt));
+            // Defensive: in Node test environments rAF may not exist —
+            // fall back to setTimeout. In real browsers this always uses
+            // the proper paint-synchronized callback.
+            const raf = (typeof requestAnimationFrame !== "undefined")
+                ? requestAnimationFrame
+                : ((fn) => setTimeout(fn, 16));
+            raf(() => this._scrollToDate(dt));
         }
     }
 
@@ -268,6 +310,43 @@ export class GanttStudioRenderer extends Component {
         return ticks;
     }
 
+    /**
+     * Bug fix: si el usuario pidió saltar a una fecha que está FUERA del
+     * rango de los records cargados, el computeDateRange original devuelve
+     * un rango que no incluye esa fecha y el scroll queda clampeado. Esta
+     * función extiende el rango para que cubra `extraDate` con margen.
+     */
+    _expandRangeToInclude(extraDate) {
+        if (!this.dateRange || !extraDate) return;
+        const cfg = this._scaleCfg();
+        const margin = cfg.unitMs * 2;
+        const t = extraDate.getTime();
+        if (t < this.dateRange.start.getTime()) {
+            this.dateRange = {
+                start: new Date(Math.floor((t - margin) / cfg.unitMs) * cfg.unitMs),
+                end: this.dateRange.end,
+            };
+            // Re-emit ticks + viewportWidth con el nuevo rango.
+            this.headerTicks = this._computeHeaderTicks();
+            this.viewportWidth = Math.max(
+                800,
+                this._dateToPx(this.dateRange.end, this.dateRange.start),
+            );
+            this._dirtyLayout = true;  // bars need re-compute x positions
+        } else if (t > this.dateRange.end.getTime()) {
+            this.dateRange = {
+                start: this.dateRange.start,
+                end: new Date(Math.ceil((t + margin) / cfg.unitMs) * cfg.unitMs),
+            };
+            this.headerTicks = this._computeHeaderTicks();
+            this.viewportWidth = Math.max(
+                800,
+                this._dateToPx(this.dateRange.end, this.dateRange.start),
+            );
+            this._dirtyLayout = true;
+        }
+    }
+
     _computeTodayLineX() {
         if (!this.dateRange) return null;
         const today = new Date();
@@ -311,7 +390,13 @@ export class GanttStudioRenderer extends Component {
         const baselineMap = new Map(
             (this.props.baselineLines || []).map((l) => [l.record_id, l])
         );
-        const grouped = groupRecords(this.props.records, this.props.archInfo.defaultGroupBy);
+        // Bug fix: agrupado debe respetar lo que el usuario eligió en el
+        // search panel (this.props.groupBy). Si no hay groupBy live, caemos
+        // al defaultGroupBy del arch. Si tampoco hay, no agrupamos.
+        const groupByField = (this.props.groupBy && this.props.groupBy.length)
+            ? this.props.groupBy[0]
+            : this.props.archInfo.defaultGroupBy;
+        const grouped = groupRecords(this.props.records, groupByField);
         const rows = [];
         const barGeoById = new Map();
         let rowIdx = 0;
@@ -478,6 +563,19 @@ export class GanttStudioRenderer extends Component {
     onBarMouseDown(row, ev) {
         if (row.type !== "bar") return;
         if (ev.button !== 0) return;
+        this._startDrag(row, ev.clientX);
+        ev.preventDefault();
+    }
+
+    /** P1 hardening: touch entry point — funciona en tablet/móvil. */
+    onBarTouchStart(row, ev) {
+        if (row.type !== "bar") return;
+        if (!ev.touches || ev.touches.length !== 1) return;  // ignore multi-touch
+        this._startDrag(row, ev.touches[0].clientX);
+        ev.preventDefault();
+    }
+
+    _startDrag(row, clientX) {
         // Sprint 3.1: we still register the drag seed when the bar is
         // drag-locked so that a CLICK on it (Δx < 4 px on mouseup) still
         // opens the record form. The seed carries the `dragDisabled` flag
@@ -485,7 +583,7 @@ export class GanttStudioRenderer extends Component {
         this._dragSeed = {
             recordId: row.record.id,
             origX: row.x,
-            startX: ev.clientX,
+            startX: clientX,
             origStart: parseDate(row.record[this.props.archInfo.dateStart]),
             dragDisabled: !!row.dragDisabled,
         };
@@ -493,13 +591,23 @@ export class GanttStudioRenderer extends Component {
         this.state.dragDx = 0;
         this._onMoveBound = this._onDragMove.bind(this);
         this._onUpBound = this._onDragUp.bind(this);
+        this._onTouchMoveBound = (ev) => {
+            if (!ev.touches || !ev.touches.length) return;
+            this._onDragMove({ clientX: ev.touches[0].clientX });
+        };
+        this._onTouchEndBound = (ev) => {
+            const t = (ev.changedTouches && ev.changedTouches[0]) || null;
+            this._onDragUp({ clientX: t ? t.clientX : this._dragSeed.startX });
+        };
         document.addEventListener("mousemove", this._onMoveBound);
         document.addEventListener("mouseup", this._onUpBound);
+        document.addEventListener("touchmove", this._onTouchMoveBound, { passive: false });
+        document.addEventListener("touchend", this._onTouchEndBound);
+        document.addEventListener("touchcancel", this._onTouchEndBound);
         dbg("drag DOWN", {
             recordId: row.record.id,
             origStart: this._dragSeed.origStart?.toISOString(),
         });
-        ev.preventDefault();
     }
 
     _onDragMove(ev) {
@@ -540,6 +648,15 @@ export class GanttStudioRenderer extends Component {
         if (this._onUpBound) {
             document.removeEventListener("mouseup", this._onUpBound);
             this._onUpBound = null;
+        }
+        if (this._onTouchMoveBound) {
+            document.removeEventListener("touchmove", this._onTouchMoveBound);
+            this._onTouchMoveBound = null;
+        }
+        if (this._onTouchEndBound) {
+            document.removeEventListener("touchend", this._onTouchEndBound);
+            document.removeEventListener("touchcancel", this._onTouchEndBound);
+            this._onTouchEndBound = null;
         }
         this._dragSeed = null;
         this.state.dragId = null;

@@ -16,6 +16,19 @@ const SRC_DIR = path.resolve(__dirname, "../../static/src/js");
 const RENDERER = path.join(SRC_DIR, "gantt_studio_renderer.js");
 const UTILS = path.join(SRC_DIR, "gantt_studio_utils.js");
 
+// Stub browser globals that the renderer uses defensively.
+// In a real browser these come from the DOM; under Node we provide just
+// enough surface area for the unit tests to exercise the state machine.
+if (typeof globalThis.requestAnimationFrame === "undefined") {
+    globalThis.requestAnimationFrame = (fn) => setTimeout(fn, 0);
+}
+if (typeof globalThis.document === "undefined") {
+    globalThis.document = {
+        addEventListener: () => {},
+        removeEventListener: () => {},
+    };
+}
+
 // 1. Temp dir that simulates the Odoo asset bundle
 const tmpDir = fs.mkdtempSync(path.join(os.tmpdir(), "gs_renderer_"));
 
@@ -555,6 +568,124 @@ const rNoMile = makeRenderer({
 rNoMile._beforeRender();
 ok("no milestone_field arch → no record is a milestone",
    rNoMile.allRows.find((row) => row.type === "bar").isMilestone === false);
+
+// ─── [STRESS] Hardening — datasets grandes / extremos ────────────────
+section("[STRESS] 1000 records → virtualización cap");
+const stressRecords = Array.from({ length: 1000 }, (_, i) => ({
+    id: i + 1,
+    name: `Stress ${i + 1}`,
+    display_name: `Stress ${i + 1}`,
+    ds: `2026-${String((i % 12) + 1).padStart(2, "0")}-01`,
+    de: `2026-${String((i % 12) + 1).padStart(2, "0")}-15`,
+}));
+const tBefore = Date.now();
+const rStress = makeRenderer({ ...baseProps, records: stressRecords });
+rStress._beforeRender();
+const tAfter = Date.now();
+ok("1000 records computed in < 500ms",
+   (tAfter - tBefore) < 500,
+   `took ${tAfter - tBefore}ms`);
+ok("allRows = 1000",        rStress.allRows.length === 1000);
+ok("visibleRows ≤ 10 (virtual window)",
+   rStress.visibleRows.length <= 10,
+   `got ${rStress.visibleRows.length}`);
+ok("totalHeight scales correctly",
+   rStress.totalHeight === 40 + 1000 * 36);
+
+section("[STRESS] Zero-width bars (start === stop)");
+const rZero = makeRenderer({
+    ...baseProps,
+    records: [
+        { id: 1, name: "Instant", display_name: "I", ds: "2026-05-01", de: "2026-05-01" },
+    ],
+});
+rZero._beforeRender();
+const zb = rZero.allRows.find((row) => row.type === "bar");
+ok("zero-width bar still has min width >= 4", zb.width >= 4);
+
+section("[STRESS] Records with extreme dates (year 1900, 9999)");
+const rExtreme = makeRenderer({
+    ...baseProps,
+    records: [
+        { id: 1, name: "Old", display_name: "X", ds: "1900-01-01", de: "1900-01-10" },
+        { id: 2, name: "Future", display_name: "Y", ds: "9999-12-01", de: "9999-12-31" },
+    ],
+});
+rExtreme._beforeRender();
+ok("extreme dates produce a valid range",
+   rExtreme.dateRange.start.getFullYear() <= 1900 &&
+   rExtreme.dateRange.end.getFullYear() >= 9999);
+ok("both bars in layout", rExtreme.allRows.filter((row) => row.type === "bar").length === 2);
+
+section("[STRESS] Range extension when goToDate is far outside");
+const rExt = makeRenderer({
+    ...baseProps,
+    records: [
+        { id: 1, name: "x", display_name: "x", ds: "2026-05-01", de: "2026-05-05" },
+    ],
+});
+rExt._beforeRender();
+const origEnd = rExt.dateRange.end;
+const far = new Date(2030, 0, 1);
+rExt._diffProps({ ...baseProps, goToDateRequest: far });
+rExt._beforeRender();
+ok("range was extended past goToDate",
+   rExt.dateRange.end.getTime() > origEnd.getTime() &&
+   rExt.dateRange.end.getTime() >= far.getTime(),
+   `dateRange.end was ${rExt.dateRange.end.toISOString()}`);
+
+section("[STRESS] Drag aborted mid-flight (esc / unmount)");
+const rDrag = makeRenderer(baseProps);
+rDrag._beforeRender();
+const dragBar = rDrag.allRows.find((row) => row.type === "bar");
+rDrag._startDrag(dragBar, 100);
+ok("after _startDrag, dragSeed is set", rDrag._dragSeed !== null);
+ok("after _startDrag, state.dragId set", rDrag.state.dragId === dragBar.record.id);
+rDrag._endDrag();
+ok("after _endDrag, seed is null", rDrag._dragSeed === null);
+ok("after _endDrag, dragId cleared", rDrag.state.dragId === null);
+
+section("[STRESS] groupBy live (search panel override)");
+// Sin groupBy en props → usa archInfo.defaultGroupBy.
+const rGroupArch = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, defaultGroupBy: null },
+    records: [
+        { id: 1, name: "a", display_name: "a", ds: "2026-05-01", de: "2026-05-05" },
+        { id: 2, name: "b", display_name: "b", ds: "2026-05-01", de: "2026-05-05" },
+    ],
+});
+rGroupArch._beforeRender();
+ok("no groupBy anywhere → all in one anon group",
+   rGroupArch.allRows.filter((row) => row.type === "group").length === 0);
+
+// Con archInfo.defaultGroupBy="name" → agrupa por nombre.
+const rGroupArchSet = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, defaultGroupBy: "name" },
+    records: [
+        { id: 1, name: "A", display_name: "a", ds: "2026-05-01", de: "2026-05-05" },
+        { id: 2, name: "B", display_name: "b", ds: "2026-05-01", de: "2026-05-05" },
+    ],
+});
+rGroupArchSet._beforeRender();
+ok("archInfo.defaultGroupBy applies when no live groupBy",
+   rGroupArchSet.allRows.filter((row) => row.type === "group").length === 2);
+
+// Con live groupBy del search panel → override.
+const rGroupLive = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, defaultGroupBy: "name" },  // sería "name"
+    groupBy: ["display_name"],                          // pero el live es display_name
+    records: [
+        { id: 1, name: "X", display_name: "alfa", ds: "2026-05-01", de: "2026-05-05" },
+        { id: 2, name: "X", display_name: "beta", ds: "2026-05-01", de: "2026-05-05" },
+    ],
+});
+rGroupLive._beforeRender();
+ok("live groupBy overrides archInfo.defaultGroupBy",
+   rGroupLive.allRows.filter((row) => row.type === "group").length === 2,
+   "Si tomara 'name' habría 1 grupo (X). Con override 'display_name' hay 2 (alfa/beta)");
 
 // ─── [17] Sprint 3.1.C.4 — _diffProps reacts to goToDateRequest ────────
 section("[17] goToDateRequest triggers range + scroll");

@@ -234,19 +234,37 @@
 // ── Sprint 3.1: Decorations condicionales ─────────────────────────
 // Cada decoration-<suffix>="<expr>" del arch evalua per-record. Si la
 // expr resulta verdadera, esta clase se aplica al <g class="o_gs_bar_group">
-// y agrega un BORDE coloreado al rect interior. Usamos `box-shadow`-like
-// efecto via stroke porque <rect> no soporta box-shadow.
-//
-// El override de stroke gana sobre `o_gs_bar_critical` cuando coexisten
-// porque las definimos despues en el orden CSS.
+// y agrega un BORDE coloreado al rect interior sin OPACAR el color de
+// fondo elegido por el usuario. Diseño: stroke + un pequeño glow para
+// que se distinga incluso sobre fondos cercanos al stroke.
 
-.o_gs_bar_decoration_success .o_gs_bar { stroke: #16a34a; stroke-width: 2; }
-.o_gs_bar_decoration_danger  .o_gs_bar { stroke: #dc2626; stroke-width: 2; }
-.o_gs_bar_decoration_warning .o_gs_bar { stroke: #d97706; stroke-width: 2; }
-.o_gs_bar_decoration_info    .o_gs_bar { stroke: #2563eb; stroke-width: 2; }
-.o_gs_bar_decoration_primary .o_gs_bar { stroke: #3b82f6; stroke-width: 2; }
-.o_gs_bar_decoration_secondary .o_gs_bar { stroke: #6b7280; stroke-width: 2; }
-.o_gs_bar_decoration_muted   .o_gs_bar { opacity: 0.55; }
+.o_gs_bar_decoration_success .o_gs_bar {
+    stroke: #16a34a; stroke-width: 2;
+    filter: drop-shadow(0 0 3px rgba(22, 163, 74, 0.55));
+}
+.o_gs_bar_decoration_danger .o_gs_bar {
+    stroke: #dc2626; stroke-width: 2;
+    filter: drop-shadow(0 0 3px rgba(220, 38, 38, 0.55));
+}
+.o_gs_bar_decoration_warning .o_gs_bar {
+    stroke: #d97706; stroke-width: 2;
+    filter: drop-shadow(0 0 3px rgba(217, 119, 6, 0.55));
+}
+.o_gs_bar_decoration_info .o_gs_bar {
+    stroke: #2563eb; stroke-width: 2;
+    filter: drop-shadow(0 0 3px rgba(37, 99, 235, 0.55));
+}
+.o_gs_bar_decoration_primary .o_gs_bar {
+    stroke: #3b82f6; stroke-width: 2;
+}
+.o_gs_bar_decoration_secondary .o_gs_bar {
+    stroke: #6b7280; stroke-width: 2;
+}
+.o_gs_bar_decoration_muted .o_gs_bar { opacity: 0.5; }
+// Para milestones tambien aplicar a la polygon shape (no solo rect).
+.o_gs_bar_decoration_success .o_gs_milestone_shape { stroke: #16a34a; }
+.o_gs_bar_decoration_danger  .o_gs_milestone_shape { stroke: #dc2626; }
+.o_gs_bar_decoration_warning .o_gs_milestone_shape { stroke: #d97706; }
 
 // Para que los decorations no peleen visualmente cuando se combinan con
 // critical (que ya tiene stroke rojo + animacion), priorizamos:
@@ -264,17 +282,16 @@
     cursor: not-allowed;
 
     .o_gs_bar {
-        // Patron de tramas diagonales con CSS gradient sobre el fill.
-        // SVG nativo no soporta linear-gradient en fill via CSS, pero
-        // podemos simular con un filter sutil + opacity.
-        filter: brightness(0.92) saturate(0.7);
+        filter: brightness(0.85) saturate(0.55);
+        // Patrón sutil de candado: un borde gris claro a contraste
+        stroke: #9ca3af;
+        stroke-width: 1.5;
+        stroke-dasharray: 3 2;
     }
-    // Pequeño candado en la esquina superior izquierda usando ::before
-    // no es posible en SVG; en su lugar reducimos opacidad del label.
-    .o_gs_bar_label { opacity: 0.7; }
+    .o_gs_bar_label { opacity: 0.65; font-style: italic; }
 }
 .o_gs_bar_locked:hover .o_gs_bar {
-    filter: brightness(0.92) saturate(0.7);   // sin highlight on hover
+    filter: brightness(0.85) saturate(0.55);  // sin highlight on hover
 }
 
 // ── Sprint 3.1.C.3: Milestones (rombo) ────────────────────────────

@@ -320,11 +320,22 @@ export function computeArrowPath(from, to, depType) {
 let _measureCtx = null;
 function _getMeasureCtx() {
     if (_measureCtx !== null) return _measureCtx;
+    // Defensive: any of `document`, `createElement` or `getContext` being
+    // unavailable (Node tests, certain headless / stripped-down envs)
+    // falls back to the char-width heuristic in `measureTextWidth`.
     if (typeof document === "undefined") return null;
-    const c = document.createElement("canvas");
-    const ctx = c.getContext("2d");
-    // MUST match the SCSS rule for .o_gs_bar_label_inside or accuracy drops
-    ctx.font = '500 11px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    if (typeof document.createElement !== "function") return null;
+    let ctx;
+    try {
+        const c = document.createElement("canvas");
+        if (!c || typeof c.getContext !== "function") return null;
+        ctx = c.getContext("2d");
+        if (!ctx) return null;
+        // MUST match the SCSS rule for .o_gs_bar_label_inside or accuracy drops
+        ctx.font = '500 11px system-ui, -apple-system, "Segoe UI", Roboto, sans-serif';
+    } catch (_) {
+        return null;
+    }
     _measureCtx = ctx;
     return ctx;
 }

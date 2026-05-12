@@ -113,16 +113,23 @@
                                         + (row.dragDisabled ? 'o_gs_bar_locked ' : '')
                                         + (row.isMilestone ? 'o_gs_milestone ' : '')
                                         + row.decorationClasses.join(' ')"
-                           t-on-mousedown="(ev) => this.onBarMouseDown(row, ev)">
+                           t-on-mousedown="(ev) => this.onBarMouseDown(row, ev)"
+                           t-on-touchstart="(ev) => this.onBarTouchStart(row, ev)">
 
-                            <!-- Milestone path: diamond at date_start -->
+                            <!-- Milestone path: diamond at date_start.
+                                 Bug fix: aplicar `dragOffsetForBar(row)` via
+                                 SVG `transform=translate(dx,0)` para que el
+                                 rombo se mueva visualmente durante el drag.
+                                 Antes quedaba "anclado" mientras el cursor
+                                 sí se desplazaba, lo que confundía al usuario. -->
                             <polygon t-if="row.isMilestone"
                                      class="o_gs_milestone_shape"
                                      t-att-points="row.milestonePoints"
-                                     t-att-fill="row.color"/>
+                                     t-att-fill="row.color"
+                                     t-att-transform="'translate(' + dragOffsetForBar(row) + ',0)'"/>
                             <text t-if="row.isMilestone"
                                   class="o_gs_bar_label o_gs_bar_label_outside o_gs_milestone_label"
-                                  t-att-x="row.x + row.height / 2 + 8"
+                                  t-att-x="row.x + row.height / 2 + 8 + dragOffsetForBar(row)"
                                   t-att-y="row.y + row.height / 2"
                                   t-esc="row.label"/>
 
