@@ -1,0 +1,188 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="pdf_inline_viewer.PdfPreviewDialog">
+    <Dialog title="props.title or labels.loading"
+            size="'xl'"
+            contentClass="'o_pdf_inline_viewer'"
+            footer="false">
+
+        <!-- Toolbar (sin paginador, solo controles globales) -->
+        <div class="o_pdf_toolbar d-flex flex-wrap align-items-center gap-1 p-2 border-bottom">
+
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.sidebar"
+                    t-on-click="() => this.toggleSidebar()">
+                <i class="fa fa-th-list"/>
+            </button>
+
+            <div class="vr mx-1"/>
+
+            <span class="small text-muted px-2" t-if="state.totalPages">
+                <t t-esc="state.totalPages"/> pages
+            </span>
+
+            <div class="vr mx-1"/>
+
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.zoomOut"
+                    t-on-click="() => this.zoomOut()">
+                <i class="fa fa-search-minus"/>
+            </button>
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.zoomReset"
+                    t-on-click="() => this.zoomReset()">
+                <span t-esc="Math.round(state.scale * 100) + '%'"/>
+            </button>
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.zoomIn"
+                    t-on-click="() => this.zoomIn()">
+                <i class="fa fa-search-plus"/>
+            </button>
+
+            <div class="vr mx-1"/>
+
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.rotate"
+                    t-on-click="() => this.rotate()">
+                <i class="fa fa-rotate-right"/>
+            </button>
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.fullscreen"
+                    t-on-click="() => this.toggleFullscreen()">
+                <i class="fa fa-expand"/>
+            </button>
+
+            <div class="vr mx-1"/>
+
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.search"
+                    t-on-click="() => this.toggleSearch()">
+                <i class="fa fa-search"/>
+            </button>
+
+            <div class="ms-auto d-flex gap-1">
+                <button class="btn btn-sm btn-primary"
+                        t-att-title="labels.print"
+                        t-att-disabled="state.printing"
+                        t-on-click="() => this.printAll()">
+                    <i t-att-class="state.printing ? 'fa fa-circle-o-notch fa-spin' : 'fa fa-print'"/>
+                    <span class="d-none d-md-inline ms-1"
+                          t-esc="state.printing ? labels.preparing : labels.print"/>
+                </button>
+                <button class="btn btn-sm btn-secondary"
+                        t-att-title="labels.download"
+                        t-on-click="() => this.onDownload()">
+                    <i class="fa fa-download"/> <span class="d-none d-md-inline ms-1" t-esc="labels.download"/>
+                </button>
+            </div>
+        </div>
+
+        <!-- Search bar -->
+        <div class="o_pdf_search d-flex align-items-center gap-2 px-3 py-2 border-bottom"
+             t-if="state.showSearch">
+            <div class="o_pdf_search_box position-relative flex-grow-1">
+                <i class="fa fa-search o_pdf_search_icon"/>
+                <input type="text"
+                       class="form-control form-control-sm o_pdf_search_input"
+                       t-ref="searchInput"
+                       t-att-value="state.searchQuery"
+                       t-on-input="(ev) => this.onSearchInput(ev)"
+                       t-on-keydown="(ev) => this.onSearchKeydown(ev)"
+                       t-att-placeholder="labels.searchPlaceholder"/>
+                <span class="o_pdf_search_count text-nowrap"
+                      t-if="state.searchPending">
+                    <i class="fa fa-circle-o-notch fa-spin"/>
+                </span>
+                <span class="o_pdf_search_count o_pdf_count_ok text-nowrap"
+                      t-elif="state.searchMatches.length">
+                    <t t-esc="state.searchIndex + 1"/> de <t t-esc="state.searchMatches.length"/>
+                </span>
+                <span class="o_pdf_search_count o_pdf_count_none text-nowrap"
+                      t-elif="state.searchQuery">
+                    no matches
+                </span>
+            </div>
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.prevMatch"
+                    t-att-disabled="!state.searchMatches.length"
+                    t-on-click="() => this.searchPrev()">
+                <i class="fa fa-chevron-up"/>
+            </button>
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.nextMatch"
+                    t-att-disabled="!state.searchMatches.length"
+                    t-on-click="() => this.searchNext()">
+                <i class="fa fa-chevron-down"/>
+            </button>
+            <button class="btn btn-sm btn-light"
+                    t-att-title="labels.clearSearch"
+                    t-on-click="() => this.clearSearch()">
+                <i class="fa fa-times"/>
+            </button>
+        </div>
+
+        <!-- Body: sidebar + viewer con scroll continuo -->
+        <div class="o_pdf_body d-flex" style="height: 75vh;">
+
+            <!-- Sidebar de miniaturas -->
+            <div class="o_pdf_sidebar border-end"
+                 t-if="state.showSidebar and pdf and !state.loading and !state.error">
+                <PdfThumbnails pdf="pdf"
+                               currentPage="state.page"
+                               onSelectPage.bind="(n) => this.goToPage(n)"/>
+            </div>
+
+            <!-- Viewer: contenedor scrolleable con TODAS las pages apiladas -->
+            <div class="o_pdf_viewer flex-grow-1 overflow-auto p-3"
+                 t-ref="viewer">
+
+                <!-- Loading -->
+                <div t-if="state.loading and !state.needsPassword"
+                     class="d-flex justify-content-center align-items-center h-100">
+                    <div class="text-center">
+                        <i class="fa fa-circle-o-notch fa-spin fa-3x text-muted"/>
+                        <p class="mt-3 text-muted" t-esc="labels.loading"/>
+                    </div>
+                </div>
+
+                <!-- Password prompt -->
+                <div t-if="state.needsPassword"
+                     class="d-flex justify-content-center align-items-center h-100">
+                    <form class="card p-4 shadow-sm"
+                          style="min-width: 320px;"
+                          t-on-submit="(ev) => this.onPasswordSubmit(ev)">
+                        <h5><i class="fa fa-lock me-2"/><t t-esc="labels.password"/></h5>
+                        <input type="password" class="form-control mt-2" autofocus="true"/>
+                        <div t-if="state.passwordError" class="text-danger small mt-2"
+                             t-esc="labels.wrongPassword"/>
+                        <button type="submit" class="btn btn-primary mt-3">OK</button>
+                    </form>
+                </div>
+
+                <!-- Error -->
+                <div t-if="state.error"
+                     class="d-flex justify-content-center align-items-center h-100">
+                    <div class="alert alert-danger">
+                        <i class="fa fa-exclamation-triangle me-2"/>
+                        <t t-esc="labels.error"/>: <t t-esc="state.error"/>
+                    </div>
+                </div>
+
+                <!-- Una página por canvas, apiladas verticalmente -->
+                <t t-if="!state.loading and !state.error and !state.needsPassword">
+                    <div t-foreach="pageNums" t-as="n" t-key="n"
+                         class="o_pdf_page_wrap position-relative">
+                        <canvas t-att-data-page="n"
+                                class="shadow-sm o_pdf_canvas"/>
+                        <div t-if="props.watermark"
+                             class="o_pdf_watermark"
+                             t-esc="props.watermark"/>
+                    </div>
+                </t>
+            </div>
+        </div>
+    </Dialog>
+</t>
+
+</templates>

@@ -1,0 +1,226 @@
+# Spanish translations for pdf_inline_viewer.
+# Copyright (C) 2026 MSI
+# This file is distributed under the same license as the pdf_inline_viewer package.
+#
+msgid ""
+msgstr ""
+"Project-Id-Version: PDF Inline Viewer 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Last-Translator: \n"
+"Language-Team: Spanish\n"
+"Language: es\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"Plural-Forms: nplurals=2; plural=(n != 1);\n"
+
+#. module: pdf_inline_viewer
+#: model:ir.actions.act_window,name:pdf_inline_viewer.action_pdf_viewer_settings
+#: model:ir.ui.menu,name:pdf_inline_viewer.menu_pdf_viewer_settings
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "PDF Inline Viewer"
+msgstr "Visor PDF integrado"
+
+#. module: pdf_inline_viewer
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "PDF Viewer"
+msgstr "Visor de PDF"
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,field_description:pdf_inline_viewer.field_res_config_settings__pdf_viewer_enabled
+msgid "Enable PDF Inline Viewer"
+msgstr "Activar visor PDF integrado"
+
+#. module: pdf_inline_viewer
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "Replace Odoo's default PDF download with an inline viewer."
+msgstr "Reemplaza la descarga automática de PDF de Odoo por un visor integrado."
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,field_description:pdf_inline_viewer.field_res_config_settings__pdf_viewer_show_thumbnails
+msgid "Show thumbnails by default"
+msgstr "Mostrar miniaturas por defecto"
+
+#. module: pdf_inline_viewer
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "Show the thumbnails sidebar by default when the viewer opens."
+msgstr "Mostrar el panel de miniaturas al abrir el visor."
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,field_description:pdf_inline_viewer.field_res_config_settings__pdf_viewer_watermark
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "Watermark"
+msgstr "Marca de agua"
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,field_description:pdf_inline_viewer.field_res_config_settings__pdf_viewer_watermark
+msgid "Watermark text"
+msgstr "Texto de la marca de agua"
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,help:pdf_inline_viewer.field_res_config_settings__pdf_viewer_watermark
+msgid "Text overlaid on the preview. Leave empty to disable."
+msgstr "Texto que se superpone sobre la previsualización. Dejar vacío para desactivar."
+
+#. module: pdf_inline_viewer
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "Text overlaid on every preview page."
+msgstr "Texto que se superpone en cada página previsualizada."
+
+#. module: pdf_inline_viewer
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "CONFIDENTIAL"
+msgstr "CONFIDENCIAL"
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,field_description:pdf_inline_viewer.field_res_config_settings__pdf_viewer_watermark_group_id
+msgid "Restrict watermark to group"
+msgstr "Restringir marca de agua a grupo"
+
+#. module: pdf_inline_viewer
+#: model_terms:ir.ui.view,arch_db:pdf_inline_viewer.res_config_settings_view_form_pdf_viewer
+msgid "Restrict to group"
+msgstr "Restringir a grupo"
+
+#. module: pdf_inline_viewer
+#: model:ir.model.fields,help:pdf_inline_viewer.field_res_config_settings__pdf_viewer_watermark_group_id
+msgid "If set, only members of this group will see the watermark."
+msgstr "Si se define, solo los miembros de este grupo verán la marca de agua."
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Zoom in"
+msgstr "Acercar"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Zoom out"
+msgstr "Alejar"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Reset zoom"
+msgstr "Restablecer zoom"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Rotate 90°"
+msgstr "Rotar 90°"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Fullscreen"
+msgstr "Pantalla completa"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Search (Ctrl+F)"
+msgstr "Buscar (Ctrl+F)"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Print (Ctrl+P)"
+msgstr "Imprimir (Ctrl+P)"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Download"
+msgstr "Descargar"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Toggle thumbnails"
+msgstr "Mostrar/ocultar miniaturas"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Loading PDF…"
+msgstr "Cargando PDF…"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Could not load PDF"
+msgstr "No se pudo cargar el PDF"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Password required"
+msgstr "Contraseña requerida"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Incorrect password"
+msgstr "Contraseña incorrecta"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Preparing…"
+msgstr "Preparando…"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Search the document — Enter for next, Shift+Enter for previous"
+msgstr "Buscar en el documento — Enter para siguiente, Shift+Enter para anterior"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Previous match (Shift+Enter)"
+msgstr "Coincidencia anterior (Shift+Enter)"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Next match (Enter)"
+msgstr "Siguiente coincidencia (Enter)"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_dialog.js:0
+msgid "Clear and close (Esc)"
+msgstr "Limpiar y cerrar (Esc)"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/xml/pdf_preview_dialog.xml:0
+msgid "pages"
+msgstr "páginas"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/xml/pdf_preview_dialog.xml:0
+msgid "no matches"
+msgstr "sin coincidencias"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/xml/pdf_preview_dialog.xml:0
+msgid "of"
+msgstr "de"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/pdf_preview_service.js:0
+msgid "Report"
+msgstr "Reporte"
+
+#. module: pdf_inline_viewer
+#. odoo-javascript
+#: code:addons/pdf_inline_viewer/static/src/js/browser_patches.js:0
+msgid "PDF document"
+msgstr "Documento PDF"

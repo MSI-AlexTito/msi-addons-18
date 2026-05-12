@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="pdf_inline_viewer.PdfThumbnails">
+    <div class="o_pdf_thumbs" t-ref="root">
+        <div t-foreach="state.pages" t-as="p" t-key="p.num"
+             class="o_pdf_thumb"
+             t-att-class="{ 'o_pdf_thumb_active': p.num === props.currentPage }"
+             t-att-data-page="p.num"
+             t-on-click="() => this.onThumbClick(p.num)">
+            <div class="o_pdf_thumb_canvas_wrap">
+                <canvas/>
+            </div>
+            <div class="o_pdf_thumb_num" t-esc="p.num"/>
+        </div>
+    </div>
+</t>
+
+</templates>
