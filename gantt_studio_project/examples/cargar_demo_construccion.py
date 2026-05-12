@@ -132,48 +132,86 @@ def mktask(name, start_day, dur_days, stage, idx, progress=0):
         "date_deadline": D(start_day + dur_days, 17),
     })
 
+# Sprint 3.3 — WBS: creamos 7 PADRES (uno por fase) con fechas amplias
+# y las 24 tareas detalladas como hijos. El renderer las muestra indentadas
+# y el padre como "summary bar" envolviendo el rango de hijos.
+
+def mkparent(name, start_day, end_day, stage, idx):
+    return Task.create({
+        "name": name,
+        "project_id": project.id,
+        "stage_id": stage.id,
+        "user_ids": assign(idx),
+        "planned_date_begin": D(start_day, 8),
+        "date_deadline": D(end_day, 17),
+    })
+
+def mkchild(name, start_day, dur_days, stage, idx, parent):
+    return Task.create({
+        "name": name,
+        "project_id": project.id,
+        "stage_id": stage.id,
+        "parent_id": parent.id,
+        "user_ids": assign(idx),
+        "planned_date_begin": D(start_day, 8),
+        "date_deadline": D(start_day + dur_days, 17),
+    })
+
+# Padres
+phase_design   = mkparent("FASE Diseño",        0,  13, stage_design,   0)
+phase_permits  = mkparent("FASE Permisos",      14, 21, stage_permits,  1)
+phase_found    = mkparent("FASE Cimentación",   22, 36, stage_found,    2)
+phase_struct   = mkparent("FASE Estructura",    37, 55, stage_struct,   3)
+phase_mep      = mkparent("FASE Instalaciones", 56, 62, stage_mep,      4)
+phase_finish   = mkparent("FASE Terminaciones", 63, 89, stage_finish,   0)
+phase_handover = mkparent("FASE Entrega",       90, 93, stage_handover, 1)
+
 # ── FASE 1: DISEÑO (paralelo entre arquitectura e ingeniería) ────────
-t01 = mktask("01 Levantamiento topográfico", 0, 3, stage_design, 0)
-t02 = mktask("02 Anteproyecto arquitectónico", 3, 6, stage_design, 1)
-t03 = mktask("03 Proyecto eléctrico", 9, 4, stage_design, 2)
-t04 = mktask("04 Proyecto sanitario", 9, 4, stage_design, 3)
-t05 = mktask("05 Proyecto estructural", 9, 5, stage_design, 4)
+t01 = mkchild("01 Levantamiento topográfico", 0, 3, stage_design, 0, phase_design)
+t02 = mkchild("02 Anteproyecto arquitectónico", 3, 6, stage_design, 1, phase_design)
+t03 = mkchild("03 Proyecto eléctrico", 9, 4, stage_design, 2, phase_design)
+t04 = mkchild("04 Proyecto sanitario", 9, 4, stage_design, 3, phase_design)
+t05 = mkchild("05 Proyecto estructural", 9, 5, stage_design, 4, phase_design)
 
 # ── FASE 2: PERMISOS ─────────────────────────────────────────────────
-t06 = mktask("06 Permiso municipal de edificación", 14, 8, stage_permits, 0)
-t07 = mktask("07 Aprobación servicios sanitarios", 14, 6, stage_permits, 1)
+t06 = mkchild("06 Permiso municipal de edificación", 14, 8, stage_permits, 0, phase_permits)
+t07 = mkchild("07 Aprobación servicios sanitarios", 14, 6, stage_permits, 1, phase_permits)
 
 # ── FASE 3: CIMENTACIÓN ──────────────────────────────────────────────
-t08 = mktask("08 Despeje de terreno y movimientos", 22, 3, stage_found, 2)
-t09 = mktask("09 Excavación y zanjas", 25, 4, stage_found, 3)
-t10 = mktask("10 Armado de fierros (fundación)", 29, 5, stage_found, 4)
-t11 = mktask("11 Hormigonado cimientos", 34, 3, stage_found, 0)
+t08 = mkchild("08 Despeje de terreno y movimientos", 22, 3, stage_found, 2, phase_found)
+t09 = mkchild("09 Excavación y zanjas", 25, 4, stage_found, 3, phase_found)
+t10 = mkchild("10 Armado de fierros (fundación)", 29, 5, stage_found, 4, phase_found)
+t11 = mkchild("11 Hormigonado cimientos", 34, 3, stage_found, 0, phase_found)
 
 # ── FASE 4: ESTRUCTURA ───────────────────────────────────────────────
-t12 = mktask("12 Pilares y vigas planta baja", 37, 6, stage_struct, 1)
-t13 = mktask("13 Losa primer piso", 43, 4, stage_struct, 2)
-t14 = mktask("14 Pilares planta alta", 47, 5, stage_struct, 3)
-t15 = mktask("15 Losa cubierta", 52, 4, stage_struct, 4)
+t12 = mkchild("12 Pilares y vigas planta baja", 37, 6, stage_struct, 1, phase_struct)
+t13 = mkchild("13 Losa primer piso", 43, 4, stage_struct, 2, phase_struct)
+t14 = mkchild("14 Pilares planta alta", 47, 5, stage_struct, 3, phase_struct)
+t15 = mkchild("15 Losa cubierta", 52, 4, stage_struct, 4, phase_struct)
 
 # ── FASE 5: INSTALACIONES (paralelo) ─────────────────────────────────
-t16 = mktask("16 Tendido eléctrico interior", 56, 6, stage_mep, 0)
-t17 = mktask("17 Cañerías agua + alcantarillado", 56, 7, stage_mep, 1)
-t18 = mktask("18 Climatización", 58, 5, stage_mep, 2)
+t16 = mkchild("16 Tendido eléctrico interior", 56, 6, stage_mep, 0, phase_mep)
+t17 = mkchild("17 Cañerías agua + alcantarillado", 56, 7, stage_mep, 1, phase_mep)
+t18 = mkchild("18 Climatización", 58, 5, stage_mep, 2, phase_mep)
 
 # ── FASE 6: TERMINACIONES ────────────────────────────────────────────
-t19 = mktask("19 Albañilería interior (tabiques)", 63, 8, stage_finish, 3, progress=0)
-t20 = mktask("20 Estucos y enlucidos", 71, 6, stage_finish, 4)
-t21 = mktask("21 Cerámicos y pavimentos", 77, 7, stage_finish, 0)
-t22 = mktask("22 Pintura interior y exterior", 84, 6, stage_finish, 1)
+t19 = mkchild("19 Albañilería interior (tabiques)", 63, 8, stage_finish, 3, phase_finish)
+t20 = mkchild("20 Estucos y enlucidos", 71, 6, stage_finish, 4, phase_finish)
+t21 = mkchild("21 Cerámicos y pavimentos", 77, 7, stage_finish, 0, phase_finish)
+t22 = mkchild("22 Pintura interior y exterior", 84, 6, stage_finish, 1, phase_finish)
 
 # ── FASE 7: ENTREGA ──────────────────────────────────────────────────
-t23 = mktask("23 Limpieza final y aseo de obra", 90, 2, stage_handover, 2)
-t24 = mktask("24 Recepción municipal y entrega", 92, 2, stage_handover, 3)
+t23 = mkchild("23 Limpieza final y aseo de obra", 90, 2, stage_handover, 2, phase_handover)
+t24 = mkchild("24 Recepción municipal y entrega", 92, 2, stage_handover, 3, phase_handover)
 
-all_tasks = (t01 | t02 | t03 | t04 | t05 | t06 | t07 | t08 | t09 | t10
-             | t11 | t12 | t13 | t14 | t15 | t16 | t17 | t18 | t19 | t20
-             | t21 | t22 | t23 | t24)
-print(f"  ✓ {len(all_tasks)} tareas creadas (ids {all_tasks[0].id}..{all_tasks[-1].id}).")
+all_tasks = (
+    phase_design | phase_permits | phase_found | phase_struct
+    | phase_mep | phase_finish | phase_handover
+    | t01 | t02 | t03 | t04 | t05 | t06 | t07 | t08 | t09 | t10
+    | t11 | t12 | t13 | t14 | t15 | t16 | t17 | t18 | t19 | t20
+    | t21 | t22 | t23 | t24
+)
+print(f"  ✓ {len(all_tasks)} tareas creadas (7 padres + 24 hijos, ids {all_tasks[0].id}..{all_tasks[-1].id}).")
 
 # ─────────────────────────────────────────────────────────────────────────
 # 6) Dependencias — los 4 tipos para demostrar visualmente

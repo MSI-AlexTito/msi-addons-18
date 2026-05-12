@@ -142,6 +142,7 @@ function makeRenderer(props, virtualWindow = [0, 9]) {
         editingId: null, editingValue: "",
         depDragFrom: null, depDragFromEdge: null, depDragTo: null,
         depPopover: null,
+        collapsed: new Set(),
     };
     r.rootRef = { el: null };
     r._dirtyRange = true;
@@ -889,6 +890,92 @@ globalThis.document.elementFromPoint = (x, y) => ({
 });
 rSelf._onDepDragUp({ clientX: 110, clientY: 50 });
 ok("drop sobre sí mismo NO abre popover", rSelf.state.depPopover === null);
+
+// ─── [SP3.3] WBS jerárquico en el renderer ────────────────────────────
+section("[SP3.3] WBS hierarchy");
+
+const wbsRecords = [
+    { id: 1, name: "Fase Diseño", display_name: "Fase Diseño",
+      parent_id: false,
+      ds: "2026-05-01", de: "2026-05-15" },
+    { id: 2, name: "Topografía", display_name: "Topografía",
+      parent_id: [1, "Fase Diseño"],
+      ds: "2026-05-01", de: "2026-05-05" },
+    { id: 3, name: "Anteproyecto", display_name: "Anteproyecto",
+      parent_id: [1, "Fase Diseño"],
+      ds: "2026-05-06", de: "2026-05-15" },
+    { id: 4, name: "Solitario", display_name: "Solitario",
+      parent_id: false,
+      ds: "2026-05-20", de: "2026-05-25" },
+];
+
+const rWbs = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, parentField: "parent_id" },
+    records: wbsRecords,
+});
+rWbs._beforeRender();
+const wbsBars = rWbs.allRows.filter((row) => row.type === "bar");
+ok("WBS: 4 records → 4 bars", wbsBars.length === 4);
+
+const parent = wbsBars.find((b) => b.record.id === 1);
+const child1 = wbsBars.find((b) => b.record.id === 2);
+const solo = wbsBars.find((b) => b.record.id === 4);
+
+ok("padre marcado como isParent",   parent.isParent === true);
+ok("padre depth=0",                  parent.depth === 0);
+ok("hijo depth=1",                   child1.depth === 1);
+ok("solitario depth=0",              solo.depth === 0);
+ok("solitario NO isParent",          solo.isParent === false);
+
+// Padre NO debe ser draggable (es summary).
+ok("padre dragDisabled=true (summary)", parent.dragDisabled === true);
+
+// Colapsar padre 1 → solo aparecen padre 1 + solitario 4
+rWbs.state.collapsed = new Set([1]);
+rWbs._dirtyLayout = true;
+rWbs._beforeRender();
+const collapsed = rWbs.allRows.filter((row) => row.type === "bar");
+ok("colapsado: 2 bars (padre + solitario)",
+   collapsed.length === 2 &&
+   collapsed.find((b) => b.record.id === 1) &&
+   collapsed.find((b) => b.record.id === 4));
+
+// Expandir de nuevo
+rWbs.state.collapsed = new Set();
+rWbs._dirtyLayout = true;
+rWbs._beforeRender();
+ok("expandido: 4 bars",
+   rWbs.allRows.filter((row) => row.type === "bar").length === 4);
+
+// Toggle via onToggleCollapse mutates set
+const rToggle = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, parentField: "parent_id" },
+    records: wbsRecords,
+});
+rToggle._beforeRender();
+const parentRow = rToggle.allRows.find((row) => row.type === "bar" && row.isParent);
+rToggle.onToggleCollapse(parentRow, { preventDefault: () => {}, stopPropagation: () => {} });
+ok("toggle agrega al set", rToggle.state.collapsed.has(parentRow.record.id));
+ok("toggle marca _dirtyLayout", rToggle._dirtyLayout === true);
+rToggle.onToggleCollapse(parentRow, { preventDefault: () => {}, stopPropagation: () => {} });
+ok("toggle de nuevo quita del set", !rToggle.state.collapsed.has(parentRow.record.id));
+
+// Sin parent_field configurado → no hay jerarquía
+const rNoWbs = makeRenderer({ ...baseProps, records: wbsRecords });
+rNoWbs._beforeRender();
+const flat = rNoWbs.allRows.filter((row) => row.type === "bar");
+ok("sin parent_field: ningún record es isParent",
+   flat.every((b) => !b.isParent));
+
+// Rollup: el bar del padre debe envolver el rango de los hijos
+ok("rollup: padre.x corresponde a min(start) de hijos",
+   parent.x <= child1.x);
+// Padre originalmente declarado 01→15. Hijos cubren 01→15. Rollup = 01→15.
+// Bar width del padre debe ser >= width de cualquier hijo.
+ok("rollup: padre.width envuelve a los hijos",
+   parent.width >= child1.width);
 
 // ─── Summary ───────────────────────────────────────────────────────────
 section(`RESULT: ${pass} passed, ${fail} failed`);

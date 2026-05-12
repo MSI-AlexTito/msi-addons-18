@@ -23,6 +23,9 @@ import {
     computeArrowPath,
     arrowHeadPoints,
     truncateToWidth,
+    buildTree,
+    walkTree,
+    computeRollup,
 } from "./gantt_studio_utils";
 
 // Para diagnosticar problemas de drag/render, activar en consola:
@@ -125,6 +128,10 @@ export class GanttStudioRenderer extends Component {
             //   {predId, succId, x, y, depType, lagDays}
             depDragFrom: null, depDragFromEdge: null, depDragTo: null,
             depPopover: null,
+            // Sprint 3.3 — WBS: ids de nodos colapsados. Mutamos via
+            // setState para que OWL detecte el cambio. Default: ningún
+            // nodo colapsado (todo expandido).
+            collapsed: new Set(),
         });
 
         // ── Dirty flags ────────────────────────────────────────────────
@@ -425,17 +432,42 @@ export class GanttStudioRenderer extends Component {
         const decorationsArch = this.props.archInfo.decorations || {};
         const disableDragExpr = this.props.archInfo.disableDragDrop;
         const milestoneField = this.props.archInfo.milestoneField;
+        const parentField = this.props.archInfo.parentField;
         const critical = this.props.criticalRecordIds || new Set();
         const baselineMap = new Map(
             (this.props.baselineLines || []).map((l) => [l.record_id, l])
         );
-        // Bug fix: agrupado debe respetar lo que el usuario eligió en el
-        // search panel (this.props.groupBy). Si no hay groupBy live, caemos
-        // al defaultGroupBy del arch. Si tampoco hay, no agrupamos.
-        const groupByField = (this.props.groupBy && this.props.groupBy.length)
-            ? this.props.groupBy[0]
-            : this.props.archInfo.defaultGroupBy;
-        const grouped = groupRecords(this.props.records, groupByField);
+
+        // Sprint 3.3 — Si hay parent_field, agrupamos via árbol jerárquico
+        // PRIMERO y groupBy (si lo hay) se aplica al nivel de raíces.
+        // Si NO hay parent_field, mantenemos el flujo plano de antes.
+        let grouped;
+        if (parentField) {
+            const tree = buildTree(this.props.records, parentField);
+            const walked = walkTree(tree, this.state.collapsed);
+            // Conversión al shape que el resto del código espera: lista
+            // ordenada de records con metadata (depth, hasChildren).
+            grouped = [{
+                key: "__wbs__",
+                label: "",
+                records: walked.map((w) => ({
+                    ...w.record,
+                    __depth: w.depth,
+                    __hasChildren: w.hasChildren,
+                    __isParent: w.hasChildren,
+                    __children: w.children,
+                })),
+            }];
+        } else {
+            // Bug fix: agrupado debe respetar lo que el usuario eligió en el
+            // search panel (this.props.groupBy). Si no hay groupBy live, caemos
+            // al defaultGroupBy del arch. Si tampoco hay, no agrupamos.
+            const groupByField = (this.props.groupBy && this.props.groupBy.length)
+                ? this.props.groupBy[0]
+                : this.props.archInfo.defaultGroupBy;
+            grouped = groupRecords(this.props.records, groupByField);
+        }
+
         const rows = [];
         const barGeoById = new Map();
         let rowIdx = 0;
@@ -450,8 +482,23 @@ export class GanttStudioRenderer extends Component {
                 rowIdx++;
             }
             for (const r of group.records) {
-                const start = parseDate(r[ds]);
-                const stop = parseDate(r[de]);
+                // Sprint 3.3 — Si el record es un padre WBS, sus fechas
+                // efectivas vienen del ROLLUP (min start / max stop) de
+                // toda su descendencia. El padre declara sus propias
+                // fechas también, pero el bar visual envuelve a los hijos.
+                let start, stop;
+                if (r.__isParent && r.__children) {
+                    // computeRollup necesita un nodo {record, children}.
+                    const rollup = computeRollup(
+                        { record: r, children: r.__children },
+                        ds, de,
+                    );
+                    start = rollup.start;
+                    stop = rollup.stop;
+                } else {
+                    start = parseDate(r[ds]);
+                    stop = parseDate(r[de]);
+                }
                 if (!start || !stop) continue;
                 const x1 = this._dateToPx(start, range.start);
                 const x2 = this._dateToPx(stop, range.start);
@@ -502,7 +549,12 @@ export class GanttStudioRenderer extends Component {
                     }
                 }
                 // Per-record drag lock.
-                const dragDisabled = this._evalRecordExpr(disableDragExpr, r);
+                // Sprint 3.3 — Los padres WBS no son arrastrables: su bar
+                // es un envelope calculado de los hijos. Para mover toda
+                // la rama, el user mueve los hijos individualmente (o
+                // usaría una feature futura "drag parent → drag chain").
+                let dragDisabled = this._evalRecordExpr(disableDragExpr, r);
+                if (r.__isParent) dragDisabled = true;
                 // Sprint 3.1.C.3 — milestone detection.
                 // If the configured boolean field is truthy, the record is
                 // rendered as a diamond at its `date_start` (date_stop is
@@ -540,6 +592,10 @@ export class GanttStudioRenderer extends Component {
                     milestonePoints: isMilestone
                         ? this._diamondPoints(x1, y + height / 2, height * 0.7)
                         : null,
+                    // Sprint 3.3 — WBS metadata.
+                    depth: r.__depth || 0,
+                    isParent: !!r.__isParent,
+                    isCollapsed: r.__isParent && this.state.collapsed.has(r.id),
                 });
                 barGeoById.set(r.id, { x: x1, y, width, height });
                 rowIdx++;
@@ -1074,5 +1130,29 @@ export class GanttStudioRenderer extends Component {
     }
     onDepPopoverCancel() {
         this.state.depPopover = null;
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Sprint 3.3 — WBS expand/collapse
+    // ─────────────────────────────────────────────────────────────────
+
+    /** Toggle del estado expandido/colapsado de un nodo padre. */
+    onToggleCollapse(row, ev) {
+        if (!row.isParent) return;
+        ev.preventDefault();
+        ev.stopPropagation();
+        // Mutamos en lugar de reasignar el Set; OWL detecta el cambio
+        // mediante useState. Reasignamos por las dudas para forzar
+        // detección si alguna implementación lo requiere.
+        const next = new Set(this.state.collapsed);
+        if (next.has(row.record.id)) {
+            next.delete(row.record.id);
+        } else {
+            next.add(row.record.id);
+        }
+        this.state.collapsed = next;
+        // Layout cambia (filas hijas aparecen/desaparecen).
+        this._dirtyLayout = true;
+        this._dirtyArrows = true;
     }
 }

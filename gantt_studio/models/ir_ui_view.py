@@ -29,6 +29,9 @@ GANTT_STUDIO_VALID_ATTRIBUTES = {
     # Sprint 3.1 features ────────────────────────────────────────────
     "disable_drag_drop",       # Python expr evaluated per-record. If truthy → bar is locked.
     "milestone_field",         # Boolean field name; truthy records render as diamonds (no duration).
+    # Sprint 3.3 — WBS jerárquico ────────────────────────────────────
+    "parent_field",            # Many2one auto-referencial sobre el mismo modelo (ej. parent_id).
+                               # Si está, el Gantt renderiza una jerarquía padre/hijo con rollup.
 }
 
 # Bootstrap-style decoration suffixes accepted as `decoration-<suffix>="expr"`.

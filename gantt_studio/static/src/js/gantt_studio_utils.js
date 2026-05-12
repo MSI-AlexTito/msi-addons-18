@@ -189,6 +189,10 @@ export function parseGanttStudioArch(arch, ParserCls) {
     // Empty string / missing → no per-record locking.
     const disableDragDrop = root.getAttribute("disable_drag_drop") || null;
     const milestoneField = root.getAttribute("milestone_field") || null;
+    // Sprint 3.3 — WBS jerárquico. `parent_field` debe ser un Many2one
+    // que apunte al mismo modelo (auto-referencial); el clásico ejemplo es
+    // `parent_id` en project.task. Si está null, no hay jerarquía.
+    const parentField = root.getAttribute("parent_field") || null;
 
     // decoration-<suffix>="<python expr>" — Bootstrap-style conditional
     // styling, identical pattern to Odoo's tree/list views. We collect them
@@ -231,7 +235,113 @@ export function parseGanttStudioArch(arch, ParserCls) {
         disableDragDrop,
         milestoneField,
         decorations,
+        parentField,
     };
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Sprint 3.3 — WBS hierarchy helpers
+// ─────────────────────────────────────────────────────────────────────────
+
+/**
+ * Construye un árbol jerárquico a partir de records planos.
+ *
+ * `parentField` apunta a un Many2one auto-referencial. El valor en cada
+ * record viene como [id, name] (m2o serialized) o false/null.
+ *
+ * Returns: array de "nodos raíz". Cada nodo:
+ *   { record, children: [...] }
+ *
+ * Edge cases que maneja:
+ *  - Record con parent que NO está en el dataset → se trata como raíz.
+ *  - Cycles (defensivo): si un nodo aparece dos veces en su propia
+ *    cadena de ancestros, se rompe el ciclo dejándolo como raíz.
+ *  - parentField === null → todos los records son raíz (sin jerarquía).
+ */
+export function buildTree(records, parentField) {
+    if (!parentField) {
+        return (records || []).map((r) => ({ record: r, children: [] }));
+    }
+    const byId = new Map();
+    for (const r of records || []) {
+        byId.set(r.id, { record: r, children: [] });
+    }
+    const getParentId = (r) => {
+        const v = r[parentField];
+        if (!v) return null;
+        return Array.isArray(v) ? v[0] : v;
+    };
+    const roots = [];
+    for (const r of records || []) {
+        const pid = getParentId(r);
+        const node = byId.get(r.id);
+        // Defensive: detectar ciclo. Si en la cadena ancestral aparece el
+        // propio id, rompemos: el nodo va a roots.
+        let cur = pid;
+        const seen = new Set([r.id]);
+        let cycle = false;
+        while (cur != null) {
+            if (seen.has(cur)) { cycle = true; break; }
+            seen.add(cur);
+            const parent = byId.get(cur);
+            if (!parent) break;
+            cur = getParentId(parent.record);
+        }
+        if (!pid || !byId.has(pid) || cycle) {
+            roots.push(node);
+        } else {
+            byId.get(pid).children.push(node);
+        }
+    }
+    return roots;
+}
+
+/**
+ * Recorre el árbol en orden, devolviendo registros aplanados con su
+ * profundidad (`depth`) y si tienen hijos. Filtra ramas cuyo ancestro
+ * esté colapsado (`collapsed: Set<id>`).
+ *
+ * El orden refleja el árbol: padre primero, hijos visibles a continuación.
+ */
+export function walkTree(tree, collapsed = new Set()) {
+    const out = [];
+    function recur(nodes, depth) {
+        for (const node of nodes) {
+            const hasChildren = node.children.length > 0;
+            out.push({
+                record: node.record,
+                depth,
+                hasChildren,
+                children: node.children,
+            });
+            if (hasChildren && !collapsed.has(node.record.id)) {
+                recur(node.children, depth + 1);
+            }
+        }
+    }
+    recur(tree, 0);
+    return out;
+}
+
+/**
+ * Calcula el "rollup" de fechas de un nodo: el bar del padre se extiende
+ * desde el min(start) hasta el max(stop) de todos sus descendientes.
+ *
+ * Returns: { start: Date|null, stop: Date|null }.
+ *
+ * Si el padre TIENE sus propias fechas declaradas, se usan también como
+ * input al cálculo (un padre puede declarar un rango más amplio que sus
+ * hijos para representar "buffer" o "headroom").
+ */
+export function computeRollup(node, dateStartField, dateStopField) {
+    let minStart = parseDate(node.record[dateStartField]);
+    let maxStop = parseDate(node.record[dateStopField]);
+    for (const child of node.children) {
+        const cr = computeRollup(child, dateStartField, dateStopField);
+        if (cr.start && (!minStart || cr.start < minStart)) minStart = cr.start;
+        if (cr.stop && (!maxStop || cr.stop > maxStop)) maxStop = cr.stop;
+    }
+    return { start: minStart, stop: maxStop };
 }
 
 // ─────────────────────────────────────────────────────────────────────────

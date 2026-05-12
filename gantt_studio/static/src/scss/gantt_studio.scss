@@ -322,6 +322,43 @@
     }
 }
 
+// ── Sprint 3.3: WBS jerárquico ─────────────────────────────────────
+// Filas padre se destacan tipográficamente y por color de fondo.
+.o_gs_left_row_parent {
+    font-weight: 600;
+    background: linear-gradient(to right, #f3f4f6 0%, #fafbfc 100%);
+}
+.o_gs_chevron {
+    cursor: pointer;
+    color: #6b7280;
+    font-size: 14px;
+    width: 14px;
+    text-align: center;
+    transition: color 100ms ease, transform 100ms ease;
+}
+.o_gs_chevron:hover {
+    color: #111827;
+    transform: scale(1.2);
+}
+
+// Summary bar para padres WBS — "viga" delgada + capuchas en los
+// extremos (estilo MS Project). Filtros ligeros para distinguirla
+// del color del padre sin sustituirlo.
+.o_gs_bar_summary {
+    filter: brightness(0.65) saturate(1.2);
+}
+.o_gs_bar_summary_cap {
+    filter: brightness(0.65) saturate(1.2);
+}
+.o_gs_bar_summary_label {
+    font-weight: 600;
+    fill: #1f2937;
+    paint-order: stroke fill;
+    stroke: rgba(255, 255, 255, 0.9);
+    stroke-width: 3;
+    stroke-linejoin: round;
+}
+
 // Baseline ghost bars
 .o_gs_bar_ghost {
     fill: none;

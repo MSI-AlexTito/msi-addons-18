@@ -31,8 +31,16 @@
                     </div>
                     <div t-elif="row.type === 'bar'"
                          class="o_gs_left_row"
-                         t-attf-style="top: {{rowY(row.rowIdx)}}px; height: {{rowHeight}}px;"
+                         t-att-class="row.isParent ? 'o_gs_left_row_parent' : ''"
+                         t-attf-style="top: {{rowY(row.rowIdx)}}px; height: {{rowHeight}}px; padding-left: {{12 + (row.depth || 0) * 16}}px;"
                          t-att-title="row.leftLabel">
+                        <!-- Sprint 3.3: chevron de expand/collapse para
+                             nodos padre. Click cambia el estado del Set
+                             `collapsed`. -->
+                        <i t-if="row.isParent"
+                           class="o_gs_chevron fa me-1"
+                           t-att-class="row.isCollapsed ? 'fa-caret-right' : 'fa-caret-down'"
+                           t-on-click="(ev) => this.onToggleCollapse(row, ev)"/>
                         <span t-esc="row.leftLabel"/>
                     </div>
                 </t>
@@ -148,8 +156,11 @@
                                  por `barGeoForRender(row)` que aplica el offset
                                  de resize en curso. El drag entero usa
                                  dragOffsetForBar (que NO interactúa con resize
-                                 porque ambos son mutuamente excluyentes). -->
-                            <rect t-if="!row.isMilestone"
+                                 porque ambos son mutuamente excluyentes).
+                                 Sprint 3.3: los padres WBS usan una "summary
+                                 bar" más delgada (visualmente distinta) que
+                                 representa el envelope de sus hijos. -->
+                            <rect t-if="!row.isMilestone and !row.isParent"
                                   class="o_gs_bar"
                                   t-att-x="barGeoForRender(row).x + dragOffsetForBar(row)"
                                   t-att-y="row.y"
@@ -157,18 +168,54 @@
                                   t-att-height="row.height"
                                   rx="6" ry="6"
                                   t-att-fill="row.color"/>
-                            <rect t-if="!row.isMilestone and row.progress !== null"
+
+                            <!-- Sprint 3.3: summary bar para padres WBS.
+                                 Es una franja delgada negra/oscura con
+                                 "puntas" en los extremos a lo MS Project. -->
+                            <g t-if="!row.isMilestone and row.isParent">
+                                <rect class="o_gs_bar_summary"
+                                      t-att-x="barGeoForRender(row).x"
+                                      t-att-y="row.y + row.height / 2 - 4"
+                                      t-att-width="barGeoForRender(row).width"
+                                      t-att-height="8"
+                                      t-att-fill="row.color"/>
+                                <!-- "Capucha" en el extremo izquierdo -->
+                                <polygon class="o_gs_bar_summary_cap"
+                                         t-att-points="
+                                            (barGeoForRender(row).x) + ',' + (row.y + row.height / 2 - 4) + ' '
+                                          + (barGeoForRender(row).x + 6) + ',' + (row.y + row.height / 2 - 4) + ' '
+                                          + (barGeoForRender(row).x) + ',' + (row.y + row.height / 2 + 4)
+                                         "
+                                         t-att-fill="row.color"/>
+                                <!-- "Capucha" en el extremo derecho -->
+                                <polygon class="o_gs_bar_summary_cap"
+                                         t-att-points="
+                                            (barGeoForRender(row).x + barGeoForRender(row).width) + ',' + (row.y + row.height / 2 - 4) + ' '
+                                          + (barGeoForRender(row).x + barGeoForRender(row).width - 6) + ',' + (row.y + row.height / 2 - 4) + ' '
+                                          + (barGeoForRender(row).x + barGeoForRender(row).width) + ',' + (row.y + row.height / 2 + 4)
+                                         "
+                                         t-att-fill="row.color"/>
+                            </g>
+                            <rect t-if="!row.isMilestone and !row.isParent and row.progress !== null"
                                   class="o_gs_bar_progress"
                                   t-att-x="barGeoForRender(row).x + dragOffsetForBar(row)"
                                   t-att-y="row.y"
                                   t-att-width="barGeoForRender(row).width * row.progress / 100"
                                   t-att-height="row.height"
                                   rx="6" ry="6"/>
-                            <text t-if="!row.isMilestone and state.editingId !== row.record.id"
+                            <text t-if="!row.isMilestone and !row.isParent and state.editingId !== row.record.id"
                                   t-att-class="row.labelOutside ? 'o_gs_bar_label o_gs_bar_label_outside' : 'o_gs_bar_label'"
                                   t-att-x="row.labelX + dragOffsetForBar(row)"
                                   t-att-y="row.labelY"
                                   t-esc="row.displayLabel"/>
+                            <!-- Sprint 3.3: label de padre va FUERA del bar
+                                 (a la derecha) porque el summary bar es muy
+                                 delgado y el texto no entraría dentro. -->
+                            <text t-if="row.isParent and state.editingId !== row.record.id"
+                                  class="o_gs_bar_label o_gs_bar_label_outside o_gs_bar_summary_label"
+                                  t-att-x="barGeoForRender(row).x + barGeoForRender(row).width + 8"
+                                  t-att-y="row.y + row.height / 2"
+                                  t-esc="row.label"/>
 
                             <!-- Sprint 3.2.B: edición inline.
                                  Cuando state.editingId apunta a este record,

@@ -64,7 +64,6 @@
             <gantt_studio date_start="planned_date_begin"
                           date_stop="date_deadline"
                           default_scale="week"
-                          default_group_by="stage_id"
                           color_field="user_ids"
                           bar_text="name"
                           string="Gantt Studio (Tareas)"
@@ -73,7 +72,19 @@
                           decoration-warning="priority == '1'"
                           decoration-muted="state == '1_canceled'"
                           disable_drag_drop="is_closed"
-                          milestone_field="milestone_id">
+                          milestone_field="milestone_id"
+                          parent_field="parent_id">
+                <!--
+                    Sprint 3.3 — WBS: parent_field="parent_id" usa el campo
+                    nativo Many2one auto-referencial de project.task. Las
+                    tareas con parent_id apuntando a otra tarea se renderean
+                    indentadas como hijos, y el padre se muestra como
+                    "summary bar" envolvente del rango de sus descendientes.
+                    Click sobre el chevron de la izquierda colapsa/expande.
+                    Nota: quitamos default_group_by ahora que el árbol WBS
+                    da la estructura natural. Si querés agrupar igualmente,
+                    usá el menú Agrupar por en el search panel.
+                -->
                 <field name="name"/>
                 <field name="user_ids"/>
                 <field name="stage_id"/>
@@ -82,6 +93,7 @@
                 <field name="state"/>
                 <field name="is_closed"/>
                 <field name="milestone_id"/>
+                <field name="parent_id"/>
             </gantt_studio>
         </field>
     </record>

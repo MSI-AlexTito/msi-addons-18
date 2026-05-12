@@ -23,6 +23,7 @@ const {
     dateToPx, computeDateRange, groupRecords,
     parseGanttStudioArch, computeArrowPath, arrowHeadPoints,
     measureTextWidth, truncateToWidth,
+    buildTree, walkTree, computeRollup,
 } = m;
 
 // Try to load xmldom for arch-string tests; skip those if not installed.
@@ -296,6 +297,111 @@ const narrow = truncateToWidth("Lorem ipsum dolor sit amet consectetur", 30);
 ok("narrow result ends with …", narrow.endsWith("…"));
 ok("narrow result strictly shorter than input",
    narrow.length < "Lorem ipsum dolor sit amet consectetur".length);
+
+// ─── [12] Sprint 3.3 — WBS helpers ───────────────────────────────────
+section("[12] WBS — buildTree / walkTree / computeRollup");
+
+// Helper para construir records mock con parent_id como m2o array.
+const r = (id, name, parentId, s, e) => ({
+    id, name, display_name: name,
+    parent_id: parentId ? [parentId, `P${parentId}`] : false,
+    s, e,
+});
+
+// Sin parentField → todos roots.
+const flatTree = buildTree([r(1, "a", null, "2026-05-01", "2026-05-02")], null);
+ok("sin parentField → todos roots", flatTree.length === 1 && flatTree[0].children.length === 0);
+
+// Arbol simple: 1 (root) → 2 (child) y 3 (root sin hijos)
+const records = [
+    r(1, "Padre",    null, "2026-05-01", "2026-05-10"),
+    r(2, "Hijo",     1,    "2026-05-03", "2026-05-08"),
+    r(3, "Solitario", null, "2026-05-05", "2026-05-12"),
+];
+const tree = buildTree(records, "parent_id");
+ok("buildTree: 2 raíces", tree.length === 2);
+ok("buildTree: padre tiene 1 hijo",
+   tree.find((n) => n.record.id === 1).children.length === 1);
+ok("buildTree: hijo está en la rama correcta",
+   tree.find((n) => n.record.id === 1).children[0].record.id === 2);
+ok("buildTree: solitario sin hijos",
+   tree.find((n) => n.record.id === 3).children.length === 0);
+
+// Walk en orden con todo expandido
+const walked = walkTree(tree, new Set());
+ok("walkTree: 3 entradas (todo expandido)", walked.length === 3);
+ok("walkTree: orden padre→hijo→solitario",
+   walked[0].record.id === 1
+   && walked[1].record.id === 2
+   && walked[2].record.id === 3);
+ok("walkTree: depth padre=0", walked[0].depth === 0);
+ok("walkTree: depth hijo=1", walked[1].depth === 1);
+ok("walkTree: hasChildren padre",      walked[0].hasChildren === true);
+ok("walkTree: hasChildren hijo=false", walked[1].hasChildren === false);
+
+// Colapsar el padre → solo aparecen padre + solitario
+const walkedCollapsed = walkTree(tree, new Set([1]));
+ok("walkTree: padre colapsado oculta hijos",
+   walkedCollapsed.length === 2 &&
+   walkedCollapsed[0].record.id === 1 &&
+   walkedCollapsed[1].record.id === 3);
+
+// Hijo de padre faltante → tratado como raíz
+const orphan = [
+    r(10, "Hijo huérfano", 999, "2026-05-01", "2026-05-05"),  // parent_id=999 no existe
+];
+const orphanTree = buildTree(orphan, "parent_id");
+ok("buildTree: huérfano queda como raíz",
+   orphanTree.length === 1 && orphanTree[0].record.id === 10);
+
+// Ciclo: A→B→A. Defensive: B se trata como raíz.
+const cycle = [
+    r(20, "A", 21, "2026-05-01", "2026-05-05"),
+    r(21, "B", 20, "2026-05-01", "2026-05-05"),
+];
+const cycleTree = buildTree(cycle, "parent_id");
+ok("buildTree: ciclo no causa loop infinito (al menos no crash)",
+   Array.isArray(cycleTree));
+
+// computeRollup: padre tiene su propio rango más amplio
+const node1 = tree.find((n) => n.record.id === 1);
+node1.record.s = "2026-05-01";
+node1.record.e = "2026-05-10";
+// hijo (2): s=2026-05-03 e=2026-05-08
+const rollup = computeRollup(node1, "s", "e");
+ok("computeRollup: start = min(padre, hijos)",
+   rollup.start.getTime() === parseDate("2026-05-01").getTime());
+ok("computeRollup: stop = max(padre, hijos)",
+   rollup.stop.getTime() === parseDate("2026-05-10").getTime());
+
+// Padre con fechas null → toma del hijo
+const node2 = {
+    record: { id: 30, s: null, e: null },
+    children: [
+        { record: { id: 31, s: "2026-05-03", e: "2026-05-08" }, children: [] },
+    ],
+};
+const rollup2 = computeRollup(node2, "s", "e");
+ok("computeRollup: padre sin fechas usa rango del hijo",
+   rollup2.start.getTime() === parseDate("2026-05-03").getTime() &&
+   rollup2.stop.getTime() === parseDate("2026-05-08").getTime());
+
+// Nieto → rollup recursivo
+const grandparent = {
+    record: { id: 40, s: "2026-05-04", e: "2026-05-06" },
+    children: [
+        {
+            record: { id: 41, s: "2026-05-05", e: "2026-05-05" },
+            children: [
+                { record: { id: 42, s: "2026-05-01", e: "2026-05-15" }, children: [] },
+            ],
+        },
+    ],
+};
+const rollupG = computeRollup(grandparent, "s", "e");
+ok("computeRollup: recursivo a través de nietos",
+   rollupG.start.getTime() === parseDate("2026-05-01").getTime() &&
+   rollupG.stop.getTime() === parseDate("2026-05-15").getTime());
 
 // ─── Summary ─────────────────────────────────────────────────────────
 section(`RESULT: ${pass} passed, ${fail} failed`);
