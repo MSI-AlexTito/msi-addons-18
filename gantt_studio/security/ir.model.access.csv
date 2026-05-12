@@ -1,0 +1,4 @@
+id,name,model_id:id,group_id:id,perm_read,perm_write,perm_create,perm_unlink
+access_gantt_studio_dependency_user,gantt.studio.dependency.user,model_gantt_studio_dependency,base.group_user,1,1,1,1
+access_gantt_studio_baseline_user,gantt.studio.baseline.user,model_gantt_studio_baseline,base.group_user,1,1,1,1
+access_gantt_studio_baseline_line_user,gantt.studio.baseline.line.user,model_gantt_studio_baseline_line,base.group_user,1,1,1,1

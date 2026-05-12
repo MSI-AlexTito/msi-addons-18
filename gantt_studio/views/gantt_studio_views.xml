@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Demo gantt_studio view on project.task.
+        Uses planned_date_begin / date_deadline as bar boundaries.
+        Grouped by stage, colored by user.
+    -->
+    <record id="view_project_task_gantt_studio_demo" model="ir.ui.view">
+        <field name="name">project.task.gantt.studio.demo</field>
+        <field name="model">project.task</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <gantt_studio date_start="planned_date_begin"
+                          date_stop="date_deadline"
+                          default_scale="week"
+                          default_group_by="stage_id"
+                          color_field="user_ids"
+                          bar_text="name"
+                          string="Gantt Studio (Tasks)">
+                <field name="name"/>
+                <field name="user_ids"/>
+                <field name="stage_id"/>
+                <field name="project_id"/>
+                <field name="priority"/>
+            </gantt_studio>
+        </field>
+    </record>
+
+</odoo>

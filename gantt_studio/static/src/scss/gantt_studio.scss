@@ -1,0 +1,232 @@
+// Gantt Studio — base styles
+
+.o_gantt_studio_view {
+    display: flex;
+    flex-direction: column;
+    background: #f5f6f8;
+}
+
+.o_gantt_studio_buttons {
+    .btn {
+        border-radius: 0;
+        &:first-child { border-top-left-radius: 4px; border-bottom-left-radius: 4px; }
+        &:last-child { border-top-right-radius: 4px; border-bottom-right-radius: 4px; }
+    }
+}
+
+.o_gantt_studio_renderer {
+    position: relative;
+    flex: 1 1 auto;
+    overflow: auto;
+    background: #fff;
+    border-top: 1px solid #e5e7eb;
+}
+
+.o_gs_inner {
+    position: relative;
+    min-height: 100%;
+}
+
+// ── Left panel: row labels ─────────────────────────────────────────
+.o_gs_left {
+    position: sticky;
+    left: 0;
+    top: 0;
+    background: #fafbfc;
+    border-right: 1px solid #e5e7eb;
+    z-index: 2;
+    height: 100%;
+}
+
+.o_gs_left_header {
+    position: sticky;
+    top: 0;
+    z-index: 3;
+    background: #f3f4f6;
+    border-bottom: 1px solid #e5e7eb;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #374151;
+}
+
+.o_gs_left_row {
+    position: absolute;
+    left: 0;
+    right: 0;
+    display: flex;
+    align-items: center;
+    padding: 0 12px;
+    font-size: 12px;
+    color: #1f2937;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    border-bottom: 1px solid #f0f1f3;
+
+    &.o_gs_group_row {
+        background: #eef0f3;
+        color: #111827;
+    }
+}
+
+// ── SVG canvas ─────────────────────────────────────────────────────
+.o_gs_canvas {
+    position: absolute;
+    top: 0;
+    display: block;
+}
+
+.o_gs_header_bg {
+    fill: #f3f4f6;
+}
+
+.o_gs_grid_line {
+    stroke: #e5e7eb;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.o_gs_header_label {
+    font-size: 11px;
+    fill: #374151;
+    font-weight: 500;
+    pointer-events: none;
+}
+
+.o_gs_row_sep {
+    stroke: #f0f1f3;
+    stroke-width: 1;
+    shape-rendering: crispEdges;
+}
+
+.o_gs_today {
+    stroke: #ef4444;
+    stroke-width: 2;
+    stroke-dasharray: 4 3;
+    pointer-events: none;
+}
+
+// ── Bars ────────────────────────────────────────────────────────────
+.o_gs_bar_group {
+    cursor: pointer;
+    transition: filter 120ms ease;
+
+    &:hover .o_gs_bar {
+        filter: brightness(1.08);
+    }
+}
+
+.o_gs_bar {
+    transition: filter 120ms ease;
+    filter: drop-shadow(0 1px 1px rgba(0,0,0,0.08));
+}
+
+.o_gs_bar_progress {
+    fill: rgba(255, 255, 255, 0.35);
+    pointer-events: none;
+}
+
+.o_gs_bar_label {
+    fill: white;
+    font-size: 11px;
+    font-weight: 500;
+    pointer-events: none;
+    // central > middle: posiciona el centro tipográfico (x-height/2)
+    // de manera más consistente entre Chrome/Safari/Firefox.
+    dominant-baseline: central;
+    alignment-baseline: central;
+    text-anchor: start;
+
+    // Labels que van a la derecha de barras angostas.
+    // El stroke fino crea un halo blanco que mejora la legibilidad si
+    // el texto pasa cerca del separador gris claro inferior.
+    &.o_gs_bar_label_outside {
+        fill: #1f2937;
+        paint-order: stroke fill;
+        stroke: rgba(255, 255, 255, 0.9);
+        stroke-width: 3;
+        stroke-linejoin: round;
+    }
+}
+
+
+// ── Tier 1 ─────────────────────────────────────────────────────────
+
+// ── Critical path highlight (alto contraste) ──────────────────────
+// Cuando una tarea está en la cadena crítica, queremos que SALTE a la
+// vista incluso en un Gantt con docenas de barras. Combinación de:
+//   1) overlay rojo con borde grueso
+//   2) sombra exterior roja pulsante
+//   3) "ribbon" rojo sobre la barra original
+//   4) las flechas críticas se vuelven gruesas y rojas brillantes
+@keyframes gantt-critical-pulse {
+    0%, 100% {
+        filter: drop-shadow(0 0 4px rgba(239, 68, 68, 0.85))
+                drop-shadow(0 0 10px rgba(239, 68, 68, 0.55));
+    }
+    50% {
+        filter: drop-shadow(0 0 7px rgba(239, 68, 68, 1))
+                drop-shadow(0 0 18px rgba(239, 68, 68, 0.75));
+    }
+}
+
+.o_gs_bar_critical {
+    .o_gs_bar {
+        stroke: #991b1b;
+        stroke-width: 2.5;
+        animation: gantt-critical-pulse 1.6s ease-in-out infinite;
+    }
+    // Anillo exterior estático adicional para que la barra crítica sea
+    // identificable incluso con animaciones deshabilitadas.
+    .o_gs_bar_progress {
+        stroke: rgba(255, 255, 255, 0.7);
+        stroke-width: 1;
+    }
+}
+
+// Flechas críticas — gruesas, rojas y "pulsando" suave
+@keyframes gantt-critical-arrow-pulse {
+    0%, 100% { stroke-opacity: 1; }
+    50%      { stroke-opacity: 0.65; }
+}
+.o_gs_arrow_critical {
+    .o_gs_arrow_line {
+        stroke: #dc2626;
+        stroke-width: 3;
+        filter: drop-shadow(0 0 4px rgba(220, 38, 38, 0.5));
+        animation: gantt-critical-arrow-pulse 1.6s ease-in-out infinite;
+    }
+    .o_gs_arrow_head {
+        fill: #dc2626;
+        filter: drop-shadow(0 0 4px rgba(220, 38, 38, 0.5));
+    }
+}
+
+// Drag visual: dim & cursor
+.o_gs_bar_group { cursor: grab; }
+.o_gs_bar_group:active,
+.o_gs_bar_dragging { cursor: grabbing; }
+.o_gs_bar_dragging .o_gs_bar { opacity: 0.65; }
+
+// Baseline ghost bars
+.o_gs_bar_ghost {
+    fill: none;
+    stroke: #6b7280;
+    stroke-width: 1.5;
+    stroke-dasharray: 4 3;
+    opacity: 0.7;
+}
+
+// Dependency arrows
+.o_gs_arrow_line {
+    fill: none;
+    stroke: #6b7280;
+    stroke-width: 1.5;
+    pointer-events: none;
+}
+.o_gs_arrow_head {
+    fill: #6b7280;
+    pointer-events: none;
+}

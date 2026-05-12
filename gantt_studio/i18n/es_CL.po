@@ -1,0 +1,74 @@
+# Spanish translations for gantt_studio.
+msgid ""
+msgstr ""
+"Project-Id-Version: gantt_studio 18.0.1.0.0\n"
+"Report-Msgid-Bugs-To: \n"
+"Language-Team: Spanish (Chile)\n"
+"Language: es_CL\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=UTF-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+
+#. module: gantt_studio
+#: model:ir.actions.act_window,name:gantt_studio.action_project_task_gantt_studio_demo
+#: model:ir.ui.menu,name:gantt_studio.menu_gantt_studio_demo
+msgid "Tasks (Gantt Studio)"
+msgstr "Tareas (Gantt Studio)"
+
+#. module: gantt_studio
+#: model_terms:ir.ui.view,arch_db:gantt_studio.view_project_task_gantt_studio_demo
+msgid "Gantt Studio (Tasks)"
+msgstr "Gantt Studio (Tareas)"
+
+#. module: gantt_studio
+#: model:ir.model.fields.selection,name:gantt_studio.selection__ir_ui_view__type__gantt_studio
+msgid "Gantt Studio"
+msgstr "Gantt Studio"
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/xml/gantt_studio_renderer.xml:0
+msgid "Item"
+msgstr "Elemento"
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/js/gantt_studio_controller.js:0
+msgid "Plan baseline captured"
+msgstr "Línea base del plan guardada"
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/js/gantt_studio_controller.js:0
+msgid "Baseline saved. The dashed ghost bars now show the original dates for comparison."
+msgstr "Línea base guardada. Las barras punteadas ahora muestran las fechas originales para comparar."
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/js/gantt_studio_controller.js:0
+msgid "Could not save baseline. Please try again."
+msgstr "No se pudo guardar la línea base. Intenta de nuevo."
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/js/gantt_studio_controller.js:0
+msgid "Reschedule failed"
+msgstr "No se pudo reagendar"
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/js/gantt_studio_controller.js:0
+msgid "Could not reschedule this task. Reverting to its previous dates."
+msgstr "No se pudo reagendar esta tarea. Volviendo a sus fechas anteriores."
+
+#. module: gantt_studio
+#. odoo-javascript
+#: code:addons/gantt_studio/static/src/js/gantt_studio_controller.js:0
+msgid "Move constrained by dependency"
+msgstr "Movimiento limitado por dependencia"
+
+#. module: gantt_studio
+#. odoo-python
+#: code:addons/gantt_studio/models/gantt_studio_planner.py:0
+msgid "This task can't start before %(date)s due to a predecessor dependency."
+msgstr "Esta tarea no puede empezar antes de %(date)s por una dependencia con su predecesora."

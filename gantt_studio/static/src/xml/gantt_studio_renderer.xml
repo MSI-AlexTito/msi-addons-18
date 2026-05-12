@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="gantt_studio.Renderer">
+    <div class="o_gantt_studio_renderer" t-ref="root">
+        <div class="o_gs_inner" t-attf-style="width: calc({{leftPanelWidth}}px + {{viewportWidth}}px);">
+
+            <!-- Left panel -->
+            <div class="o_gs_left" t-attf-style="width: {{leftPanelWidth}}px;">
+                <div class="o_gs_left_header" t-attf-style="height: {{headerHeight}}px;">
+                    <strong>Item</strong>
+                </div>
+                <t t-foreach="rows" t-as="row" t-key="row_index">
+                    <div t-if="row.type === 'group'"
+                         class="o_gs_left_row o_gs_group_row"
+                         t-attf-style="top: {{rowY(row.rowIdx)}}px; height: {{rowHeight}}px;">
+                        <i class="fa fa-folder-open me-2 text-muted"/>
+                        <span class="fw-bold" t-esc="row.label"/>
+                    </div>
+                    <div t-elif="row.type === 'bar'"
+                         class="o_gs_left_row"
+                         t-attf-style="top: {{rowY(row.rowIdx)}}px; height: {{rowHeight}}px;"
+                         t-att-title="row.leftLabel">
+                        <span t-esc="row.leftLabel"/>
+                    </div>
+                </t>
+            </div>
+
+            <!-- SVG canvas -->
+            <svg class="o_gs_canvas"
+                 t-att-width="viewportWidth"
+                 t-att-height="totalHeight"
+                 t-attf-style="left: {{leftPanelWidth}}px;">
+
+                <!-- Header band -->
+                <rect x="0" y="0" t-att-width="viewportWidth" t-att-height="headerHeight"
+                      class="o_gs_header_bg"/>
+                <g class="o_gs_header_ticks">
+                    <g t-foreach="headerTicks" t-as="tick" t-key="tick_index">
+                        <line t-att-x1="tick.x" y1="0" t-att-x2="tick.x" t-att-y2="totalHeight"
+                              class="o_gs_grid_line"/>
+                        <text t-att-x="tick.x + 6" y="24" class="o_gs_header_label"
+                              t-esc="tick.label"/>
+                    </g>
+                </g>
+
+                <!-- Row separators -->
+                <g class="o_gs_row_separators">
+                    <line t-foreach="rows" t-as="row" t-key="row_index"
+                          x1="0" t-att-x2="viewportWidth"
+                          t-att-y1="rowY(row.rowIdx) + rowHeight"
+                          t-att-y2="rowY(row.rowIdx) + rowHeight"
+                          class="o_gs_row_sep"/>
+                </g>
+
+                <!-- Today line -->
+                <line t-if="todayLineX !== null"
+                      t-att-x1="todayLineX" y1="0"
+                      t-att-x2="todayLineX" t-att-y2="totalHeight"
+                      class="o_gs_today"/>
+
+                <!-- Baseline ghost bars (behind real bars) -->
+                <g class="o_gs_ghosts">
+                    <g t-foreach="rows" t-as="row" t-key="row_index">
+                        <rect t-if="row.type === 'bar' and row.ghost"
+                              class="o_gs_bar_ghost"
+                              t-att-x="row.ghost.x"
+                              t-att-y="row.y - 2"
+                              t-att-width="row.ghost.width"
+                              t-att-height="row.height + 4"
+                              rx="6" ry="6"/>
+                    </g>
+                </g>
+
+                <!-- Dependency arrows — UNDER bars so bar rects naturally
+                     hide the arrow line where it would cross the bar (and
+                     its inside label). For outside labels, the arrow is
+                     dodged via the labelY offset (6px below bar center). -->
+                <g class="o_gs_arrows" t-if="props.archInfo.showDependencies">
+                    <g t-foreach="arrows" t-as="arrow" t-key="arrow.id"
+                       t-att-class="arrow.critical ? 'o_gs_arrow_critical' : ''">
+                        <path class="o_gs_arrow_line" t-att-d="arrow.d"/>
+                        <polygon class="o_gs_arrow_head" t-att-points="arrow.head"/>
+                    </g>
+                </g>
+
+                <!-- Bars -->
+                <g class="o_gs_bars">
+                    <g t-foreach="rows" t-as="row" t-key="row_index">
+                        <g t-if="row.type === 'bar'"
+                           class="o_gs_bar_group"
+                           t-att-class="(row.critical ? 'o_gs_bar_critical ' : '') + (state.dragId === row.record.id ? 'o_gs_bar_dragging' : '')"
+                           t-on-mousedown="(ev) => this.onBarMouseDown(row, ev)">
+                            <rect class="o_gs_bar"
+                                  t-att-x="row.x + dragOffsetForBar(row)"
+                                  t-att-y="row.y"
+                                  t-att-width="row.width"
+                                  t-att-height="row.height"
+                                  rx="6" ry="6"
+                                  t-att-fill="row.color"/>
+                            <rect t-if="row.progress !== null"
+                                  class="o_gs_bar_progress"
+                                  t-att-x="row.x + dragOffsetForBar(row)"
+                                  t-att-y="row.y"
+                                  t-att-width="row.width * row.progress / 100"
+                                  t-att-height="row.height"
+                                  rx="6" ry="6"/>
+                            <text t-att-class="row.labelOutside ? 'o_gs_bar_label o_gs_bar_label_outside' : 'o_gs_bar_label'"
+                                  t-att-x="row.labelX + dragOffsetForBar(row)"
+                                  t-att-y="row.labelY"
+                                  t-esc="row.displayLabel"/>
+                            <title t-esc="row.label"/>
+                        </g>
+                    </g>
+                </g>
+            </svg>
+        </div>
+    </div>
+</t>
+
+</templates>

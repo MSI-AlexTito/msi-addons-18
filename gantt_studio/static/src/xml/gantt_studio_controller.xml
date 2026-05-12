@@ -1,0 +1,49 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<templates xml:space="preserve">
+
+<t t-name="gantt_studio.Buttons">
+    <div class="d-flex flex-wrap gap-2 align-items-center">
+        <div class="btn-group" role="group">
+            <button t-foreach="scales" t-as="s" t-key="s"
+                    class="btn btn-sm"
+                    t-att-class="state.scale === s ? 'btn-primary' : 'btn-light'"
+                    t-on-click="() => this.setScale(s)">
+                <t t-esc="s.charAt(0).toUpperCase() + s.slice(1)"/>
+            </button>
+        </div>
+
+        <button t-if="archCfg.showCriticalPath"
+                class="btn btn-sm"
+                t-att-class="state.criticalPathEnabled ? 'btn-danger' : 'btn-light'"
+                t-on-click="() => this.toggleCriticalPath()"
+                title="Toggle critical path (CPM)">
+            <i class="fa fa-bolt"/> Critical Path
+        </button>
+
+        <button t-if="archCfg.baselineSupport"
+                class="btn btn-sm btn-light"
+                t-on-click="() => this.saveBaseline()"
+                title="Save current plan as a baseline">
+            <i class="fa fa-bookmark"/> Save Baseline
+        </button>
+
+        <button class="btn btn-sm btn-light"
+                t-att-disabled="state.exportingPdf"
+                t-on-click="() => this.exportPdf()"
+                title="Export current view to PDF">
+            <i t-att-class="state.exportingPdf ? 'fa fa-circle-o-notch fa-spin' : 'fa fa-file-pdf-o'"/>
+            <span class="ms-1" t-esc="state.exportingPdf ? 'Exporting…' : 'Export PDF'"/>
+        </button>
+    </div>
+</t>
+
+<t t-name="gantt_studio.Controller">
+    <Layout className="'o_gantt_studio_view h-100'" display="props.display">
+        <t t-set-slot="layout-buttons">
+            <t t-call="gantt_studio.Buttons"/>
+        </t>
+        <t t-component="props.Renderer" t-props="rendererProps"/>
+    </Layout>
+</t>
+
+</templates>
