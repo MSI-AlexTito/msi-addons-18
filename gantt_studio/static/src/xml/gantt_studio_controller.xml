@@ -86,7 +86,7 @@
 </t>
 
 <t t-name="gantt_studio.Controller">
-    <Layout t-att-className="viewClass" display="props.display">
+    <Layout className="viewClass" display="props.display">
         <t t-set-slot="layout-buttons">
             <t t-call="gantt_studio.Buttons"/>
         </t>
