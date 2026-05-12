@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Action + menú demo para el Gantt sobre CRM.
+        El menú padre `crm.crm_menu_root` viene de `crm` (garantizado por
+        el depends del manifest).
+    -->
+    <record id="action_crm_lead_gantt_studio_demo" model="ir.actions.act_window">
+        <field name="name">Pipeline (Gantt Studio)</field>
+        <field name="res_model">crm.lead</field>
+        <field name="view_mode">gantt_studio,list,form</field>
+        <field name="view_id" ref="view_crm_lead_gantt_studio_demo"/>
+        <field name="context">{}</field>
+        <field name="domain">[
+            ('date_open', '!=', False),
+            ('date_deadline', '!=', False),
+        ]</field>
+    </record>
+
+    <menuitem id="menu_gantt_studio_crm_demo"
+              name="Gantt Studio Demo"
+              parent="crm.crm_menu_root"
+              action="action_crm_lead_gantt_studio_demo"
+              sequence="100"/>
+
+</odoo>

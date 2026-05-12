@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<odoo>
+
+    <!--
+        Vista <gantt_studio> sobre `crm.lead`.
+
+        Campos usados:
+          - date_open      (Datetime): fecha de apertura/asignación
+          - date_deadline  (Date):     cierre esperado
+
+        El módulo NO agrega ningún campo a crm.lead: usa lo que el módulo
+        crm ya provee. Esto es exactamente el punto de la arquitectura
+        polimórfica: cualquier modelo con dos fechas funciona.
+    -->
+    <record id="view_crm_lead_gantt_studio_demo" model="ir.ui.view">
+        <field name="name">crm.lead.gantt.studio.demo</field>
+        <field name="model">crm.lead</field>
+        <field name="priority">99</field>
+        <field name="arch" type="xml">
+            <gantt_studio date_start="date_open"
+                          date_stop="date_deadline"
+                          default_scale="month"
+                          default_group_by="stage_id"
+                          color_field="user_id"
+                          bar_text="name"
+                          string="Gantt Studio (Pipeline CRM)">
+                <field name="name"/>
+                <field name="user_id"/>
+                <field name="stage_id"/>
+                <field name="team_id"/>
+                <field name="partner_id"/>
+                <field name="expected_revenue"/>
+                <field name="probability"/>
+            </gantt_studio>
+        </field>
+    </record>
+
+</odoo>
