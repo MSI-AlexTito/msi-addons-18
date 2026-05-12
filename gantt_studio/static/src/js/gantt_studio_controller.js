@@ -134,6 +134,23 @@ export class GanttStudioController extends Component {
             goToDateRequest: this.state.goToDateRequest,
             onBarClick: this.onBarClick.bind(this),
             onBarDrop: this.onBarDrop.bind(this),
+            // Sprint 3.2.A: resize de duración. Si el arch deshabilita la
+            // edición (archInfo.canEdit === false), no pasamos el handler →
+            // los asas del borde no se renderean.
+            onBarResize: this.archInfo.canEdit
+                ? this.onBarResize.bind(this)
+                : null,
+            // Sprint 3.2.B: edición inline del nombre. El campo a editar
+            // es siempre `name` (el más común). Si tu modelo usa otro,
+            // sobreescribe esta vista con un parámetro futuro `name_field`.
+            onBarRename: this.archInfo.canEdit
+                ? this.onBarRename.bind(this)
+                : null,
+            // Sprint 3.2.C: crear deps por drag entre bars. Solo si las
+            // dependencies están habilitadas en el arch.
+            onDepCreate: (this.archInfo.canEdit && this.archInfo.showDependencies)
+                ? this.onDepCreate.bind(this)
+                : null,
         };
     }
 
@@ -164,6 +181,62 @@ export class GanttStudioController extends Component {
             this.notification.add(
                 _t("Could not reschedule this task. Reverting to its previous dates."),
                 { type: "danger", title: _t("Reschedule failed") },
+            );
+        }
+    }
+
+    /**
+     * Sprint 3.2.A — Cambiar la duración de una tarea arrastrando el borde.
+     * Difiere de onBarDrop en que aquí cambian AMBAS fechas (start y stop)
+     * en un mismo write, así no se dispara la cascada de auto-reschedule
+     * (que solo opera sobre date_start). El usuario está extendiendo el
+     * trabajo dentro del mismo timeframe, no moviéndolo.
+     */
+    async onBarResize(recordId, newStart, newStop) {
+        try {
+            await this.model.resizeRecord(recordId, newStart, newStop);
+        } catch (e) {
+            console.error("[gantt_studio] resize failed:", e);
+            this.notification.add(
+                _t("Could not resize this task. Check that the new duration is valid."),
+                { type: "danger", title: _t("Resize failed") },
+            );
+        }
+    }
+
+    /**
+     * Sprint 3.2.B — Renombrar la tarea desde la edición inline.
+     * El campo siempre es `name` (campo natural de project.task,
+     * crm.lead, sale.order, casi cualquier modelo Odoo).
+     */
+    async onBarRename(recordId, newName) {
+        try {
+            await this.model.updateRecord(recordId, { name: newName });
+        } catch (e) {
+            console.error("[gantt_studio] rename failed:", e);
+            this.notification.add(
+                _t("Could not rename this task."),
+                { type: "danger", title: _t("Rename failed") },
+            );
+        }
+    }
+
+    /**
+     * Sprint 3.2.C — Crear una dependencia tipada via drag entre dos bars.
+     * Llama al RPC genérico del modelo polimórfico y recarga deps.
+     */
+    async onDepCreate(predId, succId, depType, lagDays) {
+        try {
+            await this.model.createDependency(predId, succId, depType, lagDays);
+            this.notification.add(
+                _t("Dependency created (%s)").replace("%s", depType),
+                { type: "success" },
+            );
+        } catch (e) {
+            console.error("[gantt_studio] dep create failed:", e);
+            this.notification.add(
+                _t("Could not create the dependency. Check that both records exist."),
+                { type: "danger", title: _t("Dependency creation failed") },
             );
         }
     }

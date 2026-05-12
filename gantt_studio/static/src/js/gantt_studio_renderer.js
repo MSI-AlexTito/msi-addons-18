@@ -39,6 +39,14 @@ const ROW_TOTAL = ROW_HEIGHT + ROW_PAD;
 const HEADER_HEIGHT = 40;
 const LEFT_PANEL_WIDTH = 200;
 
+// Sprint 3.2.A — drag-resize del borde del bar.
+// Ancho de los "asas" invisibles a cada lado. Probar valores chicos (6-10)
+// para no robar área de drag del centro.
+const RESIZE_HANDLE_W = 8;
+// Duración mínima permitida al resize (4 horas) — evita zero-width bars
+// y que el user accidentalmente colapse el bar a cero por arrastre brusco.
+const MIN_DURATION_MS = 4 * 3600 * 1000;
+
 /**
  * Gantt Studio renderer.
  *
@@ -75,6 +83,17 @@ export class GanttStudioRenderer extends Component {
         goToDateRequest: { type: [Date, { value: null }], optional: true },
         onBarClick: Function,
         onBarDrop: Function,
+        // Sprint 3.2.A — opcional, controller debe pasarlo para que el
+        // resize tenga efecto. Si no se pasa, los handles del borde no
+        // se renderean (resize deshabilitado).
+        onBarResize: { type: Function, optional: true },
+        // Sprint 3.2.B — opcional, controller debe pasarlo para que la
+        // edición inline tenga efecto. Si no se pasa, el doble-click
+        // simplemente NO hace nada (queda el click → open form de siempre).
+        onBarRename: { type: Function, optional: true },
+        // Sprint 3.2.C — opcional, controller debe pasarlo para habilitar
+        // drag-to-create deps. Llama con (predId, succId, type, lagDays).
+        onDepCreate: { type: Function, optional: true },
     };
     static defaultProps = {
         groupBy: [],
@@ -85,11 +104,28 @@ export class GanttStudioRenderer extends Component {
         criticalDependencyIds: new Set(),
         criticalPathEnabled: false,
         goToDateRequest: null,
+        onBarResize: null,
+        onBarRename: null,
+        onDepCreate: null,
     };
 
     setup() {
         this.rootRef = useRef("root");
-        this.state = useState({ dragId: null, dragDx: 0 });
+        this.state = useState({
+            dragId: null, dragDx: 0,
+            // Sprint 3.2.A — resize del borde. resizeEdge ∈ {'left','right'|null}.
+            resizeId: null, resizeDx: 0, resizeEdge: null,
+            // Sprint 3.2.B — edición inline del nombre.
+            editingId: null, editingValue: "",
+            // Sprint 3.2.C — drag-to-create deps.
+            // `depDragFrom`: id del record predecesor durante el drag.
+            // `depDragFromEdge`: 'left' o 'right' del bar de origen.
+            // `depDragTo`: {x, y} del cursor (línea fantasma).
+            // `depPopover`: si !== null, popover abierto con
+            //   {predId, succId, x, y, depType, lagDays}
+            depDragFrom: null, depDragFromEdge: null, depDragTo: null,
+            depPopover: null,
+        });
 
         // ── Dirty flags ────────────────────────────────────────────────
         // Start ALL dirty so the very first render computes everything.
@@ -128,14 +164,17 @@ export class GanttStudioRenderer extends Component {
                 this.rootRef.el.scrollLeft += ev.deltaY;
             };
             this.rootRef.el?.addEventListener("wheel", this._wheelHandler, { passive: false });
-            // P1 hardening: Escape cancela drag.
+            // P1 hardening: Escape cancela drag y resize en curso.
             this._escHandler = (ev) => {
-                if (ev.key === "Escape" && this._dragSeed) this._endDrag();
+                if (ev.key !== "Escape") return;
+                if (this._dragSeed) this._endDrag();
+                if (this._resizeSeed) this._endResize();
             };
             document.addEventListener("keydown", this._escHandler);
         });
         onWillUnmount(() => {
             this._endDrag();
+            this._endResize();
             if (this._wheelHandler && this.rootRef.el) {
                 this.rootRef.el.removeEventListener("wheel", this._wheelHandler);
             }
@@ -630,7 +669,18 @@ export class GanttStudioRenderer extends Component {
         this._endDrag();
         if (isClick) {
             const rec = this.props.records.find((r) => r.id === seed.recordId);
-            if (rec) this.props.onBarClick(rec);
+            if (!rec) return;
+            // Sprint 3.2.B: si la edición inline está habilitada, diferimos
+            // el click 250ms para darle chance al dblclick de cancelarlo.
+            // Si no hay onBarRename, el click va inmediato (UX sin latencia).
+            if (this.props.onBarRename) {
+                this._pendingClickTimeout = setTimeout(() => {
+                    this._pendingClickTimeout = null;
+                    this.props.onBarClick(rec);
+                }, 250);
+            } else {
+                this.props.onBarClick(rec);
+            }
             return;
         }
         // Drag-locked: silently swallow the drag (no RPC, no visual move).
@@ -668,5 +718,361 @@ export class GanttStudioRenderer extends Component {
         return (row.type === "bar" && this.state.dragId === row.record.id)
             ? this.state.dragDx
             : 0;
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Sprint 3.2.A — Drag-resize del borde del bar
+    // ─────────────────────────────────────────────────────────────────
+
+    /** Empieza el resize cuando el user toca un handle de borde.
+     * `edge` es 'left' o 'right'. */
+    onResizeMouseDown(row, edge, ev) {
+        if (row.type !== "bar") return;
+        if (ev.button !== 0) return;
+        if (!this.props.onBarResize) return;        // resize deshabilitado
+        if (row.dragDisabled) return;               // bar bloqueado
+        if (row.isMilestone) return;                // milestones no tienen duración
+        this._startResize(row, edge, ev.clientX);
+        ev.preventDefault();
+        ev.stopPropagation();   // que el mousedown del bar no dispare drag
+    }
+
+    /** Variante touch del resize. */
+    onResizeTouchStart(row, edge, ev) {
+        if (row.type !== "bar") return;
+        if (!ev.touches || ev.touches.length !== 1) return;
+        if (!this.props.onBarResize) return;
+        if (row.dragDisabled || row.isMilestone) return;
+        this._startResize(row, edge, ev.touches[0].clientX);
+        ev.preventDefault();
+        ev.stopPropagation();
+    }
+
+    _startResize(row, edge, clientX) {
+        this._resizeSeed = {
+            recordId: row.record.id,
+            edge,
+            startX: clientX,
+            origX: row.x,
+            origWidth: row.width,
+            origStart: parseDate(row.record[this.props.archInfo.dateStart]),
+            origStop: parseDate(row.record[this.props.archInfo.dateStop]),
+        };
+        this.state.resizeId = row.record.id;
+        this.state.resizeEdge = edge;
+        this.state.resizeDx = 0;
+
+        this._onResizeMoveBound = this._onResizeMove.bind(this);
+        this._onResizeUpBound = this._onResizeUp.bind(this);
+        this._onResizeTouchMoveBound = (ev) => {
+            if (!ev.touches || !ev.touches.length) return;
+            this._onResizeMove({ clientX: ev.touches[0].clientX });
+        };
+        this._onResizeTouchEndBound = (ev) => {
+            const t = (ev.changedTouches && ev.changedTouches[0]) || null;
+            this._onResizeUp({ clientX: t ? t.clientX : this._resizeSeed.startX });
+        };
+        document.addEventListener("mousemove", this._onResizeMoveBound);
+        document.addEventListener("mouseup", this._onResizeUpBound);
+        document.addEventListener("touchmove", this._onResizeTouchMoveBound, { passive: false });
+        document.addEventListener("touchend", this._onResizeTouchEndBound);
+        document.addEventListener("touchcancel", this._onResizeTouchEndBound);
+        dbg("resize START", { recordId: row.record.id, edge, origWidth: row.width });
+    }
+
+    _onResizeMove(ev) {
+        if (!this._resizeSeed) return;
+        let dx = ev.clientX - this._resizeSeed.startX;
+        // Clamp para no permitir colapsar el bar bajo el ancho minimo durante
+        // el arrastre. El ancho efectivo durante resize es:
+        //   right edge:  origWidth + dx
+        //   left edge:   origWidth - dx (porque la x crece y la barra
+        //                                pierde ancho equivalente)
+        const minWidthPx = this._dateToPx(
+            new Date(0 + MIN_DURATION_MS), new Date(0)
+        );
+        if (this._resizeSeed.edge === "right") {
+            if (this._resizeSeed.origWidth + dx < minWidthPx) {
+                dx = minWidthPx - this._resizeSeed.origWidth;
+            }
+        } else {
+            if (this._resizeSeed.origWidth - dx < minWidthPx) {
+                dx = this._resizeSeed.origWidth - minWidthPx;
+            }
+        }
+        this.state.resizeDx = dx;
+    }
+
+    _onResizeUp(ev) {
+        if (!this._resizeSeed) return;
+        const seed = this._resizeSeed;
+        const dx = this.state.resizeDx;   // ya clamped al minimo
+        const deltaMs = this._pxToMs(dx);
+        let newStart = seed.origStart;
+        let newStop = seed.origStop;
+        if (seed.edge === "right") {
+            newStop = new Date(seed.origStop.getTime() + deltaMs);
+        } else {
+            newStart = new Date(seed.origStart.getTime() + deltaMs);
+        }
+        // Defensive: aseguramos que stop > start con al menos MIN_DURATION.
+        if (newStop.getTime() - newStart.getTime() < MIN_DURATION_MS) {
+            if (seed.edge === "right") {
+                newStop = new Date(newStart.getTime() + MIN_DURATION_MS);
+            } else {
+                newStart = new Date(newStop.getTime() - MIN_DURATION_MS);
+            }
+        }
+        dbg("resize END", {
+            recordId: seed.recordId, edge: seed.edge,
+            origStart: seed.origStart.toISOString(),
+            origStop: seed.origStop.toISOString(),
+            newStart: newStart.toISOString(),
+            newStop: newStop.toISOString(),
+        });
+        this._endResize();
+        // Solo dispara onBarResize si hubo cambio real (clamp pudo dejar dx=0).
+        if (Math.abs(dx) >= 1 && this.props.onBarResize) {
+            this.props.onBarResize(seed.recordId, newStart, newStop);
+        }
+    }
+
+    _endResize() {
+        if (this._onResizeMoveBound) {
+            document.removeEventListener("mousemove", this._onResizeMoveBound);
+            this._onResizeMoveBound = null;
+        }
+        if (this._onResizeUpBound) {
+            document.removeEventListener("mouseup", this._onResizeUpBound);
+            this._onResizeUpBound = null;
+        }
+        if (this._onResizeTouchMoveBound) {
+            document.removeEventListener("touchmove", this._onResizeTouchMoveBound);
+            this._onResizeTouchMoveBound = null;
+        }
+        if (this._onResizeTouchEndBound) {
+            document.removeEventListener("touchend", this._onResizeTouchEndBound);
+            document.removeEventListener("touchcancel", this._onResizeTouchEndBound);
+            this._onResizeTouchEndBound = null;
+        }
+        this._resizeSeed = null;
+        this.state.resizeId = null;
+        this.state.resizeEdge = null;
+        this.state.resizeDx = 0;
+    }
+
+    /**
+     * Geometría visual de la barra mientras se resize. Devuelve {x, width}.
+     * Si no hay resize en curso para esta fila, devuelve las originales.
+     */
+    barGeoForRender(row) {
+        if (row.type !== "bar" || this.state.resizeId !== row.record.id) {
+            return { x: row.x, width: row.width };
+        }
+        const dx = this.state.resizeDx;
+        if (this.state.resizeEdge === "right") {
+            return { x: row.x, width: Math.max(4, row.width + dx) };
+        } else {
+            return { x: row.x + dx, width: Math.max(4, row.width - dx) };
+        }
+    }
+
+    /** Constants exposed to the template. */
+    get resizeHandleW() { return RESIZE_HANDLE_W; }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Sprint 3.2.B — Edición inline del nombre
+    // ─────────────────────────────────────────────────────────────────
+
+    onBarDoubleClick(row, ev) {
+        if (row.type !== "bar") return;
+        if (!this.props.onBarRename) return;        // feature deshabilitada
+        if (row.dragDisabled) return;               // bar locked
+        ev.preventDefault();
+        ev.stopPropagation();
+        // Cancela el click diferido del 1er release (el flujo de Odoo
+        // sería: 1er click → abrir form. Lo evitamos al detectar dblclick).
+        if (this._pendingClickTimeout) {
+            clearTimeout(this._pendingClickTimeout);
+            this._pendingClickTimeout = null;
+        }
+        this.state.editingId = row.record.id;
+        this.state.editingValue = row.label;
+        // Foco al input después del próximo render (cuando el <input>
+        // ya existe en el DOM).
+        if (typeof setTimeout !== "undefined") {
+            setTimeout(() => {
+                const el = document.querySelector(
+                    ".o_gs_inline_edit_input[data-record-id='" + row.record.id + "']"
+                );
+                if (el) {
+                    el.focus();
+                    el.select();
+                }
+            }, 0);
+        }
+    }
+
+    onInlineEditInput(ev) {
+        this.state.editingValue = ev.target.value;
+    }
+
+    onInlineEditKeyDown(row, ev) {
+        if (ev.key === "Enter") {
+            ev.preventDefault();
+            this._commitInlineEdit(row);
+        } else if (ev.key === "Escape") {
+            ev.preventDefault();
+            this._cancelInlineEdit();
+        }
+    }
+
+    onInlineEditBlur(row) {
+        // Blur sin Enter explícito = commit (UX común; si el user no
+        // quería guardar usa Esc). Si la edición ya fue cerrada por
+        // Enter/Esc en keydown, _commitInlineEdit es no-op porque
+        // editingId === null.
+        if (this.state.editingId !== null) {
+            this._commitInlineEdit(row);
+        }
+    }
+
+    _commitInlineEdit(row) {
+        const newName = (this.state.editingValue || "").trim();
+        const old = row.label;
+        this.state.editingId = null;
+        this.state.editingValue = "";
+        // No-op si no cambió o el nombre quedó vacío (mantenemos el viejo).
+        if (!newName || newName === old) return;
+        try {
+            this.props.onBarRename(row.record.id, newName);
+        } catch (e) {
+            console.error("[gantt_studio] rename failed:", e);
+        }
+    }
+
+    _cancelInlineEdit() {
+        this.state.editingId = null;
+        this.state.editingValue = "";
+    }
+
+    // ─────────────────────────────────────────────────────────────────
+    // Sprint 3.2.C — Drag-to-create dependencies con popover
+    // ─────────────────────────────────────────────────────────────────
+
+    /**
+     * Inicia el dibujado de una dependencia desde el handle "+" de un bar.
+     * El handle vive en bordes left/right del bar (= anchor de la futura
+     * dep tipada). `edge` es 'left' (anchor SS o SF) o 'right' (anchor FS
+     * o FF) — el tipo final se elige en el popover.
+     */
+    onDepHandleMouseDown(row, edge, ev) {
+        if (row.type !== "bar") return;
+        if (ev.button !== 0) return;
+        if (!this.props.onDepCreate) return;        // feature deshabilitada
+        if (row.isMilestone) return;                // semánticamente complejo, lo dejamos
+        ev.preventDefault();
+        ev.stopPropagation();
+        this.state.depDragFrom = row.record.id;
+        this.state.depDragFromEdge = edge;
+        // Punto inicial del cursor — se actualiza con onDepDragMove.
+        this.state.depDragTo = this._eventPointInSvg(ev.clientX, ev.clientY);
+
+        this._depDragMoveBound = (mv) => {
+            this.state.depDragTo = this._eventPointInSvg(mv.clientX, mv.clientY);
+        };
+        this._depDragUpBound = (up) => this._onDepDragUp(up);
+        document.addEventListener("mousemove", this._depDragMoveBound);
+        document.addEventListener("mouseup", this._depDragUpBound);
+    }
+
+    _onDepDragUp(ev) {
+        const fromId = this.state.depDragFrom;
+        // Cerramos el modo "drag de dep" siempre, haya drop válido o no.
+        if (this._depDragMoveBound) {
+            document.removeEventListener("mousemove", this._depDragMoveBound);
+            this._depDragMoveBound = null;
+        }
+        if (this._depDragUpBound) {
+            document.removeEventListener("mouseup", this._depDragUpBound);
+            this._depDragUpBound = null;
+        }
+        this.state.depDragFrom = null;
+        this.state.depDragFromEdge = null;
+        this.state.depDragTo = null;
+
+        // Buscamos sobre qué bar cayó el mouseup.
+        const dropEl = document.elementFromPoint(ev.clientX, ev.clientY);
+        const targetGroup = dropEl?.closest?.(".o_gs_bar_group");
+        // Cada <g class="o_gs_bar_group"> lleva un atributo data-record-id
+        // que ponemos en el template para identificarlo en mouseup.
+        const succId = targetGroup
+            ? parseInt(targetGroup.getAttribute("data-record-id"), 10)
+            : NaN;
+        if (!fromId || !succId || succId === fromId) return;
+
+        // Abre popover en la posición del drop.
+        this.state.depPopover = {
+            predId: fromId,
+            succId,
+            x: ev.clientX,
+            y: ev.clientY,
+            depType: "FS",   // default
+            lagDays: 0,
+        };
+    }
+
+    /** Pone el cliente XY en coordenadas SVG (canvas relativo). */
+    _eventPointInSvg(clientX, clientY) {
+        if (!this.rootRef.el) return { x: clientX, y: clientY };
+        const rect = this.rootRef.el.getBoundingClientRect();
+        return {
+            x: clientX - rect.left + this.rootRef.el.scrollLeft - LEFT_PANEL_WIDTH,
+            y: clientY - rect.top + this.rootRef.el.scrollTop,
+        };
+    }
+
+    /**
+     * Línea fantasma desde el anchor del predecesor hasta el cursor.
+     * Solo se llama desde la plantilla cuando hay drag activo.
+     */
+    depGhostPath() {
+        const fromId = this.state.depDragFrom;
+        if (!fromId || !this.state.depDragTo) return "";
+        const fromGeo = this.barGeoById?.get(fromId);
+        if (!fromGeo) return "";
+        const ax = this.state.depDragFromEdge === "right"
+            ? fromGeo.x + fromGeo.width
+            : fromGeo.x;
+        const ay = fromGeo.y + fromGeo.height / 2;
+        const tx = this.state.depDragTo.x;
+        const ty = this.state.depDragTo.y;
+        return `M ${ax} ${ay} L ${tx} ${ty}`;
+    }
+
+    onDepPopoverTypeChange(ev) {
+        if (this.state.depPopover) this.state.depPopover.depType = ev.target.value;
+    }
+    onDepPopoverLagChange(ev) {
+        if (this.state.depPopover) {
+            const v = parseFloat(ev.target.value);
+            this.state.depPopover.lagDays = isNaN(v) ? 0 : v;
+        }
+    }
+    onDepPopoverConfirm() {
+        const p = this.state.depPopover;
+        if (!p || !this.props.onDepCreate) {
+            this.state.depPopover = null;
+            return;
+        }
+        try {
+            this.props.onDepCreate(p.predId, p.succId, p.depType, p.lagDays);
+        } catch (e) {
+            console.error("[gantt_studio] dep create failed:", e);
+        }
+        this.state.depPopover = null;
+    }
+    onDepPopoverCancel() {
+        this.state.depPopover = null;
     }
 }

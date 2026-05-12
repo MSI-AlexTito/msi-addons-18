@@ -101,6 +101,13 @@
                     </g>
                 </g>
 
+                <!-- Sprint 3.2.C: línea fantasma durante drag-to-create dep.
+                     Va por DEBAJO de los bars (mismo orden que las flechas
+                     reales) para que ningún bar intercepte el mouseup. -->
+                <g t-if="state.depDragFrom !== null" class="o_gs_dep_ghost">
+                    <path class="o_gs_dep_ghost_line" t-att-d="depGhostPath()"/>
+                </g>
+
                 <!-- Bars (only visible rows).
                      Milestones (`isMilestone === true`) draw a diamond at
                      date_start instead of a regular bar with width. -->
@@ -108,13 +115,16 @@
                     <g t-foreach="visibleRows" t-as="row" t-key="row.key">
                         <g t-if="row.type === 'bar'"
                            class="o_gs_bar_group"
+                           t-att-data-record-id="row.record.id"
                            t-att-class="(row.critical ? 'o_gs_bar_critical ' : '')
                                         + (state.dragId === row.record.id ? 'o_gs_bar_dragging ' : '')
                                         + (row.dragDisabled ? 'o_gs_bar_locked ' : '')
                                         + (row.isMilestone ? 'o_gs_milestone ' : '')
+                                        + (state.editingId === row.record.id ? 'o_gs_bar_editing ' : '')
                                         + row.decorationClasses.join(' ')"
                            t-on-mousedown="(ev) => this.onBarMouseDown(row, ev)"
-                           t-on-touchstart="(ev) => this.onBarTouchStart(row, ev)">
+                           t-on-touchstart="(ev) => this.onBarTouchStart(row, ev)"
+                           t-on-dblclick="(ev) => this.onBarDoubleClick(row, ev)">
 
                             <!-- Milestone path: diamond at date_start.
                                  Bug fix: aplicar `dragOffsetForBar(row)` via
@@ -133,32 +143,137 @@
                                   t-att-y="row.y + row.height / 2"
                                   t-esc="row.label"/>
 
-                            <!-- Regular bar path -->
+                            <!-- Regular bar path.
+                                 Sprint 3.2.A: la geometría que se DIBUJA pasa
+                                 por `barGeoForRender(row)` que aplica el offset
+                                 de resize en curso. El drag entero usa
+                                 dragOffsetForBar (que NO interactúa con resize
+                                 porque ambos son mutuamente excluyentes). -->
                             <rect t-if="!row.isMilestone"
                                   class="o_gs_bar"
-                                  t-att-x="row.x + dragOffsetForBar(row)"
+                                  t-att-x="barGeoForRender(row).x + dragOffsetForBar(row)"
                                   t-att-y="row.y"
-                                  t-att-width="row.width"
+                                  t-att-width="barGeoForRender(row).width"
                                   t-att-height="row.height"
                                   rx="6" ry="6"
                                   t-att-fill="row.color"/>
                             <rect t-if="!row.isMilestone and row.progress !== null"
                                   class="o_gs_bar_progress"
-                                  t-att-x="row.x + dragOffsetForBar(row)"
+                                  t-att-x="barGeoForRender(row).x + dragOffsetForBar(row)"
                                   t-att-y="row.y"
-                                  t-att-width="row.width * row.progress / 100"
+                                  t-att-width="barGeoForRender(row).width * row.progress / 100"
                                   t-att-height="row.height"
                                   rx="6" ry="6"/>
-                            <text t-if="!row.isMilestone"
+                            <text t-if="!row.isMilestone and state.editingId !== row.record.id"
                                   t-att-class="row.labelOutside ? 'o_gs_bar_label o_gs_bar_label_outside' : 'o_gs_bar_label'"
                                   t-att-x="row.labelX + dragOffsetForBar(row)"
                                   t-att-y="row.labelY"
                                   t-esc="row.displayLabel"/>
+
+                            <!-- Sprint 3.2.B: edición inline.
+                                 Cuando state.editingId apunta a este record,
+                                 reemplazamos el <text> SVG por un <input> HTML
+                                 inserted via <foreignObject>. Enter guarda,
+                                 Esc cancela, blur también guarda. -->
+                            <foreignObject t-if="!row.isMilestone and state.editingId === row.record.id"
+                                           t-att-x="barGeoForRender(row).x + dragOffsetForBar(row) + 2"
+                                           t-att-y="row.y + 2"
+                                           t-att-width="barGeoForRender(row).width - 4"
+                                           t-att-height="row.height - 4">
+                                <input type="text"
+                                       class="o_gs_inline_edit_input"
+                                       t-att-data-record-id="row.record.id"
+                                       t-att-value="state.editingValue"
+                                       t-on-input="(ev) => this.onInlineEditInput(ev)"
+                                       t-on-keydown="(ev) => this.onInlineEditKeyDown(row, ev)"
+                                       t-on-blur="() => this.onInlineEditBlur(row)"
+                                       t-on-mousedown.stop=""
+                                       t-on-click.stop=""/>
+                            </foreignObject>
+
+                            <!-- Sprint 3.2.A: resize handles a left + right
+                                 del bar. Solo se rendean si:
+                                  - el controller pasó onBarResize (feature
+                                    enabled);
+                                  - la barra NO es milestone (no tiene duración);
+                                  - la barra NO está bloqueada por
+                                    disable_drag_drop;
+                                  - hay ancho suficiente para que dos asas no
+                                    se solapen visualmente (width > 20px).
+                                 stopPropagation en el mousedown evita que el
+                                 drag-de-bar entero se dispare al asir el asa. -->
+                            <g t-if="!row.isMilestone and !row.dragDisabled and props.onBarResize and row.width > 20">
+                                <rect class="o_gs_bar_resize_handle o_gs_bar_resize_left"
+                                      t-att-x="barGeoForRender(row).x + dragOffsetForBar(row)"
+                                      t-att-y="row.y"
+                                      t-att-width="resizeHandleW"
+                                      t-att-height="row.height"
+                                      t-on-mousedown="(ev) => this.onResizeMouseDown(row, 'left', ev)"
+                                      t-on-touchstart="(ev) => this.onResizeTouchStart(row, 'left', ev)"/>
+                                <rect class="o_gs_bar_resize_handle o_gs_bar_resize_right"
+                                      t-att-x="barGeoForRender(row).x + dragOffsetForBar(row) + barGeoForRender(row).width - resizeHandleW"
+                                      t-att-y="row.y"
+                                      t-att-width="resizeHandleW"
+                                      t-att-height="row.height"
+                                      t-on-mousedown="(ev) => this.onResizeMouseDown(row, 'right', ev)"
+                                      t-on-touchstart="(ev) => this.onResizeTouchStart(row, 'right', ev)"/>
+                            </g>
+
+                            <!-- Sprint 3.2.C: dep creation handles "+" en los
+                                 extremos del bar. Aparecen en hover (CSS).
+                                 mousedown inicia el dibujo de una dep tipada;
+                                 mouseup sobre otro bar abre popover. -->
+                            <g t-if="!row.dragDisabled and props.onDepCreate"
+                               class="o_gs_dep_handles">
+                                <circle class="o_gs_dep_handle o_gs_dep_handle_left"
+                                        t-att-cx="barGeoForRender(row).x + dragOffsetForBar(row)"
+                                        t-att-cy="row.y + row.height / 2"
+                                        r="5"
+                                        t-on-mousedown="(ev) => this.onDepHandleMouseDown(row, 'left', ev)"/>
+                                <circle class="o_gs_dep_handle o_gs_dep_handle_right"
+                                        t-att-cx="barGeoForRender(row).x + dragOffsetForBar(row) + barGeoForRender(row).width"
+                                        t-att-cy="row.y + row.height / 2"
+                                        r="5"
+                                        t-on-mousedown="(ev) => this.onDepHandleMouseDown(row, 'right', ev)"/>
+                            </g>
+
                             <title t-esc="row.label"/>
                         </g>
                     </g>
                 </g>
             </svg>
+
+            <!-- Sprint 3.2.C: popover de creación de dependencia.
+                 Aparece donde el user soltó el drag (state.depPopover.x/y).
+                 HTML standard (no foreignObject) porque vive fuera del SVG. -->
+            <div t-if="state.depPopover" class="o_gs_dep_popover"
+                 t-attf-style="left: {{state.depPopover.x}}px; top: {{state.depPopover.y}}px;">
+                <div class="o_gs_dep_popover_arrow"/>
+                <div class="o_gs_dep_popover_title">
+                    <i class="fa fa-link me-2"/>
+                    <strong>Nueva dependencia</strong>
+                </div>
+                <div class="o_gs_dep_popover_body">
+                    <label>Tipo:</label>
+                    <select t-on-change="(ev) => this.onDepPopoverTypeChange(ev)"
+                            t-att-value="state.depPopover.depType">
+                        <option value="FS">Fin → Inicio (FS)</option>
+                        <option value="SS">Inicio → Inicio (SS)</option>
+                        <option value="FF">Fin → Fin (FF)</option>
+                        <option value="SF">Inicio → Fin (SF)</option>
+                    </select>
+                    <label class="mt-2">Lag (días):</label>
+                    <input type="number" step="0.5"
+                           t-att-value="state.depPopover.lagDays"
+                           t-on-input="(ev) => this.onDepPopoverLagChange(ev)"/>
+                </div>
+                <div class="o_gs_dep_popover_actions">
+                    <button class="btn btn-sm btn-light"
+                            t-on-click="() => this.onDepPopoverCancel()">Cancelar</button>
+                    <button class="btn btn-sm btn-primary"
+                            t-on-click="() => this.onDepPopoverConfirm()">Crear</button>
+                </div>
+            </div>
         </div>
     </div>
 </t>

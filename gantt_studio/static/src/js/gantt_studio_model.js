@@ -164,6 +164,40 @@ export class GanttStudioModel extends Model {
     }
 
     /**
+     * Sprint 3.2.A — Cambia AMBAS fechas (start + stop) en un solo write.
+     * Pensado para el resize de duración via drag-del-borde. No cascadea
+     * porque el resize NO mueve la tarea en el tiempo, solo cambia su
+     * extensión: las dependencias siguen siendo válidas si lo eran antes.
+     *
+     * Optimistic update + rollback on RPC error (igual que dragRecord).
+     */
+    async resizeRecord(recordId, newStart, newStop) {
+        const ds = this.archInfo.dateStart;
+        const de = this.archInfo.dateStop;
+        const current = this.records.find((r) => r.id === recordId);
+        if (!current) return;
+        const origStart = current[ds];
+        const origStop = current[de];
+        const startStr = this._fmtIsoSql(newStart);
+        const stopStr = this._fmtIsoSql(newStop);
+        // 1) optimistic
+        this._replaceRecord(recordId, { [ds]: startStr, [de]: stopStr });
+        this.notify();
+        // 2) persist
+        try {
+            await this.orm.write(this.resModel, [recordId], {
+                [ds]: startStr,
+                [de]: stopStr,
+            });
+        } catch (e) {
+            console.error("[gantt_studio] resize persist failed — reverting:", e);
+            this._replaceRecord(recordId, { [ds]: origStart, [de]: origStop });
+            this.notify();
+            throw e;
+        }
+    }
+
+    /**
      * Drag-and-drop write — applies an *optimistic* local update first so the
      * bar visually settles at the new position immediately, then persists in
      * the background (with optional dependency cascading). Rolls back on
@@ -245,6 +279,27 @@ export class GanttStudioModel extends Model {
             return r;
         });
         return changed;
+    }
+
+    /**
+     * Sprint 3.2.C — Crear una dependencia tipada entre dos records via RPC.
+     * Refresca la lista de deps localmente y notifica para re-render.
+     */
+    async createDependency(predId, succId, depType = "FS", lagDays = 0) {
+        await this.orm.call(
+            "gantt.studio.dependency",
+            "link",
+            [this.resModel, predId, succId, depType, lagDays],
+        );
+        // Re-fetch deps de los records cargados así la flecha aparece sin
+        // re-cargar todo.
+        const recordIds = this.records.map((r) => r.id);
+        this.dependencies = await this.orm.call(
+            "gantt.studio.dependency",
+            "get_dependencies",
+            [this.resModel, recordIds],
+        );
+        this.notify();
     }
 
     /** Save a baseline snapshot of current records. */

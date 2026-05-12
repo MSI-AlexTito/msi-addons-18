@@ -134,7 +134,15 @@ function section(s) { console.log("=".repeat(70)); console.log(s); }
 function makeRenderer(props, virtualWindow = [0, 9]) {
     const r = Object.create(GanttStudioRenderer.prototype);
     r.props = props;
-    r.state = { dragId: null, dragDx: 0 };
+    // El componente real inicializa state con TODAS las claves; replicamos
+    // ese contrato para que los `=== null` no caigan en undefined.
+    r.state = {
+        dragId: null, dragDx: 0,
+        resizeId: null, resizeDx: 0, resizeEdge: null,
+        editingId: null, editingValue: "",
+        depDragFrom: null, depDragFromEdge: null, depDragTo: null,
+        depPopover: null,
+    };
     r.rootRef = { el: null };
     r._dirtyRange = true;
     r._dirtyLayout = true;
@@ -711,6 +719,176 @@ const aDate2 = new Date(2027, 0, 15);
 rGoto._diffProps({ ...baseProps, goToDateRequest: aDate2 });
 ok("new Date reference → re-scroll",
    rGoto._pendingScrollTo === aDate2);
+
+// ─── [SP3.2.A] Drag-resize del borde ─────────────────────────────────
+section("[SP3.2.A] Drag-resize del borde del bar");
+const rResize = makeRenderer({
+    ...baseProps,
+    onBarResize: () => {},   // habilita la feature
+});
+rResize._beforeRender();
+const resizeBar = rResize.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+
+// Simular resize del borde derecho: arranca, mueve 40px, suelta.
+rResize._startResize(resizeBar, "right", 100);
+ok("resize seed creado",   rResize._resizeSeed !== null);
+ok("state.resizeId asignado", rResize.state.resizeId === resizeBar.record.id);
+ok("state.resizeEdge='right'", rResize.state.resizeEdge === "right");
+
+// barGeoForRender debe reflejar el movimiento durante el resize.
+rResize._onResizeMove({ clientX: 100 + 40 });
+const geoDuringRight = rResize.barGeoForRender(resizeBar);
+ok("right resize crece el width",
+   geoDuringRight.width > resizeBar.width,
+   `width antes=${resizeBar.width} ahora=${geoDuringRight.width}`);
+ok("right resize no cambia la x", geoDuringRight.x === resizeBar.x);
+
+rResize._endResize();
+ok("_endResize limpia el seed", rResize._resizeSeed === null);
+
+// Resize left edge.
+rResize._startResize(resizeBar, "left", 100);
+rResize._onResizeMove({ clientX: 100 + 30 });
+const geoDuringLeft = rResize.barGeoForRender(resizeBar);
+ok("left resize mueve la x", geoDuringLeft.x > resizeBar.x);
+ok("left resize achica el width", geoDuringLeft.width < resizeBar.width);
+rResize._endResize();
+
+// Sin onBarResize, los handles no se rendean (la lógica está en XML
+// pero como sanity check confirmamos que la prop por defecto es null).
+const rNoResize = makeRenderer({ ...baseProps });   // sin onBarResize
+ok("default onBarResize null", rNoResize.props.onBarResize == null);
+
+// Milestones no permiten resize (semánticamente no tienen duración).
+const rMilestoneResize = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, milestoneField: "is_milestone" },
+    records: [
+        { id: 1, name: "m", display_name: "m", ds: "2026-05-01", de: "2026-05-01",
+          is_milestone: true },
+    ],
+    onBarResize: () => {},
+});
+rMilestoneResize._beforeRender();
+const ms = rMilestoneResize.allRows.find((row) => row.type === "bar");
+// onResizeMouseDown debe early-return en milestones — no se crea seed.
+rMilestoneResize.onResizeMouseDown(ms, "right", { button: 0, preventDefault: () => {}, stopPropagation: () => {} });
+ok("milestone NO arranca resize",
+   rMilestoneResize._resizeSeed === null || rMilestoneResize._resizeSeed === undefined);
+
+// ─── [SP3.2.B] Edición inline ────────────────────────────────────────
+section("[SP3.2.B] Edición inline del nombre");
+const rEdit = makeRenderer({
+    ...baseProps,
+    onBarRename: () => {},
+});
+rEdit._beforeRender();
+const editBar = rEdit.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+
+rEdit.onBarDoubleClick(editBar, { preventDefault: () => {}, stopPropagation: () => {} });
+ok("dblclick activa editing", rEdit.state.editingId === editBar.record.id);
+ok("editingValue se inicializa con el label",
+   rEdit.state.editingValue === editBar.label);
+
+rEdit.onInlineEditInput({ target: { value: "Nuevo nombre" } });
+ok("input actualiza editingValue", rEdit.state.editingValue === "Nuevo nombre");
+
+// Enter → commit
+let renameCalls = [];
+rEdit.props.onBarRename = (id, name) => renameCalls.push({ id, name });
+rEdit.onInlineEditKeyDown(editBar, {
+    key: "Enter", preventDefault: () => {}, stopPropagation: () => {}
+});
+ok("Enter dispara onBarRename con el nuevo nombre",
+   renameCalls.length === 1 && renameCalls[0].name === "Nuevo nombre");
+ok("Enter cierra el modo edición", rEdit.state.editingId === null);
+
+// Esc → cancel (no commit)
+renameCalls = [];
+rEdit.onBarDoubleClick(editBar, { preventDefault: () => {}, stopPropagation: () => {} });
+rEdit.onInlineEditInput({ target: { value: "Otro intento" } });
+rEdit.onInlineEditKeyDown(editBar, {
+    key: "Escape", preventDefault: () => {}, stopPropagation: () => {}
+});
+ok("Esc NO dispara onBarRename", renameCalls.length === 0);
+ok("Esc cierra el modo edición", rEdit.state.editingId === null);
+
+// Sin onBarRename → dblclick no hace nada
+const rNoEdit = makeRenderer(baseProps);
+rNoEdit._beforeRender();
+const nb = rNoEdit.allRows.find((row) => row.type === "bar");
+rNoEdit.onBarDoubleClick(nb, { preventDefault: () => {}, stopPropagation: () => {} });
+ok("sin onBarRename, dblclick no entra en edición",
+   rNoEdit.state.editingId === null);
+
+// ─── [SP3.2.C] Drag-to-create dep ─────────────────────────────────────
+section("[SP3.2.C] Drag-to-create dep + popover");
+const rDep = makeRenderer({
+    ...baseProps,
+    onDepCreate: () => {},
+});
+rDep._beforeRender();
+const fromBar = rDep.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+
+rDep.onDepHandleMouseDown(fromBar, "right", {
+    button: 0, clientX: 100, clientY: 50,
+    preventDefault: () => {}, stopPropagation: () => {},
+});
+ok("dep drag arranca", rDep.state.depDragFrom === fromBar.record.id);
+ok("dep drag captura edge", rDep.state.depDragFromEdge === "right");
+
+// Simulamos mouseup sobre un bar destino — esto necesita document.elementFromPoint
+// que en Node no existe, así que stubeamos.
+globalThis.document.elementFromPoint = (x, y) => ({
+    closest: (sel) => sel === ".o_gs_bar_group"
+        ? { getAttribute: () => "2" }
+        : null,
+});
+rDep._onDepDragUp({ clientX: 200, clientY: 60 });
+ok("popover se abre con predId/succId correctos",
+   rDep.state.depPopover !== null
+   && rDep.state.depPopover.predId === 1
+   && rDep.state.depPopover.succId === 2);
+ok("popover default depType=FS", rDep.state.depPopover.depType === "FS");
+ok("popover default lagDays=0", rDep.state.depPopover.lagDays === 0);
+
+// Cambio de tipo + lag
+rDep.onDepPopoverTypeChange({ target: { value: "SS" } });
+rDep.onDepPopoverLagChange({ target: { value: "2.5" } });
+ok("cambio de tipo",     rDep.state.depPopover.depType === "SS");
+ok("cambio de lag", rDep.state.depPopover.lagDays === 2.5);
+
+// Confirm → llama onDepCreate y cierra popover
+let createCalls = [];
+rDep.props.onDepCreate = (p, s, t, l) => createCalls.push({ p, s, t, l });
+rDep.onDepPopoverConfirm();
+ok("Crear llama a onDepCreate",
+   createCalls.length === 1
+   && createCalls[0].p === 1
+   && createCalls[0].s === 2
+   && createCalls[0].t === "SS"
+   && createCalls[0].l === 2.5);
+ok("popover se cierra tras Crear", rDep.state.depPopover === null);
+
+// Cancel → cierra popover sin crear
+rDep.state.depPopover = { predId: 1, succId: 2, x: 0, y: 0, depType: "FF", lagDays: 0 };
+createCalls = [];
+rDep.onDepPopoverCancel();
+ok("Cancelar NO llama a onDepCreate", createCalls.length === 0);
+ok("Cancelar cierra el popover", rDep.state.depPopover === null);
+
+// Drop sobre el mismo bar (predId === succId) NO debe abrir popover
+const rSelf = makeRenderer({ ...baseProps, onDepCreate: () => {} });
+rSelf._beforeRender();
+rSelf.onDepHandleMouseDown(fromBar, "right", {
+    button: 0, clientX: 100, clientY: 50,
+    preventDefault: () => {}, stopPropagation: () => {},
+});
+globalThis.document.elementFromPoint = (x, y) => ({
+    closest: (sel) => ({ getAttribute: () => "1" }),   // mismo id
+});
+rSelf._onDepDragUp({ clientX: 110, clientY: 50 });
+ok("drop sobre sí mismo NO abre popover", rSelf.state.depPopover === null);
 
 // ─── Summary ───────────────────────────────────────────────────────────
 section(`RESULT: ${pass} passed, ${fail} failed`);
