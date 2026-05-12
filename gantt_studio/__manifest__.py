@@ -20,24 +20,40 @@ Highlights
 * Group by any field, color by any field, customizable bar label
 * Drag-and-drop to reschedule, drag-resize to change duration
 * Click on a bar → open the underlying record's form view
-* Designed as the foundation of the Gantt Studio family (Project / MRP / HR
-  / Sale add-ons sold separately)
+* Typed dependencies (FS / SS / FF / SF + lag), polymorphic — no schema
+  changes needed on the target model
+* CPM (Critical Path Method) with cycle detection
+* Auto-reschedule with cascading + bi-directional clamp
+* Baselines (snapshot + ghost bars for plan-vs-actual)
+* PDF export
 
-Demo
-----
+Architecture
+------------
 
-The module ships with a demo view registered on ``project.task`` so you can
-verify the installation immediately.
+This module is the **core**. It declares the view type, the polymorphic
+``gantt.studio.dependency`` and ``gantt.studio.baseline`` models, the
+``gantt.studio.planner`` algorithms, and the OWL renderer. It does NOT
+ship a demo view for any specific model — that's the job of the family
+of optional integration add-ons:
+
+* ``gantt_studio_project`` — vista demo sobre ``project.task``
+* ``gantt_studio_crm``     — vista demo sobre ``crm.lead`` (próximo)
+* ``gantt_studio_sale``    — vista demo sobre ``sale.order``
+* ``gantt_studio_mrp``     — vista demo sobre ``mrp.production``
+* …
+
+Install one of those (or write your own ``<gantt_studio>`` view on the
+model of your choice) and the core does the rest. No fields added to
+your target model — dependencies, baselines and CPM all live in the
+core's own polymorphic tables addressed by ``(res_model, record_id)``.
 """,
     "author": "MSI",
     "website": "https://www.msi.cl",
     "license": "LGPL-3",
     "category": "Productivity",
-    "depends": ["web", "project"],
+    "depends": ["web"],
     "data": [
         "security/ir.model.access.csv",
-        "views/gantt_studio_views.xml",
-        "data/demo_action.xml",
     ],
     "assets": {
         "web.assets_backend": [

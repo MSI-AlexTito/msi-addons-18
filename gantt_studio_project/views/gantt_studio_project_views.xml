@@ -2,9 +2,24 @@
 <odoo>
 
     <!--
-        Demo gantt_studio view on project.task.
-        Uses planned_date_begin / date_deadline as bar boundaries.
-        Grouped by stage, colored by user.
+        Vista <gantt_studio> sobre `project.task`.
+
+        Es un EJEMPLO listo para usar. La vista vive en el módulo de
+        integración (`gantt_studio_project`), no en el core, porque el core
+        no depende de `project` — eso permite usar el mismo `gantt_studio`
+        en CRM, ventas, manufactura, etc. sin ningún acople.
+
+        Para escribir tu propia vista sobre cualquier modelo basta con:
+
+            <gantt_studio date_start="campo_inicio"
+                          date_stop="campo_fin"
+                          default_scale="week"
+                          default_group_by="campo_groupby"
+                          color_field="campo_color">
+                <field name="..."/>
+            </gantt_studio>
+
+        El core valida el arch y carga el renderer OWL automáticamente.
     -->
     <record id="view_project_task_gantt_studio_demo" model="ir.ui.view">
         <field name="name">project.task.gantt.studio.demo</field>
@@ -17,7 +32,7 @@
                           default_group_by="stage_id"
                           color_field="user_ids"
                           bar_text="name"
-                          string="Gantt Studio (Tasks)">
+                          string="Gantt Studio (Tareas)">
                 <field name="name"/>
                 <field name="user_ids"/>
                 <field name="stage_id"/>

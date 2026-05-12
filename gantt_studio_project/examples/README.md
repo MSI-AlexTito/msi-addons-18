@@ -39,7 +39,7 @@ En el navegador, una vez logueado en `faroco`:
 URL directa (si conoces tu sesión):
 
 ```
-http://localhost:8069/odoo/action-gantt_studio.action_project_task_gantt_studio_demo
+http://localhost:8069/odoo/action-gantt_studio_project.action_project_task_gantt_studio_demo
 ```
 
 ---

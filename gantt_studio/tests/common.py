@@ -1,49 +1,32 @@
-from datetime import datetime, timedelta
-
 from odoo.tests.common import TransactionCase
 
 
-class GanttStudioCommon(TransactionCase):
-    """Shared fixtures: a small set of project.task records on which we can
-    exercise dependencies, CPM, baselines and reschedule end-to-end."""
+class GanttStudioCoreCommon(TransactionCase):
+    """Tests del core sin depender de `project` ni de ningún add-on de
+    integración. Usa `res.partner` (siempre instalado vía `base`) como
+    modelo arbitrario para ejercitar la naturaleza polimórfica del modelo
+    `gantt.studio.dependency` y `gantt.studio.baseline`.
+
+    Los modelos polimórficos guardan solo `res_model` + `<id entero>` y
+    validan que `res_model` exista en `env`. No requieren que los records
+    tengan ciertas fechas — eso lo prueban tests específicos de integración
+    en gantt_studio_project (con project.task), gantt_studio_crm (con
+    crm.lead), etc.
+    """
 
     @classmethod
     def setUpClass(cls):
         super().setUpClass()
-        cls.Task = cls.env["project.task"]
-        cls.Project = cls.env["project.project"]
+        cls.Partner = cls.env["res.partner"]
         cls.Dep = cls.env["gantt.studio.dependency"]
         cls.Baseline = cls.env["gantt.studio.baseline"]
         cls.Planner = cls.env["gantt.studio.planner"]
 
-        cls.project = cls.Project.create({"name": "GS Test Project"})
-
-        # Linear chain A → B → C (FS lag=0), no gap between bars so the
-        # dependencies are *binding* and end up on the critical path.
-        cls.task_a = cls.Task.create({
-            "name": "Task A",
-            "project_id": cls.project.id,
-            "planned_date_begin": datetime(2026, 6, 1, 8, 0),
-            "date_deadline": datetime(2026, 6, 3, 17, 0),
-        })
-        cls.task_b = cls.Task.create({
-            "name": "Task B",
-            "project_id": cls.project.id,
-            "planned_date_begin": datetime(2026, 6, 3, 17, 0),
-            "date_deadline": datetime(2026, 6, 5, 17, 0),
-        })
-        cls.task_c = cls.Task.create({
-            "name": "Task C",
-            "project_id": cls.project.id,
-            "planned_date_begin": datetime(2026, 6, 5, 17, 0),
-            "date_deadline": datetime(2026, 6, 7, 17, 0),
-        })
-        # Parallel short task, off the critical path
-        cls.task_d = cls.Task.create({
-            "name": "Task D (parallel short)",
-            "project_id": cls.project.id,
-            "planned_date_begin": datetime(2026, 6, 1, 8, 0),
-            "date_deadline": datetime(2026, 6, 2, 17, 0),
-        })
-
-        cls.all_task_ids = [cls.task_a.id, cls.task_b.id, cls.task_c.id, cls.task_d.id]
+        # 4 partners para usar como ids de "registros" en las pruebas
+        # polimórficas. Ningún test del core inspecciona los datos de estos
+        # registros — solo necesitamos ids reales.
+        cls.p1 = cls.Partner.create({"name": "GS Core Partner 1"})
+        cls.p2 = cls.Partner.create({"name": "GS Core Partner 2"})
+        cls.p3 = cls.Partner.create({"name": "GS Core Partner 3"})
+        cls.p4 = cls.Partner.create({"name": "GS Core Partner 4"})
+        cls.all_ids = [cls.p1.id, cls.p2.id, cls.p3.id, cls.p4.id]

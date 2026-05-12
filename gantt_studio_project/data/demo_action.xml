@@ -1,6 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
 <odoo>
 
+    <!--
+        Acción + menú demo: aparecen bajo "Proyecto" para que tras instalar
+        gantt_studio_project el usuario tenga un punto de entrada listo.
+        El menú padre `project.menu_main_pm` solo existe cuando el módulo
+        `project` está instalado, garantizado por el depends del manifest.
+    -->
     <record id="action_project_task_gantt_studio_demo" model="ir.actions.act_window">
         <field name="name">Tasks (Gantt Studio)</field>
         <field name="res_model">project.task</field>

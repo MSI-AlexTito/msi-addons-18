@@ -1,15 +1,24 @@
-from lxml import etree
+"""Tests del validador del arch `<gantt_studio>`.
 
+El validador del core (`ir_ui_view._validate_tag_gantt_studio`) trabaja
+solo a nivel de XML: comprueba presencia/forma de atributos, no que el
+modelo destino sea project.task o cualquier otro en particular. Por eso
+estos tests crean vistas sobre `res.partner` — un modelo siempre
+disponible vía el dep `base`.
+
+Si esto pasa, el módulo se puede instalar y validar arches sin que
+project / crm / sale / mrp estén siquiera instalados.
+"""
 from odoo.tests import TransactionCase, tagged
 from odoo.tools import mute_logger
 
 
 @tagged("post_install", "-at_install", "gantt_studio")
-class TestGanttStudioView(TransactionCase):
-    """Validation of <gantt_studio> arch and view registration."""
+class TestGanttStudioCoreView(TransactionCase):
 
     def test_01_view_type_registered(self):
-        sel = dict(self.env["ir.ui.view"]._fields["type"]._description_selection(self.env))
+        sel = dict(self.env["ir.ui.view"]._fields["type"]
+                   ._description_selection(self.env))
         self.assertIn("gantt_studio", sel)
 
     def test_02_act_window_view_mode_registered(self):
@@ -17,27 +26,20 @@ class TestGanttStudioView(TransactionCase):
                    ._fields["view_mode"]._description_selection(self.env))
         self.assertIn("gantt_studio", sel)
 
-    def test_03_demo_view_loads(self):
-        view = self.env.ref("gantt_studio.view_project_task_gantt_studio_demo")
-        self.assertEqual(view.type, "gantt_studio")
-        self.assertEqual(view.model, "project.task")
-
-    def test_04_demo_action_uses_gantt_studio(self):
-        act = self.env.ref("gantt_studio.action_project_task_gantt_studio_demo")
-        self.assertIn("gantt_studio", act.view_mode)
-
-    def test_05_valid_arch_accepts_known_attributes(self):
-        # Should NOT raise
+    def test_03_valid_arch_on_arbitrary_model(self):
+        # Demuestra que el validador NO requiere campos "date_start" o
+        # "date_stop" literales sobre el modelo destino — solo exige que
+        # los atributos del arch estén presentes. Usamos res.partner con
+        # `create_date` / `write_date` que existen en cualquier modelo.
         self.env["ir.ui.view"].create({
-            "name": "Test valid gantt_studio",
-            "model": "project.task",
+            "name": "Test valid gantt_studio on res.partner",
+            "model": "res.partner",
             "type": "gantt_studio",
             "arch": """
-                <gantt_studio date_start="planned_date_begin"
-                              date_stop="date_deadline"
+                <gantt_studio date_start="create_date"
+                              date_stop="write_date"
                               default_scale="month"
-                              default_group_by="stage_id"
-                              color_field="user_ids"
+                              color_field="user_id"
                               bar_text="name"
                               show_dependencies="true"
                               show_critical_path="true"
@@ -48,65 +50,80 @@ class TestGanttStudioView(TransactionCase):
             """,
         })
 
-    def test_06_missing_date_start_rejected(self):
+    def test_04_missing_date_start_rejected(self):
         with self.assertRaises(Exception), mute_logger("odoo.addons.base.models.ir_ui_view"):
             self.env["ir.ui.view"].create({
                 "name": "bad",
-                "model": "project.task",
+                "model": "res.partner",
                 "type": "gantt_studio",
-                "arch": """<gantt_studio date_stop="date_deadline"/>""",
+                "arch": """<gantt_studio date_stop="write_date"/>""",
             })
 
-    def test_07_missing_date_stop_rejected(self):
+    def test_05_missing_date_stop_rejected(self):
         with self.assertRaises(Exception), mute_logger("odoo.addons.base.models.ir_ui_view"):
             self.env["ir.ui.view"].create({
                 "name": "bad",
-                "model": "project.task",
+                "model": "res.partner",
                 "type": "gantt_studio",
-                "arch": """<gantt_studio date_start="planned_date_begin"/>""",
+                "arch": """<gantt_studio date_start="create_date"/>""",
             })
 
-    def test_08_unknown_attribute_rejected(self):
+    def test_06_unknown_attribute_rejected(self):
         with self.assertRaises(Exception), mute_logger("odoo.addons.base.models.ir_ui_view"):
             self.env["ir.ui.view"].create({
                 "name": "bad",
-                "model": "project.task",
+                "model": "res.partner",
                 "type": "gantt_studio",
                 "arch": """
-                    <gantt_studio date_start="planned_date_begin"
-                                  date_stop="date_deadline"
+                    <gantt_studio date_start="create_date"
+                                  date_stop="write_date"
                                   some_bogus_attr="x"/>
                 """,
             })
 
-    def test_09_invalid_scale_rejected(self):
+    def test_07_invalid_scale_rejected(self):
         with self.assertRaises(Exception), mute_logger("odoo.addons.base.models.ir_ui_view"):
             self.env["ir.ui.view"].create({
                 "name": "bad",
-                "model": "project.task",
+                "model": "res.partner",
                 "type": "gantt_studio",
                 "arch": """
-                    <gantt_studio date_start="planned_date_begin"
-                                  date_stop="date_deadline"
+                    <gantt_studio date_start="create_date"
+                                  date_stop="write_date"
                                   default_scale="century"/>
                 """,
             })
 
-    def test_10_non_field_child_rejected(self):
+    def test_08_non_field_child_rejected(self):
         with self.assertRaises(Exception), mute_logger("odoo.addons.base.models.ir_ui_view"):
             self.env["ir.ui.view"].create({
                 "name": "bad",
-                "model": "project.task",
+                "model": "res.partner",
                 "type": "gantt_studio",
                 "arch": """
-                    <gantt_studio date_start="planned_date_begin"
-                                  date_stop="date_deadline">
+                    <gantt_studio date_start="create_date"
+                                  date_stop="write_date">
                         <not_a_field/>
                     </gantt_studio>
                 """,
             })
 
-    def test_11_get_view_info_includes_icon(self):
+    def test_09_get_view_info_includes_icon(self):
         info = self.env["ir.ui.view"]._get_view_info()
         self.assertIn("gantt_studio", info)
         self.assertIn("icon", info["gantt_studio"])
+
+    def test_10_view_works_on_multiple_models(self):
+        # Smoke test final: el MISMO arch funciona sobre cualquier modelo.
+        # Es la demostración técnica del modelo-agnosticismo.
+        for model in ("res.partner", "res.users", "res.company"):
+            self.env["ir.ui.view"].create({
+                "name": f"GS test on {model}",
+                "model": model,
+                "type": "gantt_studio",
+                "arch": """
+                    <gantt_studio date_start="create_date" date_stop="write_date">
+                        <field name="display_name"/>
+                    </gantt_studio>
+                """,
+            })

@@ -3,11 +3,11 @@ from datetime import datetime, timedelta
 from odoo.exceptions import UserError
 from odoo.tests import tagged
 
-from .common import GanttStudioCommon
+from .common import GanttStudioProjectCommon
 
 
-@tagged("post_install", "-at_install", "gantt_studio")
-class TestGanttStudioPlannerCPM(GanttStudioCommon):
+@tagged("post_install", "-at_install", "gantt_studio", "gantt_studio_project")
+class TestGanttStudioPlannerCPM(GanttStudioProjectCommon):
     """Critical Path Method computation."""
 
     def test_01_no_records_returns_empty(self):
@@ -106,8 +106,8 @@ class TestGanttStudioPlannerCPM(GanttStudioCommon):
         self.assertIn(d, res["critical_dependency_ids"])
 
 
-@tagged("post_install", "-at_install", "gantt_studio")
-class TestGanttStudioPlannerReschedule(GanttStudioCommon):
+@tagged("post_install", "-at_install", "gantt_studio", "gantt_studio_project")
+class TestGanttStudioPlannerReschedule(GanttStudioProjectCommon):
     """Auto-reschedule with cascading dependencies + bi-directional clamp."""
 
     def test_01_invalid_record_raises(self):
