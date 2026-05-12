@@ -4,3 +4,4 @@ from . import gantt_studio_dependency
 from . import gantt_studio_baseline
 from . import gantt_studio_planner
 from . import gantt_studio_resource_load
+from . import gantt_studio_export

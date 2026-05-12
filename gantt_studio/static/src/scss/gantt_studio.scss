@@ -432,7 +432,7 @@
     box-shadow: inset 0 0 0 1px #b91c1c;
 }
 
-// Baseline ghost bars
+// Baseline ghost bars (default)
 .o_gs_bar_ghost {
     fill: none;
     stroke: #6b7280;
@@ -440,6 +440,21 @@
     stroke-dasharray: 4 3;
     opacity: 0.7;
 }
+
+// Sprint 3.7 — Multi-baseline: una paleta por color index.
+// Estos colores alinean con el patrón de Odoo (kanban color picker).
+.o_gs_bar_ghost_color_0  { stroke: #6b7280; }   // gris (default)
+.o_gs_bar_ghost_color_1  { stroke: #ef4444; }   // rojo
+.o_gs_bar_ghost_color_2  { stroke: #f59e0b; }   // naranja
+.o_gs_bar_ghost_color_3  { stroke: #eab308; }   // amarillo
+.o_gs_bar_ghost_color_4  { stroke: #84cc16; }   // lima
+.o_gs_bar_ghost_color_5  { stroke: #10b981; }   // verde
+.o_gs_bar_ghost_color_6  { stroke: #06b6d4; }   // cyan
+.o_gs_bar_ghost_color_7  { stroke: #3b82f6; }   // azul
+.o_gs_bar_ghost_color_8  { stroke: #6366f1; }   // indigo
+.o_gs_bar_ghost_color_9  { stroke: #8b5cf6; }   // morado
+.o_gs_bar_ghost_color_10 { stroke: #ec4899; }   // rosa
+.o_gs_bar_ghost_color_11 { stroke: #f97316; }   // tomate
 
 // Dependency arrows
 .o_gs_arrow_line {

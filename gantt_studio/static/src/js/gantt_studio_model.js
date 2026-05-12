@@ -83,22 +83,31 @@ export class GanttStudioModel extends Model {
             }
         }
 
-        // Fetch active baseline
+        // Fetch baselines visible (Sprint 3.7 — multi-baseline).
+        // Backwards-compat: baselineLines/baselineId/baselineName se
+        // mantienen para que la primera capa funcione como antes; el
+        // renderer dibuja todas las capas vía `visibleBaselines`.
         this.baselineLines = [];
         this.baselineId = false;
         this.baselineName = "";
+        this.visibleBaselines = [];
         if (this.archInfo.baselineSupport && recordIds.length) {
             try {
-                const res = await this.orm.call(
+                const all = await this.orm.call(
                     "gantt.studio.baseline",
-                    "get_active_lines",
+                    "get_visible_baselines",
                     [this.resModel, recordIds],
                 );
-                this.baselineLines = res.lines || [];
-                this.baselineId = res.baseline_id || false;
-                this.baselineName = res.baseline_name || "";
+                this.visibleBaselines = all || [];
+                // Compat con la 1ra capa (legacy).
+                if (this.visibleBaselines.length) {
+                    const first = this.visibleBaselines[0];
+                    this.baselineLines = first.lines || [];
+                    this.baselineId = first.baseline_id || false;
+                    this.baselineName = first.baseline_name || "";
+                }
             } catch (e) {
-                console.warn("[gantt_studio] could not fetch baseline", e);
+                console.warn("[gantt_studio] could not fetch baselines", e);
             }
         }
 

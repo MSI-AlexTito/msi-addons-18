@@ -26,6 +26,7 @@ import {
     buildTree,
     walkTree,
     computeRollup,
+    buildPortfolioGroups,
 } from "./gantt_studio_utils";
 
 // Para diagnosticar problemas de drag/render, activar en consola:
@@ -101,6 +102,9 @@ export class GanttStudioRenderer extends Component {
         // sobreasignados (highlight rojo en sus bars).
         resourceHistogram: { type: [Object, { value: null }], optional: true },
         overallocatedIds: { type: Object, optional: true },
+        // Sprint 3.7 — Multi-baseline: array de {baseline_id, baseline_name,
+        // color, lines: [{record_id, date_start, date_stop}]}.
+        visibleBaselines: { type: Array, optional: true },
     };
     static defaultProps = {
         groupBy: [],
@@ -116,6 +120,7 @@ export class GanttStudioRenderer extends Component {
         onDepCreate: null,
         resourceHistogram: null,
         overallocatedIds: new Set(),
+        visibleBaselines: [],
     };
 
     setup() {
@@ -264,6 +269,10 @@ export class GanttStudioRenderer extends Component {
             next.resourceHistogram !== prev.resourceHistogram ||
             next.overallocatedIds !== prev.overallocatedIds
         ) {
+            this._dirtyLayout = true;
+        }
+        // Sprint 3.7 — multi-baseline: cambio en visibleBaselines → relayout.
+        if (next.visibleBaselines !== prev.visibleBaselines) {
             this._dirtyLayout = true;
         }
     }
@@ -447,18 +456,45 @@ export class GanttStudioRenderer extends Component {
         const disableDragExpr = this.props.archInfo.disableDragDrop;
         const milestoneField = this.props.archInfo.milestoneField;
         const parentField = this.props.archInfo.parentField;
+        const portfolioField = this.props.archInfo.portfolioField;
         const critical = this.props.criticalRecordIds || new Set();
         const overallocated = this.props.overallocatedIds || new Set();
-        const baselineMap = new Map(
-            (this.props.baselineLines || []).map((l) => [l.record_id, l])
-        );
+        // Sprint 3.7 — Multi-baseline. Construimos N maps, uno por capa.
+        // Si visibleBaselines está vacío, caemos al modo legacy (1 baseline
+        // vía baselineLines) para compatibilidad.
+        const visibleBaselines = (this.props.visibleBaselines || []).length
+            ? this.props.visibleBaselines
+            : (this.props.baselineLines && this.props.baselineLines.length
+                ? [{
+                    baseline_id: this.props.baselineId,
+                    baseline_name: "Baseline",
+                    color: 0,
+                    lines: this.props.baselineLines,
+                  }]
+                : []);
+        const baselineMaps = visibleBaselines.map((b) => ({
+            color: b.color || 0,
+            name: b.baseline_name || "",
+            map: new Map((b.lines || []).map((l) => [l.record_id, l])),
+        }));
+
+        // Sprint 3.8 — Portfolio: si portfolio_field está, aplicamos
+        // PRIMERO el agrupado en filas summary (project_id, etc.). El
+        // resultado se sirve como records "como si fueran" planos al
+        // resto del flujo, con __isPortfolio=true en las filas summary.
+        let recordsForLayout = this.props.records;
+        if (portfolioField) {
+            recordsForLayout = buildPortfolioGroups(
+                this.props.records, portfolioField, ds, de,
+            );
+        }
 
         // Sprint 3.3 — Si hay parent_field, agrupamos via árbol jerárquico
         // PRIMERO y groupBy (si lo hay) se aplica al nivel de raíces.
         // Si NO hay parent_field, mantenemos el flujo plano de antes.
         let grouped;
         if (parentField) {
-            const tree = buildTree(this.props.records, parentField);
+            const tree = buildTree(recordsForLayout, parentField);
             const walked = walkTree(tree, this.state.collapsed);
             // Conversión al shape que el resto del código espera: lista
             // ordenada de records con metadata (depth, hasChildren).
@@ -472,6 +508,22 @@ export class GanttStudioRenderer extends Component {
                     __isParent: w.hasChildren,
                     __children: w.children,
                 })),
+            }];
+        } else if (portfolioField) {
+            // Portfolio sin parent: las filas portfolio ya tienen __depth
+            // configurado. Para colapsar/expandir respeta state.collapsed.
+            grouped = [{
+                key: "__portfolio__",
+                label: "",
+                records: recordsForLayout.filter((r) => {
+                    if (r.__isPortfolio) return true;
+                    // Hijo: ocultar si el padre portfolio está colapsado.
+                    // El id del padre virtual es "portfolio_<id>".
+                    const pid = (this.props.records.find((rr) => rr.id === r.id) || {})[portfolioField];
+                    const pkey = Array.isArray(pid) ? pid[0] : pid;
+                    const portfolioVirtualId = `portfolio_${pkey || "__none__"}`;
+                    return !this.state.collapsed.has(portfolioVirtualId);
+                }),
             }];
         } else {
             // Bug fix: agrupado debe respetar lo que el usuario eligió en el
@@ -548,12 +600,26 @@ export class GanttStudioRenderer extends Component {
                 const labelY = labelOutside
                     ? y + height / 2 + 6
                     : y + height / 2;
-                let ghost = null;
-                const bl = baselineMap.get(r.id);
-                if (bl && bl.date_start && bl.date_stop) {
+                // Sprint 3.7 — Una capa ghost por baseline visible.
+                // Cada capa se desplaza ligeramente vertical (+2 px) para
+                // que se distingan cuando hay overlap.
+                const ghosts = [];
+                let ghost = null;  // legacy: 1ra capa (compat)
+                for (let bi = 0; bi < baselineMaps.length; bi++) {
+                    const bm = baselineMaps[bi];
+                    const bl = bm.map.get(r.id);
+                    if (!bl || !bl.date_start || !bl.date_stop) continue;
                     const gx1 = this._dateToPx(parseDate(bl.date_start), range.start);
                     const gx2 = this._dateToPx(parseDate(bl.date_stop), range.start);
-                    ghost = { x: gx1, width: Math.max(4, gx2 - gx1) };
+                    const g = {
+                        x: gx1,
+                        width: Math.max(4, gx2 - gx1),
+                        color: bm.color,
+                        offset: bi * 2,  // stack vertical sutil
+                        baselineName: bm.name,
+                    };
+                    ghosts.push(g);
+                    if (bi === 0) ghost = g;   // legacy compat
                 }
                 // Decorations: evaluate each Python expression against the
                 // record. Each truthy result becomes a CSS class on the bar.
@@ -598,6 +664,7 @@ export class GanttStudioRenderer extends Component {
                     leftLabel: fieldDisplay(r, "display_name"),
                     critical: critical.has(r.id),
                     ghost,
+                    ghosts,
                     decorationClasses,
                     dragDisabled,
                     isMilestone,

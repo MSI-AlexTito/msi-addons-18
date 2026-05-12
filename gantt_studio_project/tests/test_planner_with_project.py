@@ -137,10 +137,14 @@ class TestGanttStudioPlannerReschedule(GanttStudioProjectCommon):
         self.Dep.link("project.task", self.task_a.id, self.task_b.id, "FS")
         self.Dep.link("project.task", self.task_b.id, self.task_c.id, "FS")
         # Push A 5 days forward → B and C should follow.
+        # Pasamos respect_calendar=False para validar SOLO la mecánica
+        # de cascade lineal sin snap a horario laboral (lo testea
+        # test_calendar_awareness.py por separado).
         new_a_start = "2026-06-10 08:00:00"
         res = self.Planner.reschedule_with_dependencies(
             "project.task", self.task_a.id, new_a_start,
             "planned_date_begin", "date_deadline",
+            respect_calendar=False,
         )
         self.assertFalse(res["constrained"])
         ids = {u["id"] for u in res["updates"]}
@@ -185,6 +189,7 @@ class TestGanttStudioPlannerReschedule(GanttStudioProjectCommon):
         self.Planner.reschedule_with_dependencies(
             "project.task", self.task_a.id, "2026-07-01 08:00:00",
             "planned_date_begin", "date_deadline",
+            respect_calendar=False,
         )
         self.task_b.invalidate_recordset()
         new_b_dur = self.task_b.date_deadline - self.task_b.planned_date_begin
@@ -213,6 +218,7 @@ class TestGanttStudioPlannerReschedule(GanttStudioProjectCommon):
         self.Planner.reschedule_with_dependencies(
             "project.task", self.task_a.id, new_a.strftime("%Y-%m-%d %H:%M:%S"),
             "planned_date_begin", "date_deadline",
+            respect_calendar=False,
         )
         self.task_b.invalidate_recordset()
         self.assertEqual(self.task_b.planned_date_begin, new_a)

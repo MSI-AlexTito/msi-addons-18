@@ -58,6 +58,13 @@
             <i t-att-class="state.exportingPdf ? 'fa fa-circle-o-notch fa-spin' : 'fa fa-file-pdf-o'"/>
             <span class="ms-1" t-esc="state.exportingPdf ? 'Exporting…' : 'Export PDF'"/>
         </button>
+
+        <!-- Sprint 3.6 — Export to MS Project XML -->
+        <button class="btn btn-sm btn-light"
+                t-on-click="() => this.exportMsProjectXml()"
+                title="Export to MS Project XML 2003">
+            <i class="fa fa-file-code-o"/> MSP XML
+        </button>
     </div>
 </t>
 

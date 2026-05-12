@@ -197,6 +197,10 @@ export function parseGanttStudioArch(arch, ParserCls) {
     // recurso (user_ids, resource_id, employee_id, etc.). El servidor lo
     // detecta auto si no se pasa, pero un valor explícito gana.
     const resourceField = root.getAttribute("resource_field") || null;
+    // Sprint 3.8 — Portfolio multi-proyecto. `portfolio_field` apunta a un
+    // Many2one (ej. project_id). El renderer crea filas resumen sintéticas
+    // por valor único, con envelope de sus records.
+    const portfolioField = root.getAttribute("portfolio_field") || null;
 
     // decoration-<suffix>="<python expr>" — Bootstrap-style conditional
     // styling, identical pattern to Odoo's tree/list views. We collect them
@@ -241,7 +245,74 @@ export function parseGanttStudioArch(arch, ParserCls) {
         decorations,
         parentField,
         resourceField,
+        portfolioField,
     };
+}
+
+// ─────────────────────────────────────────────────────────────────────────
+// Sprint 3.8 — Portfolio helpers
+// ─────────────────────────────────────────────────────────────────────────
+
+/**
+ * Aplana los records en una lista con filas "portfolio summary" sintéticas.
+ *
+ * Para cada valor único de `portfolioField` (típicamente un M2O como
+ * project_id que viene como [id, name]) genera una fila virtual con:
+ *  - id: "portfolio_<id>" (string, para diferenciar de records reales)
+ *  - name: el nombre del valor
+ *  - __isPortfolio: true (flag para el renderer)
+ *  - __children: records que pertenecen a ese grupo
+ *
+ * El resultado es interoperable con el flujo WBS existente — los records
+ * llevan `__depth=1` (hijos del summary) o `__depth=0` para los huérfanos
+ * (sin portfolio).
+ */
+export function buildPortfolioGroups(records, portfolioField, dateStartField, dateStopField) {
+    if (!portfolioField || !records || !records.length) {
+        return (records || []).map((r) => ({ ...r, __depth: 0 }));
+    }
+    const groupKeyOf = (r) => {
+        const v = r[portfolioField];
+        if (!v) return { id: "__none__", name: "Sin asignar" };
+        return Array.isArray(v)
+            ? { id: v[0], name: v[1] || `#${v[0]}` }
+            : { id: v, name: String(v) };
+    };
+    const groups = new Map();
+    for (const r of records) {
+        const k = groupKeyOf(r);
+        if (!groups.has(k.id)) {
+            groups.set(k.id, { id: k.id, name: k.name, records: [] });
+        }
+        groups.get(k.id).records.push(r);
+    }
+    const out = [];
+    for (const g of groups.values()) {
+        // Synthetic portfolio summary row.
+        let minStart = null, maxStop = null;
+        for (const r of g.records) {
+            const s = parseDate(r[dateStartField]);
+            const e = parseDate(r[dateStopField]);
+            if (s && (!minStart || s < minStart)) minStart = s;
+            if (e && (!maxStop || e > maxStop)) maxStop = e;
+        }
+        out.push({
+            id: `portfolio_${g.id}`,
+            name: g.name,
+            display_name: g.name,
+            [dateStartField]: minStart ? minStart.toISOString() : null,
+            [dateStopField]: maxStop ? maxStop.toISOString() : null,
+            __isPortfolio: true,
+            __depth: 0,
+            __hasChildren: true,
+            __isParent: true,
+            __children: g.records.map((r) => ({ ...r, __depth: 1 })),
+        });
+        for (const r of g.records) {
+            out.push({ ...r, __depth: 1 });
+        }
+    }
+    return out;
 }
 
 // ─────────────────────────────────────────────────────────────────────────

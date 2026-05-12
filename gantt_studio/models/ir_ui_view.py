@@ -35,6 +35,10 @@ GANTT_STUDIO_VALID_ATTRIBUTES = {
     # Sprint 3.4 — Resource leveling ─────────────────────────────────
     "resource_field",          # Nombre del campo M2M/M2O al recurso (ej. user_ids).
                                # Si está, habilita la fila histograma de utilización.
+    # Sprint 3.8 — Portfolio multi-proyecto ──────────────────────────
+    "portfolio_field",         # Many2one (ej. project_id). Crea filas resumen
+                               # sintéticas por cada valor distinto, con
+                               # envelope min(start) / max(stop) de sus records.
 }
 
 # Bootstrap-style decoration suffixes accepted as `decoration-<suffix>="expr"`.

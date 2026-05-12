@@ -81,16 +81,23 @@
                       t-att-x2="todayLineX" t-att-y2="totalHeight"
                       class="o_gs_today"/>
 
-                <!-- Baseline ghost bars (behind real bars) -->
+                <!-- Baseline ghost bars (behind real bars).
+                     Sprint 3.7 — Multi-baseline: una capa por cada baseline
+                     visible, colorizada con o_gs_bar_ghost_color_N. -->
                 <g class="o_gs_ghosts">
-                    <g t-foreach="visibleRows" t-as="row" t-key="'ghost_' + row.key">
-                        <rect t-if="row.type === 'bar' and row.ghost"
-                              class="o_gs_bar_ghost"
-                              t-att-x="row.ghost.x"
-                              t-att-y="row.y - 2"
-                              t-att-width="row.ghost.width"
-                              t-att-height="row.height + 4"
-                              rx="6" ry="6"/>
+                    <g t-foreach="visibleRows" t-as="row" t-key="'ghosts_' + row.key">
+                        <g t-if="row.type === 'bar' and row.ghosts"
+                           t-foreach="row.ghosts" t-as="gh" t-key="'g_' + row.key + '_' + gh_index">
+                            <rect class="o_gs_bar_ghost"
+                                  t-att-class="'o_gs_bar_ghost o_gs_bar_ghost_color_' + gh.color"
+                                  t-att-x="gh.x"
+                                  t-att-y="row.y - 2 + gh.offset"
+                                  t-att-width="gh.width"
+                                  t-att-height="row.height + 4"
+                                  rx="6" ry="6">
+                                <title t-esc="gh.baselineName"/>
+                            </rect>
+                        </g>
                     </g>
                 </g>
 

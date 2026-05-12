@@ -27,6 +27,7 @@ export class GanttStudioController extends Component {
     setup() {
         this.action = useService("action");
         this.notification = useService("notification");
+        this.orm = useService("orm");
         this.archInfo = this.props.archInfo;
 
         this.state = useState({
@@ -156,6 +157,8 @@ export class GanttStudioController extends Component {
             // Sprint 3.4 — Resource histogram + overallocation highlight.
             resourceHistogram: this.model.resourceHistogram,
             overallocatedIds: this.model.overallocatedIds,
+            // Sprint 3.7 — Multi-baseline diff visual.
+            visibleBaselines: this.model.visibleBaselines || [],
         };
     }
 
@@ -290,6 +293,55 @@ export class GanttStudioController extends Component {
             this.notification.add(_t("Could not save baseline. Please try again."), {
                 type: "danger",
             });
+        }
+    }
+
+    /**
+     * Sprint 3.6 — Export MS Project XML.
+     * Llama al AbstractModel `gantt.studio.export` con los campos del arch
+     * y descarga el XML resultante como archivo.
+     */
+    async exportMsProjectXml() {
+        const ds = this.archInfo.dateStart;
+        const de = this.archInfo.dateStop;
+        const recordIds = this.model.records.map((r) => r.id);
+        if (!recordIds.length) {
+            this.notification.add(_t("No records to export."), { type: "warning" });
+            return;
+        }
+        try {
+            const xml = await this.orm.call(
+                "gantt.studio.export",
+                "export_msproject_xml",
+                [],
+                {
+                    res_model: this.props.resModel,
+                    record_ids: recordIds,
+                    date_start_field: ds,
+                    date_stop_field: de,
+                    name_field: "name",
+                    parent_field: this.archInfo.parentField || null,
+                    resource_field: this.archInfo.resourceField || null,
+                    project_name: `Gantt Studio Export — ${this.props.resModel}`,
+                },
+            );
+            const blob = new Blob([xml], { type: "application/xml" });
+            const url = URL.createObjectURL(blob);
+            const a = document.createElement("a");
+            a.href = url;
+            const ts = new Date().toISOString().slice(0, 10);
+            a.download = `gantt_studio_${this.props.resModel.replace(/\./g, "_")}_${ts}.xml`;
+            document.body.appendChild(a);
+            a.click();
+            document.body.removeChild(a);
+            URL.revokeObjectURL(url);
+            this.notification.add(_t("MS Project XML downloaded."), { type: "success" });
+        } catch (e) {
+            console.error("[gantt_studio] export failed:", e);
+            this.notification.add(
+                _t("Could not export to MS Project XML."),
+                { type: "danger" },
+            );
         }
     }
 

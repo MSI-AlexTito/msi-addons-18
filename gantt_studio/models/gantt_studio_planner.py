@@ -196,6 +196,42 @@ class GanttStudioPlanner(models.AbstractModel):
         }
 
     # ----------------------------------------------------------------------
+    # Sprint 3.5 — Calendar awareness en reschedule
+    # ----------------------------------------------------------------------
+
+    def _get_default_calendar(self):
+        """Devuelve el `resource.calendar` por defecto (de la company actual)
+        o None si el módulo `resource` no está instalado.
+        """
+        if "resource.calendar" not in self.env:
+            return None
+        company = self.env.company
+        cal = company.resource_calendar_id if "resource_calendar_id" in company._fields else None
+        return cal or self.env["resource.calendar"].search([], limit=1)
+
+    def _snap_to_working_time(self, dt, calendar=None):
+        """Si `dt` cae fuera de horas/días laborales, lo avanza al próximo
+        instante laboral según `calendar`. Si no hay calendar disponible
+        (módulo `resource` no instalado o sin datos), devuelve `dt` sin
+        cambios — esta es la salvaguarda Community-friendly.
+
+        El cálculo se delega al método estándar de Odoo
+        `resource.calendar.plan_hours(0, dt)` que retorna la primera fecha
+        laboral >= dt (la implementación core de Odoo asegura eso).
+        """
+        if not dt:
+            return dt
+        calendar = calendar or self._get_default_calendar()
+        if not calendar or not hasattr(calendar, "plan_hours"):
+            return dt
+        try:
+            # plan_hours(0, dt) = "0 horas a partir de dt" = primera fecha
+            # laboral >= dt. Si dt ya cae en hora laboral, lo devuelve igual.
+            return calendar.plan_hours(0, dt, compute_leaves=True) or dt
+        except Exception:
+            return dt
+
+    # ----------------------------------------------------------------------
     # Auto-reschedule on drag (cascades through dependencies)
     # ----------------------------------------------------------------------
 
@@ -246,7 +282,8 @@ class GanttStudioPlanner(models.AbstractModel):
 
     @api.model
     def reschedule_with_dependencies(
-        self, res_model, record_id, new_start, date_start_field, date_stop_field, cascade=True,
+        self, res_model, record_id, new_start, date_start_field, date_stop_field,
+        cascade=True, respect_calendar=True,
     ):
         """Move record_id's start to new_start (preserving duration), then
         cascade dependents respecting FS/SS/FF/SF + lag.
@@ -295,6 +332,10 @@ class GanttStudioPlanner(models.AbstractModel):
         else:
             new_start_dt = requested_start
 
+        # Sprint 3.5 — snap a hora laboral (findes/feriados se saltan).
+        calendar = self._get_default_calendar() if respect_calendar else None
+        if calendar:
+            new_start_dt = self._snap_to_working_time(new_start_dt, calendar) or new_start_dt
         new_stop = new_start_dt + duration
         updates = {record_id: (new_start_dt, new_stop)}
 
@@ -335,6 +376,13 @@ class GanttStudioPlanner(models.AbstractModel):
                     # Only push the successor LATER if needed — never pull it
                     # earlier than its current date (keeps the plan stable).
                     if candidate_start > s_start:
+                        # Sprint 3.5 — snap a hora laboral en cada salto de
+                        # cascada. Si el predecesor termina viernes 18:00,
+                        # el sucesor arranca lunes 08:00 (no sábado).
+                        if calendar:
+                            snapped = self._snap_to_working_time(candidate_start, calendar)
+                            if snapped:
+                                candidate_start = snapped
                         updates[sid] = (candidate_start, candidate_start + s_dur)
                         queue.append(sid)
 
