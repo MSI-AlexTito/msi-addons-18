@@ -97,6 +97,10 @@ export class GanttStudioRenderer extends Component {
         // Sprint 3.2.C — opcional, controller debe pasarlo para habilitar
         // drag-to-create deps. Llama con (predId, succId, type, lagDays).
         onDepCreate: { type: Function, optional: true },
+        // Sprint 3.4 — Resource histogram (payload del RPC) y set de ids
+        // sobreasignados (highlight rojo en sus bars).
+        resourceHistogram: { type: [Object, { value: null }], optional: true },
+        overallocatedIds: { type: Object, optional: true },
     };
     static defaultProps = {
         groupBy: [],
@@ -110,6 +114,8 @@ export class GanttStudioRenderer extends Component {
         onBarResize: null,
         onBarRename: null,
         onDepCreate: null,
+        resourceHistogram: null,
+        overallocatedIds: new Set(),
     };
 
     setup() {
@@ -251,6 +257,14 @@ export class GanttStudioRenderer extends Component {
             this._dirtyRange = true;
             this._dirtyLayout = true;
             this._dirtyArrows = true;
+        }
+        // Sprint 3.4 — resource histogram + overallocation set.
+        // Layout debe recomputarse para aplicar el highlight rojo en bars.
+        if (
+            next.resourceHistogram !== prev.resourceHistogram ||
+            next.overallocatedIds !== prev.overallocatedIds
+        ) {
+            this._dirtyLayout = true;
         }
     }
 
@@ -434,6 +448,7 @@ export class GanttStudioRenderer extends Component {
         const milestoneField = this.props.archInfo.milestoneField;
         const parentField = this.props.archInfo.parentField;
         const critical = this.props.criticalRecordIds || new Set();
+        const overallocated = this.props.overallocatedIds || new Set();
         const baselineMap = new Map(
             (this.props.baselineLines || []).map((l) => [l.record_id, l])
         );
@@ -596,6 +611,8 @@ export class GanttStudioRenderer extends Component {
                     depth: r.__depth || 0,
                     isParent: !!r.__isParent,
                     isCollapsed: r.__isParent && this.state.collapsed.has(r.id),
+                    // Sprint 3.4 — overallocation flag (resource conflict).
+                    overallocated: overallocated.has(r.id),
                 });
                 barGeoById.set(r.id, { x: x1, y, width, height });
                 rowIdx++;

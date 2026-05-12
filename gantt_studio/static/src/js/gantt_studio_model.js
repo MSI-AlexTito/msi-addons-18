@@ -28,6 +28,10 @@ export class GanttStudioModel extends Model {
         this.context = {};
         this.groupBy = [];
         this.orderBy = [];
+        // Sprint 3.4 — Resource histogram + overallocations.
+        // Lazy: solo se fetchea cuando el user hace toggle.
+        this.resourceHistogram = null;       // payload del RPC
+        this.overallocatedIds = new Set();   // ids de records con conflicto
     }
 
     async load(searchParams) {
@@ -314,6 +318,81 @@ export class GanttStudioModel extends Model {
         await this.orm.call("gantt.studio.baseline", "action_activate", [[newId]]);
         await this.load({ domain: this.domain, context: this.context, groupBy: this.groupBy });
         return newId;
+    }
+
+    /**
+     * Sprint 3.4 — fetch del histograma de utilización por recurso.
+     * Llamado desde el controller cuando el user toggle el botón
+     * "Carga de recursos". `period` = 'day' | 'week' | 'month'.
+     */
+    async loadResourceHistogram(period = "week") {
+        const ds = this.archInfo.dateStart;
+        const de = this.archInfo.dateStop;
+        const recordIds = this.records.map((r) => r.id);
+        if (!recordIds.length) {
+            this.resourceHistogram = null;
+            this.overallocatedIds = new Set();
+            this.notify();
+            return;
+        }
+        // Rango de las records visibles: min(start), max(stop).
+        let minDt = null, maxDt = null;
+        for (const r of this.records) {
+            const s = r[ds];
+            const e = r[de];
+            if (s && (!minDt || s < minDt)) minDt = s;
+            if (e && (!maxDt || e > maxDt)) maxDt = e;
+        }
+        if (!minDt || !maxDt) {
+            this.resourceHistogram = null;
+            this.notify();
+            return;
+        }
+        try {
+            const histo = await this.orm.call(
+                "gantt.studio.resource_load",
+                "get_resource_histogram",
+                [],
+                {
+                    res_model: this.resModel,
+                    record_ids: recordIds,
+                    date_from: minDt,
+                    date_to: maxDt,
+                    period,
+                    resource_field: this.archInfo.resourceField || null,
+                    date_start_field: ds,
+                    date_stop_field: de,
+                },
+            );
+            this.resourceHistogram = histo;
+            // Detectar overallocations
+            const overIds = await this.orm.call(
+                "gantt.studio.resource_load",
+                "detect_overallocations",
+                [],
+                {
+                    res_model: this.resModel,
+                    record_ids: recordIds,
+                    date_start_field: ds,
+                    date_stop_field: de,
+                    resource_field: this.archInfo.resourceField || null,
+                    threshold: 1.0,
+                },
+            );
+            this.overallocatedIds = new Set(overIds || []);
+        } catch (e) {
+            console.warn("[gantt_studio] resource histogram failed:", e);
+            this.resourceHistogram = null;
+            this.overallocatedIds = new Set();
+        }
+        this.notify();
+    }
+
+    /** Sprint 3.4 — limpiar (toggle off). */
+    clearResourceHistogram() {
+        this.resourceHistogram = null;
+        this.overallocatedIds = new Set();
+        this.notify();
     }
 
     /** "YYYY-MM-DD HH:MM:SS" — Odoo's expected datetime format on the wire. */

@@ -36,6 +36,14 @@
             <i class="fa fa-bolt"/> Critical Path
         </button>
 
+        <!-- Sprint 3.4 — Histograma de carga de recursos -->
+        <button class="btn btn-sm"
+                t-att-class="state.resourceHistogramEnabled ? 'btn-warning' : 'btn-light'"
+                t-on-click="() => this.toggleResourceHistogram()"
+                title="Toggle resource workload histogram">
+            <i class="fa fa-users"/> Resource Load
+        </button>
+
         <button t-if="archCfg.baselineSupport"
                 class="btn btn-sm btn-light"
                 t-on-click="() => this.saveBaseline()"

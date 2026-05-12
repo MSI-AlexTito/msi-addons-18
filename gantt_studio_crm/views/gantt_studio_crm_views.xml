@@ -40,7 +40,8 @@
                           decoration-success="probability == 100"
                           decoration-danger="date_deadline and date_deadline &lt; context_today()"
                           decoration-info="probability &gt;= 50 and probability &lt; 100"
-                          disable_drag_drop="probability == 100 or probability == 0">
+                          disable_drag_drop="probability == 100 or probability == 0"
+                          resource_field="user_id">
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="stage_id"/>

@@ -129,6 +129,7 @@
                                         + (row.dragDisabled ? 'o_gs_bar_locked ' : '')
                                         + (row.isMilestone ? 'o_gs_milestone ' : '')
                                         + (state.editingId === row.record.id ? 'o_gs_bar_editing ' : '')
+                                        + (row.overallocated ? 'o_gs_bar_overallocated ' : '')
                                         + row.decorationClasses.join(' ')"
                            t-on-mousedown="(ev) => this.onBarMouseDown(row, ev)"
                            t-on-touchstart="(ev) => this.onBarTouchStart(row, ev)"
@@ -289,6 +290,37 @@
                     </g>
                 </g>
             </svg>
+
+            <!-- Sprint 3.4 — Histograma de carga de recursos.
+                 Aparece SOLO si el controller pasó props.resourceHistogram
+                 (el user activó el botón). Se muestra después del SVG
+                 principal, dentro del mismo scroll horizontal para que las
+                 barras del histograma queden alineadas a los buckets del
+                 timeline. -->
+            <div t-if="props.resourceHistogram and props.resourceHistogram.resources.length"
+                 class="o_gs_resource_histogram"
+                 t-attf-style="width: {{viewportWidth}}px;">
+                <div class="o_gs_resource_histogram_header">
+                    <i class="fa fa-users me-2"/>
+                    <strong>Carga de recursos</strong>
+                    <small class="ms-2 text-muted">
+                        (período: <t t-esc="props.resourceHistogram.period"/>)
+                    </small>
+                </div>
+                <div t-foreach="props.resourceHistogram.resources" t-as="res"
+                     t-key="res.id" class="o_gs_resource_row">
+                    <div class="o_gs_resource_label" t-esc="res.label"/>
+                    <div class="o_gs_resource_bars">
+                        <div t-foreach="res.data" t-as="cell" t-key="cell_index"
+                             class="o_gs_resource_cell"
+                             t-att-class="cell.ratio > 1.0 ? 'o_gs_overallocated'
+                                          : (cell.ratio > 0.8 ? 'o_gs_high_load'
+                                          : (cell.ratio > 0 ? 'o_gs_normal_load' : ''))"
+                             t-att-title="cell.allocated + 'h / ' + cell.capacity + 'h (' + Math.round(cell.ratio * 100) + '%)'"
+                             t-attf-style="height: {{Math.min(100, cell.ratio * 100)}}%;"/>
+                    </div>
+                </div>
+            </div>
 
             <!-- Sprint 3.2.C: popover de creación de dependencia.
                  Aparece donde el user soltó el drag (state.depPopover.x/y).

@@ -32,6 +32,9 @@ GANTT_STUDIO_VALID_ATTRIBUTES = {
     # Sprint 3.3 — WBS jerárquico ────────────────────────────────────
     "parent_field",            # Many2one auto-referencial sobre el mismo modelo (ej. parent_id).
                                # Si está, el Gantt renderiza una jerarquía padre/hijo con rollup.
+    # Sprint 3.4 — Resource leveling ─────────────────────────────────
+    "resource_field",          # Nombre del campo M2M/M2O al recurso (ej. user_ids).
+                               # Si está, habilita la fila histograma de utilización.
 }
 
 # Bootstrap-style decoration suffixes accepted as `decoration-<suffix>="expr"`.

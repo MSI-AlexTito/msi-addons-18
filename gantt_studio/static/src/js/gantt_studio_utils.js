@@ -193,6 +193,10 @@ export function parseGanttStudioArch(arch, ParserCls) {
     // que apunte al mismo modelo (auto-referencial); el clásico ejemplo es
     // `parent_id` en project.task. Si está null, no hay jerarquía.
     const parentField = root.getAttribute("parent_field") || null;
+    // Sprint 3.4 — Resource leveling. `resource_field` apunta a M2M/M2O al
+    // recurso (user_ids, resource_id, employee_id, etc.). El servidor lo
+    // detecta auto si no se pasa, pero un valor explícito gana.
+    const resourceField = root.getAttribute("resource_field") || null;
 
     // decoration-<suffix>="<python expr>" — Bootstrap-style conditional
     // styling, identical pattern to Odoo's tree/list views. We collect them
@@ -236,6 +240,7 @@ export function parseGanttStudioArch(arch, ParserCls) {
         milestoneField,
         decorations,
         parentField,
+        resourceField,
     };
 }
 

@@ -41,6 +41,8 @@ export class GanttStudioController extends Component {
             goToDateRequest: null,
             // Mirror of the picker's input value (yyyy-mm-dd).
             datePickerInput: this._todayIso(),
+            // Sprint 3.4 — toggle del histograma de carga de recursos.
+            resourceHistogramEnabled: false,
         });
 
         useSubEnv({
@@ -151,6 +153,9 @@ export class GanttStudioController extends Component {
             onDepCreate: (this.archInfo.canEdit && this.archInfo.showDependencies)
                 ? this.onDepCreate.bind(this)
                 : null,
+            // Sprint 3.4 — Resource histogram + overallocation highlight.
+            resourceHistogram: this.model.resourceHistogram,
+            overallocatedIds: this.model.overallocatedIds,
         };
     }
 
@@ -248,6 +253,27 @@ export class GanttStudioController extends Component {
     async toggleCriticalPath() {
         this.state.criticalPathEnabled = !this.state.criticalPathEnabled;
         await this.model.toggleCriticalPath(this.state.criticalPathEnabled);
+    }
+
+    /** Sprint 3.4 — toggle del histograma de carga de recursos. */
+    async toggleResourceHistogram() {
+        this.state.resourceHistogramEnabled = !this.state.resourceHistogramEnabled;
+        if (this.state.resourceHistogramEnabled) {
+            // Período del histograma derivado del scale del Gantt.
+            const period = (this.state.scale === "day") ? "day"
+                : (this.state.scale === "week") ? "week"
+                : "month";
+            await this.model.loadResourceHistogram(period);
+            if (!this.model.resourceHistogram
+                || !this.model.resourceHistogram.resources.length) {
+                this.notification.add(
+                    _t("No resources detected in this model. Add a 'resource_field' attribute or assign users to records."),
+                    { type: "warning", title: _t("Resource histogram") },
+                );
+            }
+        } else {
+            this.model.clearResourceHistogram();
+        }
     }
 
     async saveBaseline() {
