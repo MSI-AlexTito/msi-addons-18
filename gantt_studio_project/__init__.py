@@ -1,6 +1,7 @@
 # gantt_studio_project — Project integration for Gantt Studio.
 #
-# No Python models live here; the module's purpose is purely to ship a
-# project.task view + menu + demo action that uses the polymorphic
-# Gantt Studio core. The `tests/` folder is auto-discovered by Odoo's
-# test runner; no top-level import is required.
+# Aporta UN SOLO campo (`planned_date_begin`) a project.task para que la
+# vista Gantt Studio sobre project.task funcione en Odoo 18 Community
+# puro. Si project_enterprise está instalado, ambos módulos coexisten
+# sin conflicto porque el nombre y el tipo del campo coinciden.
+from . import models
