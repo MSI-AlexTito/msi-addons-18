@@ -184,6 +184,28 @@ if (DOMParser) {
     ok("opt-out defaults: baseline=true", minimal.baselineSupport === true);
     ok("formViewId default null", minimal.formViewId === null);
     ok("fieldsToFetch default []",  minimal.fieldsToFetch.length === 0);
+    // Sprint 3.1 — new arch attributes
+    ok("disableDragDrop default null", minimal.disableDragDrop === null);
+    ok("milestoneField default null",  minimal.milestoneField === null);
+    ok("decorations default empty",
+       typeof minimal.decorations === "object" && Object.keys(minimal.decorations).length === 0);
+
+    // Sprint 3.1 — with attributes set
+    const sp31 = parseGanttStudioArch(`
+        <gantt_studio date_start="a" date_stop="b"
+                      disable_drag_drop="state == '1_done'"
+                      milestone_field="is_milestone"
+                      decoration-success="is_closed"
+                      decoration-danger="date_deadline and date_deadline &lt; context_today()"
+                      decoration-warning="priority == '1'">
+        </gantt_studio>
+    `, DOMParser);
+    ok("disableDragDrop parsed", sp31.disableDragDrop === "state == '1_done'");
+    ok("milestoneField parsed",  sp31.milestoneField === "is_milestone");
+    ok("decorations has success", sp31.decorations.success === "is_closed");
+    ok("decorations has danger",  sp31.decorations.danger.includes("date_deadline"));
+    ok("decorations has warning", sp31.decorations.warning === "priority == '1'");
+    ok("decorations count=3",     Object.keys(sp31.decorations).length === 3);
 
     // Errors
     try {

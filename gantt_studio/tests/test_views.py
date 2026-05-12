@@ -127,3 +127,60 @@ class TestGanttStudioCoreView(TransactionCase):
                     </gantt_studio>
                 """,
             })
+
+    # ── Sprint 3.1 — nuevos atributos válidos ─────────────────────────
+
+    def test_11_decorations_accepted(self):
+        # Las 7 decoration-<suffix> Bootstrap-style deben ser aceptadas.
+        for suffix in ("success", "danger", "warning", "info",
+                       "primary", "secondary", "muted"):
+            self.env["ir.ui.view"].create({
+                "name": f"deco-{suffix}",
+                "model": "res.partner",
+                "type": "gantt_studio",
+                "arch": f"""
+                    <gantt_studio date_start="create_date" date_stop="write_date"
+                                  decoration-{suffix}="active">
+                        <field name="name"/>
+                    </gantt_studio>
+                """,
+            })
+
+    def test_12_decoration_unknown_suffix_rejected(self):
+        with self.assertRaises(Exception), mute_logger("odoo.addons.base.models.ir_ui_view"):
+            self.env["ir.ui.view"].create({
+                "name": "bad-deco",
+                "model": "res.partner",
+                "type": "gantt_studio",
+                "arch": """
+                    <gantt_studio date_start="create_date" date_stop="write_date"
+                                  decoration-explode="active"/>
+                """,
+            })
+
+    def test_13_disable_drag_drop_accepted(self):
+        # `disable_drag_drop` se acepta como expr Python (string libre).
+        self.env["ir.ui.view"].create({
+            "name": "drag-lock",
+            "model": "res.partner",
+            "type": "gantt_studio",
+            "arch": """
+                <gantt_studio date_start="create_date" date_stop="write_date"
+                              disable_drag_drop="active == False">
+                    <field name="name"/>
+                </gantt_studio>
+            """,
+        })
+
+    def test_14_milestone_field_accepted(self):
+        self.env["ir.ui.view"].create({
+            "name": "milestone",
+            "model": "res.partner",
+            "type": "gantt_studio",
+            "arch": """
+                <gantt_studio date_start="create_date" date_stop="write_date"
+                              milestone_field="active">
+                    <field name="name"/>
+                </gantt_studio>
+            """,
+        })

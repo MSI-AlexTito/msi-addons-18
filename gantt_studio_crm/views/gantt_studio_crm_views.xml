@@ -17,13 +17,30 @@
         <field name="model">crm.lead</field>
         <field name="priority">99</field>
         <field name="arch" type="xml">
+            <!--
+                Sprint 3.1 sobre CRM — usando SOLO campos nativos Community
+                de crm.lead:
+
+                decoration-success="probability == 100"
+                    Oportunidad ganada (100%).
+                decoration-danger="date_deadline and date_deadline &lt; context_today()"
+                    Cierre esperado ya pasó y aún no se cerró.
+                decoration-info="probability >= 50 and probability &lt; 100"
+                    Pipeline maduro (alta probabilidad).
+                disable_drag_drop="probability == 100 or probability == 0"
+                    Leads ya ganados / perdidos no se pueden reagendar.
+            -->
             <gantt_studio date_start="date_open"
                           date_stop="date_deadline"
                           default_scale="month"
                           default_group_by="stage_id"
                           color_field="user_id"
                           bar_text="name"
-                          string="Gantt Studio (Pipeline CRM)">
+                          string="Gantt Studio (Pipeline CRM)"
+                          decoration-success="probability == 100"
+                          decoration-danger="date_deadline and date_deadline &lt; context_today()"
+                          decoration-info="probability &gt;= 50 and probability &lt; 100"
+                          disable_drag_drop="probability == 100 or probability == 0">
                 <field name="name"/>
                 <field name="user_id"/>
                 <field name="stage_id"/>

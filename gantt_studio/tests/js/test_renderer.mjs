@@ -54,6 +54,45 @@ export function useVirtualGrid() {
 }
 `);
 
+// Stub @web/core/py_js/py — only need evaluateBooleanExpr
+const pyJsPath = path.join(tmpDir, "node_modules", "@web", "core", "py_js");
+fs.mkdirSync(pyJsPath, { recursive: true });
+fs.writeFileSync(path.join(pyJsPath, "py.js"), `
+// Lightweight Python-expression evaluator for tests. Supports the subset
+// we actually use in decoration/disable_drag_drop expressions:
+//   - comparison: ==, !=, <, <=, >, >=, in
+//   - boolean: and, or, not
+//   - identifiers (read from context)
+//   - string and number literals
+// Falls back to "false" on anything not parseable.
+//
+// In production this stub is replaced by @web/core/py_js/py.js from Odoo
+// which is a full py_js implementation.
+export function evaluateBooleanExpr(expr, ctx = {}) {
+    if (!expr) return false;
+    // Replace Python literals/operators with JS equivalents.
+    let js = expr
+        .replace(/\\bTrue\\b/g, "true")
+        .replace(/\\bFalse\\b/g, "false")
+        .replace(/\\bNone\\b/g, "null")
+        .replace(/\\band\\b/g, "&&")
+        .replace(/\\bor\\b/g, "||")
+        .replace(/\\bnot\\b/g, "!");
+    // Build a function whose params are the ctx keys.
+    try {
+        const keys = Object.keys(ctx);
+        const vals = keys.map((k) => ctx[k]);
+        const fn = new Function(...keys, "return (" + js + ");");
+        return Boolean(fn(...vals));
+    } catch (e) {
+        return false;
+    }
+}
+export function evaluateExpr(expr, ctx = {}) {
+    return evaluateBooleanExpr(expr, ctx);
+}
+`);
+
 // 4. Copy source files and rewrite imports
 fs.cpSync(RENDERER, path.join(tmpDir, "gantt_studio_renderer.js"));
 fs.cpSync(UTILS, path.join(tmpDir, "gantt_studio_utils.js"));
@@ -62,6 +101,7 @@ for (const f of ["gantt_studio_renderer.js", "gantt_studio_utils.js"]) {
     let s = fs.readFileSync(p, "utf-8").replace(/\/\*\*\s*@odoo-module\s*\*\*\//, "");
     s = s.replaceAll('"./gantt_studio_utils"', '"./gantt_studio_utils.js"');
     s = s.replaceAll('"@web/core/virtual_grid_hook"', '"@web/core/virtual_grid_hook.js"');
+    s = s.replaceAll('"@web/core/py_js/py"', '"@web/core/py_js/py.js"');
     fs.writeFileSync(p.replace(/\.js$/, ".mjs"), s);
 }
 
@@ -391,6 +431,155 @@ ok("bar 1 has ghost",       !!barB1.ghost);
 ok("ghost has x & width",   typeof barB1.ghost.x === "number" && barB1.ghost.width >= 4);
 const barB2 = rB.allRows.find((row) => row.type === "bar" && row.record.id === 2);
 ok("bar 2 (no baseline) has no ghost", barB2.ghost === null);
+
+// ─── [14] Sprint 3.1.C.1 — Decorations condicionales ───────────────────
+section("[14] Decorations condicionales");
+const rDec = makeRenderer({
+    ...baseProps,
+    archInfo: {
+        ...archInfo,
+        decorations: {
+            success: "is_closed",
+            danger:  "priority == '1'",
+            warning: "state == '02_changes_requested'",
+        },
+    },
+    records: [
+        { id: 1, name: "Done OK", display_name: "x", ds: "2026-05-01", de: "2026-05-05",
+          is_closed: true, priority: "0", state: "1_done" },
+        { id: 2, name: "Urgent",  display_name: "y", ds: "2026-05-01", de: "2026-05-05",
+          is_closed: false, priority: "1", state: "01_in_progress" },
+        { id: 3, name: "Changes",  display_name: "z", ds: "2026-05-01", de: "2026-05-05",
+          is_closed: false, priority: "0", state: "02_changes_requested" },
+        { id: 4, name: "Normal",   display_name: "w", ds: "2026-05-01", de: "2026-05-05",
+          is_closed: false, priority: "0", state: "01_in_progress" },
+    ],
+});
+rDec._beforeRender();
+const dbars = rDec.allRows.filter((row) => row.type === "bar");
+ok("Done has decoration_success",
+   dbars.find((b) => b.record.id === 1).decorationClasses.includes("o_gs_bar_decoration_success"));
+ok("Urgent has decoration_danger",
+   dbars.find((b) => b.record.id === 2).decorationClasses.includes("o_gs_bar_decoration_danger"));
+ok("Changes has decoration_warning",
+   dbars.find((b) => b.record.id === 3).decorationClasses.includes("o_gs_bar_decoration_warning"));
+ok("Normal has NO decoration classes",
+   dbars.find((b) => b.record.id === 4).decorationClasses.length === 0);
+
+// Multiple decorations on same record
+const rMulti = makeRenderer({
+    ...baseProps,
+    archInfo: {
+        ...archInfo,
+        decorations: {
+            success: "is_closed",
+            primary: "priority == '1'",
+        },
+    },
+    records: [{ id: 1, name: "x", display_name: "x", ds: "2026-05-01", de: "2026-05-05",
+                is_closed: true, priority: "1" }],
+});
+rMulti._beforeRender();
+const multiBar = rMulti.allRows.find((row) => row.type === "bar");
+ok("stacked decorations: success + primary both apply",
+   multiBar.decorationClasses.length === 2 &&
+   multiBar.decorationClasses.includes("o_gs_bar_decoration_success") &&
+   multiBar.decorationClasses.includes("o_gs_bar_decoration_primary"));
+
+// Bad expression doesn't crash
+const rBad = makeRenderer({
+    ...baseProps,
+    archInfo: {
+        ...archInfo,
+        decorations: { danger: "this_field_doesnt_exist + 999" },
+    },
+    records: [{ id: 1, name: "x", display_name: "x", ds: "2026-05-01", de: "2026-05-05" }],
+});
+rBad._beforeRender();
+ok("bad expression doesn't crash, returns no class",
+   rBad.allRows.find((row) => row.type === "bar").decorationClasses.length === 0);
+
+// ─── [15] Sprint 3.1.C.2 — disable_drag_drop per-record ────────────────
+section("[15] disable_drag_drop per-record");
+const rLock = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, disableDragDrop: "is_closed" },
+    records: [
+        { id: 1, name: "x", display_name: "x", ds: "2026-05-01", de: "2026-05-05", is_closed: true },
+        { id: 2, name: "y", display_name: "y", ds: "2026-05-01", de: "2026-05-05", is_closed: false },
+    ],
+});
+rLock._beforeRender();
+const locked = rLock.allRows.find((row) => row.type === "bar" && row.record.id === 1);
+const free   = rLock.allRows.find((row) => row.type === "bar" && row.record.id === 2);
+ok("closed bar is dragDisabled",        locked.dragDisabled === true);
+ok("open bar is NOT dragDisabled",      free.dragDisabled === false);
+
+// No disable_drag_drop arch attr → all bars are draggable
+const rNoLock = makeRenderer(baseProps);
+rNoLock._beforeRender();
+ok("no disable_drag_drop arch → all dragDisabled=false",
+   rNoLock.allRows.filter((row) => row.type === "bar").every((b) => b.dragDisabled === false));
+
+// ─── [16] Sprint 3.1.C.3 — Milestones ──────────────────────────────────
+section("[16] Milestones");
+const rMile = makeRenderer({
+    ...baseProps,
+    archInfo: { ...archInfo, milestoneField: "is_milestone" },
+    records: [
+        { id: 1, name: "Kickoff",  display_name: "K",  ds: "2026-05-01", de: "2026-05-01",
+          is_milestone: true },
+        { id: 2, name: "Regular",  display_name: "R",  ds: "2026-05-02", de: "2026-05-04",
+          is_milestone: false },
+        { id: 3, name: "Go-live",  display_name: "G",  ds: "2026-05-10", de: "2026-05-10",
+          is_milestone: true },
+    ],
+});
+rMile._beforeRender();
+const mbars = rMile.allRows.filter((row) => row.type === "bar");
+ok("Milestone bar 1 is marked isMilestone",
+   mbars.find((b) => b.record.id === 1).isMilestone === true);
+ok("Regular bar 2 is NOT milestone",
+   mbars.find((b) => b.record.id === 2).isMilestone === false);
+ok("Milestone has 4-vertex polygon points",
+   mbars.find((b) => b.record.id === 1).milestonePoints.split(" ").length === 4);
+ok("Regular bar has no milestonePoints",
+   mbars.find((b) => b.record.id === 2).milestonePoints === null);
+
+// Without milestone_field arch attr, no bar is ever a milestone
+const rNoMile = makeRenderer({
+    ...baseProps,
+    records: [{ id: 1, name: "x", display_name: "x", ds: "2026-05-01", de: "2026-05-02",
+                is_milestone: true }],  // truthy but no milestoneField configured
+});
+rNoMile._beforeRender();
+ok("no milestone_field arch → no record is a milestone",
+   rNoMile.allRows.find((row) => row.type === "bar").isMilestone === false);
+
+// ─── [17] Sprint 3.1.C.4 — _diffProps reacts to goToDateRequest ────────
+section("[17] goToDateRequest triggers range + scroll");
+const rGoto = makeRenderer(baseProps);
+rGoto._beforeRender();  // clear flags
+ok("clean state", !rGoto._dirtyRange);
+
+const aDate = new Date(2027, 0, 15);
+rGoto._diffProps({ ...baseProps, goToDateRequest: aDate });
+ok("goToDateRequest sets _dirtyRange + _pendingScrollTo",
+   rGoto._dirtyRange === true && rGoto._pendingScrollTo === aDate);
+
+// Same date object passed twice → no change
+rGoto._pendingScrollTo = null;
+rGoto._dirtyRange = false;
+rGoto.props.goToDateRequest = aDate;  // simulate current state
+rGoto._diffProps({ ...baseProps, goToDateRequest: aDate });
+ok("same Date reference → no re-scroll",
+   rGoto._pendingScrollTo === null);
+
+// Different Date object (even same calendar date) → re-scroll
+const aDate2 = new Date(2027, 0, 15);
+rGoto._diffProps({ ...baseProps, goToDateRequest: aDate2 });
+ok("new Date reference → re-scroll",
+   rGoto._pendingScrollTo === aDate2);
 
 // ─── Summary ───────────────────────────────────────────────────────────
 section(`RESULT: ${pass} passed, ${fail} failed`);

@@ -10,6 +10,7 @@ import {
     onWillUpdateProps,
 } from "@odoo/owl";
 import { useVirtualGrid } from "@web/core/virtual_grid_hook";
+import { evaluateBooleanExpr } from "@web/core/py_js/py";
 import {
     SCALE_CONFIG,
     PALETTE,
@@ -70,6 +71,7 @@ export class GanttStudioRenderer extends Component {
         criticalDependencyIds: { type: Object, optional: true },
         scale: String,
         criticalPathEnabled: { type: Boolean, optional: true },
+        goToDateRequest: { type: [Date, { value: null }], optional: true },
         onBarClick: Function,
         onBarDrop: Function,
     };
@@ -80,6 +82,7 @@ export class GanttStudioRenderer extends Component {
         criticalRecordIds: new Set(),
         criticalDependencyIds: new Set(),
         criticalPathEnabled: false,
+        goToDateRequest: null,
     };
 
     setup() {
@@ -125,6 +128,18 @@ export class GanttStudioRenderer extends Component {
 
     _diffProps(next) {
         const prev = this.props;
+        // Sprint 3.1.C.4 — date picker / hotkeys.
+        // When the controller bumps `goToDateRequest`, scroll the gantt
+        // so that the requested date is centered in the viewport. We do
+        // this here (in onWillUpdateProps) so it runs BEFORE the dirty-
+        // flag recompute pass; the layout doesn't actually change.
+        if (next.goToDateRequest && next.goToDateRequest !== prev.goToDateRequest) {
+            // The new date may be out of the current dateRange. Trigger
+            // a range recompute so the renderer can include it. We use
+            // queueMicrotask so we read the just-updated dateRange.
+            this._dirtyRange = true;
+            this._pendingScrollTo = next.goToDateRequest;
+        }
         // Scale → everything date-related must recompute.
         if (next.scale !== prev.scale) {
             this._dirtyRange = true;
@@ -198,6 +213,22 @@ export class GanttStudioRenderer extends Component {
         // Slice the row array down to what's visible. This is what the OWL
         // template iterates, so the SVG only ever emits DOM for these rows.
         this.visibleRows = this._sliceVisibleRows();
+        // Sprint 3.1.C.4 — if a date scroll was requested, perform it
+        // AFTER the next paint so the SVG width has been laid out.
+        if (this._pendingScrollTo) {
+            const dt = this._pendingScrollTo;
+            this._pendingScrollTo = null;
+            // Defer to next frame so the DOM has the new viewportWidth.
+            requestAnimationFrame(() => this._scrollToDate(dt));
+        }
+    }
+
+    _scrollToDate(date) {
+        if (!this.rootRef.el || !this.dateRange) return;
+        const x = this._dateToPx(date, this.dateRange.start);
+        // Center the date in the visible viewport
+        const viewportW = this.rootRef.el.clientWidth - LEFT_PANEL_WIDTH;
+        this.rootRef.el.scrollLeft = Math.max(0, x - viewportW / 2);
     }
 
     _sliceVisibleRows() {
@@ -244,6 +275,28 @@ export class GanttStudioRenderer extends Component {
         return this._dateToPx(today, this.dateRange.start);
     }
 
+    /**
+     * Evaluate a Python boolean expression against a record. Used by
+     * `decoration-*` and `disable_drag_drop` features (Sprint 3.1).
+     *
+     * The record dict is used as-is for the eval context — m2o fields
+     * come through as `[id, name]` Python-list-like arrays, scalars as
+     * scalars, dates as ISO strings (from `searchRead` JSON wire format).
+     * Errors in user expressions are logged and treated as `false` so
+     * a typo can't crash the renderer.
+     */
+    _evalRecordExpr(expr, record) {
+        if (!expr) return false;
+        try {
+            return Boolean(evaluateBooleanExpr(expr, record));
+        } catch (e) {
+            if (typeof window !== "undefined" && window.GANTT_STUDIO_DEBUG) {
+                console.warn(`[gantt_studio] expr error "${expr}":`, e.message);
+            }
+            return false;
+        }
+    }
+
     _computeLayout() {
         const range = this.dateRange;
         const ds = this.props.archInfo.dateStart;
@@ -251,6 +304,9 @@ export class GanttStudioRenderer extends Component {
         const colorField = this.props.archInfo.colorField;
         const barText = this.props.archInfo.barText;
         const progress = this.props.archInfo.progress;
+        const decorationsArch = this.props.archInfo.decorations || {};
+        const disableDragExpr = this.props.archInfo.disableDragDrop;
+        const milestoneField = this.props.archInfo.milestoneField;
         const critical = this.props.criticalRecordIds || new Set();
         const baselineMap = new Map(
             (this.props.baselineLines || []).map((l) => [l.record_id, l])
@@ -313,6 +369,23 @@ export class GanttStudioRenderer extends Component {
                     const gx2 = this._dateToPx(parseDate(bl.date_stop), range.start);
                     ghost = { x: gx1, width: Math.max(4, gx2 - gx1) };
                 }
+                // Decorations: evaluate each Python expression against the
+                // record. Each truthy result becomes a CSS class on the bar.
+                const decorationClasses = [];
+                for (const suffix in decorationsArch) {
+                    if (this._evalRecordExpr(decorationsArch[suffix], r)) {
+                        decorationClasses.push(`o_gs_bar_decoration_${suffix}`);
+                    }
+                }
+                // Per-record drag lock.
+                const dragDisabled = this._evalRecordExpr(disableDragExpr, r);
+                // Sprint 3.1.C.3 — milestone detection.
+                // If the configured boolean field is truthy, the record is
+                // rendered as a diamond at its `date_start` (date_stop is
+                // ignored visually — milestones have no duration). The
+                // record's "milestone flag" is read raw from the dict; any
+                // truthy value works (True / 1 / non-empty string / m2o).
+                const isMilestone = !!(milestoneField && r[milestoneField]);
                 rows.push({
                     type: "bar",
                     rowIdx,
@@ -334,6 +407,15 @@ export class GanttStudioRenderer extends Component {
                     leftLabel: fieldDisplay(r, "display_name"),
                     critical: critical.has(r.id),
                     ghost,
+                    decorationClasses,
+                    dragDisabled,
+                    isMilestone,
+                    // Diamond geometry: a square rotated 45° centered at
+                    // (x1, y + height/2). We use SVG polygon points so the
+                    // template doesn't need to compute trig.
+                    milestonePoints: isMilestone
+                        ? this._diamondPoints(x1, y + height / 2, height * 0.7)
+                        : null,
                 });
                 barGeoById.set(r.id, { x: x1, y, width, height });
                 rowIdx++;
@@ -365,6 +447,20 @@ export class GanttStudioRenderer extends Component {
         return HEADER_HEIGHT + rowIdx * ROW_TOTAL;
     }
 
+    /**
+     * Diamond (rotated square) polygon centered at (cx, cy), with the given
+     * vertical extent. Returns an SVG `points` string usable in <polygon>.
+     */
+    _diamondPoints(cx, cy, size) {
+        const half = size / 2;
+        return [
+            `${cx},${cy - half}`,   // top
+            `${cx + half},${cy}`,   // right
+            `${cx},${cy + half}`,   // bottom
+            `${cx - half},${cy}`,   // left
+        ].join(" ");
+    }
+
     // ─────────────────────────────────────────────────────────────────
     // Template getters (cheap — they only read precomputed fields)
     // ─────────────────────────────────────────────────────────────────
@@ -382,11 +478,16 @@ export class GanttStudioRenderer extends Component {
     onBarMouseDown(row, ev) {
         if (row.type !== "bar") return;
         if (ev.button !== 0) return;
+        // Sprint 3.1: we still register the drag seed when the bar is
+        // drag-locked so that a CLICK on it (Δx < 4 px on mouseup) still
+        // opens the record form. The seed carries the `dragDisabled` flag
+        // and the move/up handlers will skip the actual reposition + RPC.
         this._dragSeed = {
             recordId: row.record.id,
             origX: row.x,
             startX: ev.clientX,
             origStart: parseDate(row.record[this.props.archInfo.dateStart]),
+            dragDisabled: !!row.dragDisabled,
         };
         this.state.dragId = row.record.id;
         this.state.dragDx = 0;
@@ -403,6 +504,9 @@ export class GanttStudioRenderer extends Component {
 
     _onDragMove(ev) {
         if (!this._dragSeed) return;
+        // Drag-locked bars: never move visually; the mousemove only ticks
+        // dx for the click-vs-drag heuristic in `_onDragUp`.
+        if (this._dragSeed.dragDisabled) return;
         this.state.dragDx = ev.clientX - this._dragSeed.startX;
     }
 
@@ -410,18 +514,21 @@ export class GanttStudioRenderer extends Component {
         if (!this._dragSeed) return;
         const seed = this._dragSeed;
         const dx = ev.clientX - seed.startX;
-        const deltaMs = this._pxToMs(dx);
-        const newStart = new Date(seed.origStart.getTime() + deltaMs);
+        const isClick = Math.abs(dx) < 4;
         dbg("drag UP", {
-            recordId: seed.recordId, dx, scale: this.props.scale,
-            newStart: newStart.toISOString(), isClick: Math.abs(dx) < 4,
+            recordId: seed.recordId, dx, dragDisabled: seed.dragDisabled,
+            scale: this.props.scale, isClick,
         });
         this._endDrag();
-        if (Math.abs(dx) < 4) {
+        if (isClick) {
             const rec = this.props.records.find((r) => r.id === seed.recordId);
             if (rec) this.props.onBarClick(rec);
             return;
         }
+        // Drag-locked: silently swallow the drag (no RPC, no visual move).
+        if (seed.dragDisabled) return;
+        const deltaMs = this._pxToMs(dx);
+        const newStart = new Date(seed.origStart.getTime() + deltaMs);
         this.props.onBarDrop(seed.recordId, newStart);
     }
 

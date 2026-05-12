@@ -183,6 +183,25 @@ export function parseGanttStudioArch(arch, ParserCls) {
     const autoReschedule = root.getAttribute("auto_reschedule") !== "false";
     const baselineSupport = root.getAttribute("baseline_support") !== "false";
 
+    // Sprint 3.1: per-record disable_drag_drop expression + milestone field.
+    // `disable_drag_drop` is a Python boolean expression evaluated against
+    // each record at render time; if it returns truthy the bar is locked.
+    // Empty string / missing → no per-record locking.
+    const disableDragDrop = root.getAttribute("disable_drag_drop") || null;
+    const milestoneField = root.getAttribute("milestone_field") || null;
+
+    // decoration-<suffix>="<python expr>" — Bootstrap-style conditional
+    // styling, identical pattern to Odoo's tree/list views. We collect them
+    // into a {success: "expr", danger: "expr", ...} dict here; the renderer
+    // evaluates each per record and stacks the resulting CSS classes.
+    const decorations = {};
+    const decorationSuffixes = ["success", "danger", "warning", "info",
+                                "primary", "secondary", "muted"];
+    for (const suffix of decorationSuffixes) {
+        const expr = root.getAttribute(`decoration-${suffix}`);
+        if (expr) decorations[suffix] = expr;
+    }
+
     // <field name="..."/> children
     const fieldsToFetch = [];
     for (const child of root.childNodes) {
@@ -209,6 +228,9 @@ export function parseGanttStudioArch(arch, ParserCls) {
         showCriticalPath,
         autoReschedule,
         baselineSupport,
+        disableDragDrop,
+        milestoneField,
+        decorations,
     };
 }
 

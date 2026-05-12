@@ -230,3 +230,78 @@
     fill: #6b7280;
     pointer-events: none;
 }
+
+// ── Sprint 3.1: Decorations condicionales ─────────────────────────
+// Cada decoration-<suffix>="<expr>" del arch evalua per-record. Si la
+// expr resulta verdadera, esta clase se aplica al <g class="o_gs_bar_group">
+// y agrega un BORDE coloreado al rect interior. Usamos `box-shadow`-like
+// efecto via stroke porque <rect> no soporta box-shadow.
+//
+// El override de stroke gana sobre `o_gs_bar_critical` cuando coexisten
+// porque las definimos despues en el orden CSS.
+
+.o_gs_bar_decoration_success .o_gs_bar { stroke: #16a34a; stroke-width: 2; }
+.o_gs_bar_decoration_danger  .o_gs_bar { stroke: #dc2626; stroke-width: 2; }
+.o_gs_bar_decoration_warning .o_gs_bar { stroke: #d97706; stroke-width: 2; }
+.o_gs_bar_decoration_info    .o_gs_bar { stroke: #2563eb; stroke-width: 2; }
+.o_gs_bar_decoration_primary .o_gs_bar { stroke: #3b82f6; stroke-width: 2; }
+.o_gs_bar_decoration_secondary .o_gs_bar { stroke: #6b7280; stroke-width: 2; }
+.o_gs_bar_decoration_muted   .o_gs_bar { opacity: 0.55; }
+
+// Para que los decorations no peleen visualmente cuando se combinan con
+// critical (que ya tiene stroke rojo + animacion), priorizamos:
+//   - critical: animacion ON (rojo) — gana en presencia visual
+//   - decorations: stroke estatico — colorea
+// Si una barra es critical + decoration-success, la animacion roja sigue
+// pero el stroke verde se ve cuando la pulsacion baja (filter cae).
+
+// ── Sprint 3.1: Bar locked (disable_drag_drop per-record) ─────────
+// Cuando la expresion `disable_drag_drop` devuelve True para un record,
+// la barra se ve "fijada" con un patron + cursor not-allowed. No bloquea
+// el click (sigue abriendo el form).
+
+.o_gs_bar_locked {
+    cursor: not-allowed;
+
+    .o_gs_bar {
+        // Patron de tramas diagonales con CSS gradient sobre el fill.
+        // SVG nativo no soporta linear-gradient en fill via CSS, pero
+        // podemos simular con un filter sutil + opacity.
+        filter: brightness(0.92) saturate(0.7);
+    }
+    // Pequeño candado en la esquina superior izquierda usando ::before
+    // no es posible en SVG; en su lugar reducimos opacidad del label.
+    .o_gs_bar_label { opacity: 0.7; }
+}
+.o_gs_bar_locked:hover .o_gs_bar {
+    filter: brightness(0.92) saturate(0.7);   // sin highlight on hover
+}
+
+// ── Sprint 3.1.C.3: Milestones (rombo) ────────────────────────────
+// Cuando `milestone_field` apunta a un campo Boolean truthy, esa "tarea"
+// se rendea como un rombo (diamante) en `date_start` sin duracion. La
+// label aparece a la derecha del rombo, no dentro.
+
+.o_gs_milestone_shape {
+    stroke: rgba(0, 0, 0, 0.35);
+    stroke-width: 1.5;
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15));
+    transition: filter 120ms ease;
+}
+.o_gs_milestone:hover .o_gs_milestone_shape {
+    filter: drop-shadow(0 1px 2px rgba(0, 0, 0, 0.15))
+            brightness(1.1);
+}
+.o_gs_milestone_label {
+    // Para milestones la label SIEMPRE va afuera (alineada a la derecha
+    // del rombo). dominant-baseline central centra verticalmente.
+    dominant-baseline: central;
+    alignment-baseline: central;
+}
+
+// Milestones criticos: rombo grande con halo rojo
+.o_gs_bar_critical.o_gs_milestone .o_gs_milestone_shape {
+    stroke: #991b1b;
+    stroke-width: 2.5;
+    animation: gantt-critical-pulse 1.6s ease-in-out infinite;
+}

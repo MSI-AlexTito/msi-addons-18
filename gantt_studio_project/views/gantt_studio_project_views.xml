@@ -26,18 +26,62 @@
         <field name="model">project.task</field>
         <field name="priority">99</field>
         <field name="arch" type="xml">
+            <!--
+                Atributos Sprint 3.1 ─ todos usan SOLO campos nativos de
+                project.task en Odoo 18 Community (sin Enterprise):
+
+                date_start / date_stop:
+                    planned_date_begin existe únicamente con project_enterprise.
+                    Para Community puro, ese atributo se reemplaza por
+                    `date_assign` (readonly nativo). Aquí lo dejamos en
+                    `planned_date_begin` para que la demo aproveche
+                    Enterprise si está disponible, pero el módulo NO lo
+                    requiere — cualquier vista personalizada puede usar otro
+                    par de fechas.
+
+                decoration-success="state in ('1_done',)"
+                    state es un Selection nativo Community con valores
+                    01_in_progress / 02_changes_requested / 03_approved /
+                    1_done / 1_canceled / 04_waiting_normal.
+
+                decoration-danger="date_deadline and date_deadline &lt; context_today()"
+                    Tareas vencidas (deadline en el pasado y no cerradas).
+                    `context_today()` es función nativa de py_js.
+
+                decoration-warning="priority == '1'"
+                    Tareas marcadas con prioridad alta (estrella).
+
+                disable_drag_drop="is_closed"
+                    is_closed es un campo computed nativo Community
+                    (True si state in ('1_done', '1_canceled')).
+                    Las tareas cerradas no se pueden arrastrar.
+
+                milestone_field="milestone_id"
+                    milestone_id es Many2one nativo Community a
+                    project.milestone (truthy → diamond). Si no usas
+                    milestones, simplemente no apuntará a nada.
+            -->
             <gantt_studio date_start="planned_date_begin"
                           date_stop="date_deadline"
                           default_scale="week"
                           default_group_by="stage_id"
                           color_field="user_ids"
                           bar_text="name"
-                          string="Gantt Studio (Tareas)">
+                          string="Gantt Studio (Tareas)"
+                          decoration-success="state == '1_done'"
+                          decoration-danger="date_deadline and date_deadline &lt; context_today()"
+                          decoration-warning="priority == '1'"
+                          decoration-muted="state == '1_canceled'"
+                          disable_drag_drop="is_closed"
+                          milestone_field="milestone_id">
                 <field name="name"/>
                 <field name="user_ids"/>
                 <field name="stage_id"/>
                 <field name="project_id"/>
                 <field name="priority"/>
+                <field name="state"/>
+                <field name="is_closed"/>
+                <field name="milestone_id"/>
             </gantt_studio>
         </field>
     </record>

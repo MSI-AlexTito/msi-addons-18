@@ -3,6 +3,7 @@
 
 <t t-name="gantt_studio.Buttons">
     <div class="d-flex flex-wrap gap-2 align-items-center">
+        <!-- Scale buttons: also bound to keyboard "+"/"-" -->
         <div class="btn-group" role="group">
             <button t-foreach="scales" t-as="s" t-key="s"
                     class="btn btn-sm"
@@ -10,6 +11,21 @@
                     t-on-click="() => this.setScale(s)">
                 <t t-esc="s.charAt(0).toUpperCase() + s.slice(1)"/>
             </button>
+        </div>
+
+        <!-- Sprint 3.1.C.4 — date picker + Today shortcut -->
+        <div class="btn-group" role="group">
+            <button class="btn btn-sm btn-light"
+                    t-on-click="() => this.goToToday()"
+                    title="Saltar a hoy (atajo: T)">
+                <i class="fa fa-bullseye"/> Hoy
+            </button>
+            <input type="date"
+                   class="form-control form-control-sm"
+                   style="max-width: 150px;"
+                   t-att-value="state.datePickerInput"
+                   t-on-change="(ev) => this.onDatePickerChange(ev)"
+                   title="Ir a una fecha específica"/>
         </div>
 
         <button t-if="archCfg.showCriticalPath"

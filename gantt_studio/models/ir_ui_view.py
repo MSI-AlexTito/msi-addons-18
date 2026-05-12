@@ -26,9 +26,26 @@ GANTT_STUDIO_VALID_ATTRIBUTES = {
     "show_critical_path",      # "true"/"false" — enable CPM toggle
     "auto_reschedule",         # "true"/"false" — cascade drag through deps
     "baseline_support",        # "true"/"false" — Save/Activate baseline buttons
+    # Sprint 3.1 features ────────────────────────────────────────────
+    "disable_drag_drop",       # Python expr evaluated per-record. If truthy → bar is locked.
+    "milestone_field",         # Boolean field name; truthy records render as diamonds (no duration).
+}
+
+# Bootstrap-style decoration suffixes accepted as `decoration-<suffix>="expr"`.
+# Same set as Odoo's tree/list views for visual coherence.
+GANTT_STUDIO_DECORATION_SUFFIXES = {
+    "success", "danger", "warning", "info",
+    "primary", "secondary", "muted",
 }
 
 VALID_SCALES = {"day", "week", "month", "quarter", "year"}
+
+
+def _is_decoration_attr(attr):
+    """True if `attr` is a `decoration-<bootstrap-suffix>` attribute."""
+    if not attr.startswith("decoration-"):
+        return False
+    return attr[len("decoration-"):] in GANTT_STUDIO_DECORATION_SUFFIXES
 
 
 class View(models.Model):
@@ -65,15 +82,21 @@ class View(models.Model):
                     child,
                 )
 
-        remaining = attrs - GANTT_STUDIO_VALID_ATTRIBUTES
-        if remaining:
-            # format_list espera una list, no un set
+        # Reject unknown attributes. `decoration-<suffix>` are validated
+        # dynamically because they take any bootstrap-style suffix.
+        unknown = {
+            a for a in attrs
+            if a not in GANTT_STUDIO_VALID_ATTRIBUTES and not _is_decoration_attr(a)
+        }
+        if unknown:
             self._raise_view_error(
                 _(
                     "Invalid attributes (%(invalid_attributes)s) in gantt_studio. "
-                    "Must be in (%(valid_attributes)s)",
-                    invalid_attributes=format_list(self.env, sorted(remaining)),
+                    "Must be in (%(valid_attributes)s) or a 'decoration-<suffix>' "
+                    "with suffix in (%(decoration_suffixes)s).",
+                    invalid_attributes=format_list(self.env, sorted(unknown)),
                     valid_attributes=format_list(self.env, sorted(GANTT_STUDIO_VALID_ATTRIBUTES)),
+                    decoration_suffixes=format_list(self.env, sorted(GANTT_STUDIO_DECORATION_SUFFIXES)),
                 ),
                 node,
             )

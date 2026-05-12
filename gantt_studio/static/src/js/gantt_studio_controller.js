@@ -3,6 +3,7 @@
 import { Component, useState, useSubEnv } from "@odoo/owl";
 import { Layout } from "@web/search/layout";
 import { useService, useBus } from "@web/core/utils/hooks";
+import { useHotkey } from "@web/core/hotkeys/hotkey_hook";
 import { useModel } from "@web/model/model";
 import { useSetupAction } from "@web/search/action_hook";
 import { getDefaultConfig } from "@web/views/view";
@@ -32,6 +33,14 @@ export class GanttStudioController extends Component {
             scale: this.archInfo.defaultScale,
             criticalPathEnabled: false,
             exportingPdf: false,
+            // Sprint 3.1.C.4 — date picker / hotkeys.
+            // `goToDateRequest` is a Date|null that the renderer watches
+            // via onWillUpdateProps. Each time we want to scroll the
+            // gantt, we assign a NEW Date object (object identity changes
+            // even if the same calendar date is picked twice → re-scroll).
+            goToDateRequest: null,
+            // Mirror of the picker's input value (yyyy-mm-dd).
+            datePickerInput: this._todayIso(),
         });
 
         useSubEnv({
@@ -61,6 +70,45 @@ export class GanttStudioController extends Component {
                 criticalPathEnabled: this.state.criticalPathEnabled,
             }),
         });
+
+        // Sprint 3.1.C.4 — keyboard shortcuts (skipped when typing in
+        // inputs / textareas, courtesy of the hotkey service's defaults).
+        useHotkey("t", () => this.goToToday(), {});
+        useHotkey("+", () => this.zoomIn(), {});
+        useHotkey("=", () => this.zoomIn(), {});  // unshifted "+" on US layouts
+        useHotkey("-", () => this.zoomOut(), {});
+    }
+
+    /** Returns the local date in `YYYY-MM-DD` form (input[type=date] value). */
+    _todayIso() {
+        const d = new Date();
+        const pad = (n) => String(n).padStart(2, "0");
+        return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())}`;
+    }
+
+    goToToday() {
+        this.state.datePickerInput = this._todayIso();
+        this.state.goToDateRequest = new Date();
+    }
+
+    onDatePickerChange(ev) {
+        const v = ev.target.value;
+        if (!v) return;
+        this.state.datePickerInput = v;
+        // Parse as LOCAL date (midnight). `new Date("YYYY-MM-DD")` parses
+        // as UTC which shifts a day in negative-offset timezones.
+        const [y, m, d] = v.split("-").map(Number);
+        this.state.goToDateRequest = new Date(y, m - 1, d);
+    }
+
+    zoomIn() {
+        const i = SCALES.indexOf(this.state.scale);
+        if (i > 0) this.state.scale = SCALES[i - 1];
+    }
+
+    zoomOut() {
+        const i = SCALES.indexOf(this.state.scale);
+        if (i < SCALES.length - 1) this.state.scale = SCALES[i + 1];
     }
 
     get rendererProps() {
@@ -76,6 +124,10 @@ export class GanttStudioController extends Component {
             criticalDependencyIds: this.model.criticalDependencyIds,
             criticalPathEnabled: this.state.criticalPathEnabled,
             scale: this.state.scale,
+            // Sprint 3.1.C.4: cuando cambia esta referencia, el renderer
+            // hace scrollLeft a la fecha. La pasamos por valor de prop
+            // para mantener el flujo unidireccional (controller → renderer).
+            goToDateRequest: this.state.goToDateRequest,
             onBarClick: this.onBarClick.bind(this),
             onBarDrop: this.onBarDrop.bind(this),
         };

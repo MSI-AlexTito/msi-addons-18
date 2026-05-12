@@ -101,28 +101,49 @@
                     </g>
                 </g>
 
-                <!-- Bars (only visible rows) -->
+                <!-- Bars (only visible rows).
+                     Milestones (`isMilestone === true`) draw a diamond at
+                     date_start instead of a regular bar with width. -->
                 <g class="o_gs_bars">
                     <g t-foreach="visibleRows" t-as="row" t-key="row.key">
                         <g t-if="row.type === 'bar'"
                            class="o_gs_bar_group"
-                           t-att-class="(row.critical ? 'o_gs_bar_critical ' : '') + (state.dragId === row.record.id ? 'o_gs_bar_dragging' : '')"
+                           t-att-class="(row.critical ? 'o_gs_bar_critical ' : '')
+                                        + (state.dragId === row.record.id ? 'o_gs_bar_dragging ' : '')
+                                        + (row.dragDisabled ? 'o_gs_bar_locked ' : '')
+                                        + (row.isMilestone ? 'o_gs_milestone ' : '')
+                                        + row.decorationClasses.join(' ')"
                            t-on-mousedown="(ev) => this.onBarMouseDown(row, ev)">
-                            <rect class="o_gs_bar"
+
+                            <!-- Milestone path: diamond at date_start -->
+                            <polygon t-if="row.isMilestone"
+                                     class="o_gs_milestone_shape"
+                                     t-att-points="row.milestonePoints"
+                                     t-att-fill="row.color"/>
+                            <text t-if="row.isMilestone"
+                                  class="o_gs_bar_label o_gs_bar_label_outside o_gs_milestone_label"
+                                  t-att-x="row.x + row.height / 2 + 8"
+                                  t-att-y="row.y + row.height / 2"
+                                  t-esc="row.label"/>
+
+                            <!-- Regular bar path -->
+                            <rect t-if="!row.isMilestone"
+                                  class="o_gs_bar"
                                   t-att-x="row.x + dragOffsetForBar(row)"
                                   t-att-y="row.y"
                                   t-att-width="row.width"
                                   t-att-height="row.height"
                                   rx="6" ry="6"
                                   t-att-fill="row.color"/>
-                            <rect t-if="row.progress !== null"
+                            <rect t-if="!row.isMilestone and row.progress !== null"
                                   class="o_gs_bar_progress"
                                   t-att-x="row.x + dragOffsetForBar(row)"
                                   t-att-y="row.y"
                                   t-att-width="row.width * row.progress / 100"
                                   t-att-height="row.height"
                                   rx="6" ry="6"/>
-                            <text t-att-class="row.labelOutside ? 'o_gs_bar_label o_gs_bar_label_outside' : 'o_gs_bar_label'"
+                            <text t-if="!row.isMilestone"
+                                  t-att-class="row.labelOutside ? 'o_gs_bar_label o_gs_bar_label_outside' : 'o_gs_bar_label'"
                                   t-att-x="row.labelX + dragOffsetForBar(row)"
                                   t-att-y="row.labelY"
                                   t-esc="row.displayLabel"/>
