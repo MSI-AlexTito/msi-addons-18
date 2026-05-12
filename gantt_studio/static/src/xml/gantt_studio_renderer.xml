@@ -1,16 +1,28 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <templates xml:space="preserve">
 
+<!--
+    Gantt Studio renderer template.
+
+    Iteration:
+      - `visibleRows` is the subset of `allRows` whose y-band is inside the
+        scroll viewport (+ buffer). Computed in `_beforeRender()` from
+        `useVirtualGrid.rowsIndexes`. The SVG only ever emits DOM nodes for
+        these rows, which keeps the tree small even on plans with thousands
+        of records.
+      - Keys are stable strings (`group_X`, `bar_<id>`) so OWL keeps DOM
+        identity across scroll-induced re-renders.
+-->
 <t t-name="gantt_studio.Renderer">
     <div class="o_gantt_studio_renderer" t-ref="root">
-        <div class="o_gs_inner" t-attf-style="width: calc({{leftPanelWidth}}px + {{viewportWidth}}px);">
+        <div class="o_gs_inner" t-attf-style="width: calc({{leftPanelWidth}}px + {{viewportWidth}}px); height: {{totalHeight}}px;">
 
             <!-- Left panel -->
             <div class="o_gs_left" t-attf-style="width: {{leftPanelWidth}}px;">
                 <div class="o_gs_left_header" t-attf-style="height: {{headerHeight}}px;">
                     <strong>Item</strong>
                 </div>
-                <t t-foreach="rows" t-as="row" t-key="row_index">
+                <t t-foreach="visibleRows" t-as="row" t-key="row.key">
                     <div t-if="row.type === 'group'"
                          class="o_gs_left_row o_gs_group_row"
                          t-attf-style="top: {{rowY(row.rowIdx)}}px; height: {{rowHeight}}px;">
@@ -44,16 +56,18 @@
                     </g>
                 </g>
 
-                <!-- Row separators -->
+                <!-- Row separators (only for visible rows; off-screen rows
+                     would render off-screen lines anyway). -->
                 <g class="o_gs_row_separators">
-                    <line t-foreach="rows" t-as="row" t-key="row_index"
+                    <line t-foreach="visibleRows" t-as="row" t-key="'sep_' + row.key"
                           x1="0" t-att-x2="viewportWidth"
                           t-att-y1="rowY(row.rowIdx) + rowHeight"
                           t-att-y2="rowY(row.rowIdx) + rowHeight"
                           class="o_gs_row_sep"/>
                 </g>
 
-                <!-- Today line -->
+                <!-- Today line — vertical, spans full height; not affected by
+                     row virtualization. -->
                 <line t-if="todayLineX !== null"
                       t-att-x1="todayLineX" y1="0"
                       t-att-x2="todayLineX" t-att-y2="totalHeight"
@@ -61,7 +75,7 @@
 
                 <!-- Baseline ghost bars (behind real bars) -->
                 <g class="o_gs_ghosts">
-                    <g t-foreach="rows" t-as="row" t-key="row_index">
+                    <g t-foreach="visibleRows" t-as="row" t-key="'ghost_' + row.key">
                         <rect t-if="row.type === 'bar' and row.ghost"
                               class="o_gs_bar_ghost"
                               t-att-x="row.ghost.x"
@@ -72,10 +86,13 @@
                     </g>
                 </g>
 
-                <!-- Dependency arrows — UNDER bars so bar rects naturally
-                     hide the arrow line where it would cross the bar (and
-                     its inside label). For outside labels, the arrow is
-                     dodged via the labelY offset (6px below bar center). -->
+                <!-- Dependency arrows.
+                     NOTE: arrows are computed against `barGeoById` which is
+                     populated from the FULL `allRows` set, not just visible
+                     ones, so an arrow whose endpoints are off-screen still
+                     renders (and the SVG clips it naturally). Arrows are
+                     under bars so the bar rect hides the line where it would
+                     cross. -->
                 <g class="o_gs_arrows" t-if="props.archInfo.showDependencies">
                     <g t-foreach="arrows" t-as="arrow" t-key="arrow.id"
                        t-att-class="arrow.critical ? 'o_gs_arrow_critical' : ''">
@@ -84,9 +101,9 @@
                     </g>
                 </g>
 
-                <!-- Bars -->
+                <!-- Bars (only visible rows) -->
                 <g class="o_gs_bars">
-                    <g t-foreach="rows" t-as="row" t-key="row_index">
+                    <g t-foreach="visibleRows" t-as="row" t-key="row.key">
                         <g t-if="row.type === 'bar'"
                            class="o_gs_bar_group"
                            t-att-class="(row.critical ? 'o_gs_bar_critical ' : '') + (state.dragId === row.record.id ? 'o_gs_bar_dragging' : '')"
