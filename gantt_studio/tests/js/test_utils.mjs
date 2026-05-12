@@ -403,6 +403,43 @@ ok("computeRollup: recursivo a través de nietos",
    rollupG.start.getTime() === parseDate("2026-05-01").getTime() &&
    rollupG.stop.getTime() === parseDate("2026-05-15").getTime());
 
+// ─── [13] Sprint 3.11 — popup_editor + Sprint 3.9 arch attrs ─────────
+section("[13] Sprint 3.11 — popup_editor attribute");
+if (DOMParser) {
+    // Default: popup_editor ausente → false
+    const minPop = parseGanttStudioArch(
+        '<gantt_studio date_start="a" date_stop="b"/>', DOMParser);
+    ok("popupEditor default false", minPop.popupEditor === false);
+
+    // popup_editor="true" → true
+    const withPop = parseGanttStudioArch(
+        '<gantt_studio date_start="a" date_stop="b" popup_editor="true"/>', DOMParser);
+    ok("popup_editor='true' → true", withPop.popupEditor === true);
+
+    // popup_editor="false" → false (explicit opt-out)
+    const noPop = parseGanttStudioArch(
+        '<gantt_studio date_start="a" date_stop="b" popup_editor="false"/>', DOMParser);
+    ok("popup_editor='false' → false", noPop.popupEditor === false);
+
+    // popup_editor en arch con resto de atributos → no rompe otros
+    const fullArch = parseGanttStudioArch(`
+        <gantt_studio date_start="ds" date_stop="de"
+                      default_scale="month"
+                      popup_editor="true"
+                      parent_field="parent_id"
+                      resource_field="user_ids">
+        </gantt_studio>
+    `, DOMParser);
+    ok("popup_editor=true coexiste con parent_field",
+       fullArch.popupEditor === true && fullArch.parentField === "parent_id");
+    ok("popup_editor=true coexiste con resource_field",
+       fullArch.popupEditor === true && fullArch.resourceField === "user_ids");
+    ok("popup_editor preserva defaultScale",
+       fullArch.defaultScale === "month");
+} else {
+    console.log("  SKIP — install @xmldom/xmldom in /tmp to enable");
+}
+
 // ─── Summary ─────────────────────────────────────────────────────────
 section(`RESULT: ${pass} passed, ${fail} failed`);
 fs.unlinkSync(tmp);
